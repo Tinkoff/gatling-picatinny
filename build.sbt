@@ -6,7 +6,6 @@ def UtilsModule(id: String) = Project(id, file(id))
 
 lazy val root = (project in file("."))
   .settings(
-    credentials += Credentials(Path.userHome / ".sbt" / ".credentials"),
     name := "gatling-picatinny",
     libraryDependencies ++= gatlingCore,
     libraryDependencies ++= json4s,
