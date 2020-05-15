@@ -27,7 +27,7 @@ If you are using TinkoffCreditSystems/gatling-template.g8, you already have all 
 ### Install manualy
 Add dependency with version that you need
 ```scala
-libraryDependecies ++= "ru.tinkoff" %% "gatling-picatinny" % "0.5.0"
+libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.5.0"
 ```
 
 ## Usage
