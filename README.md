@@ -118,36 +118,39 @@ import ru.tinkoff.gatling.profile._
 
 Using:
 
-*resources/profile/sample_profile.conf*
+*resources/profile.conf*
 ```
 {
-   "profile": {
-      "name": "awesome_profile",
-      "requests": {
-         "awesome/url_1/": {
-            "method": "GET",
-            "url": "awesome/url_1/",
-            "prob": 33.33333
-         },
-         "awesome/url_1/sub_url_2": {
-            "method": "GET",
-            "url": "awesome/url_1/sub_url_2",
-            "prob": 66.66667
-         }
-      }
-   }
+  "name": "awesome_profile",
+  "requests": [
+    {
+      "request-name": "POST first",
+      "method": "POST",
+      "url": "awesome/url_1/",
+      "prob": 33.33333
+    },
+    {
+      "request-name": "GET second"
+      "method": "GET",
+      "url": "awesome/url_1/sub_url_2",
+      "prob": 66.66667
+    }
+  ]
 }
 ```
-```scala
-val profileConfig: Config = ProfileConfigManager.profileConfigLoad(s"profile/sample_profile.conf")
 
-setUp(
-    HttpProfile(profileConfig)
+*Simulation setUp*
+```scala
+  val profileConfigName = "profile.conf"
+  val someTestPlan      = constantUsersPerSec(intensity) during stageDuration
+  val httpProtocol      = http.baseUrl(baseUrl)
+
+  setUp(
+    HttpProfile(profileConfigName)
       .build()
       .inject(someTestPlan)
-      .protocols(someProtocol)
-   )
-  
+  ).protocols(httpProtocol)
+    .maxDuration(testDuration)
 ```
 
 ### templates
