@@ -59,6 +59,12 @@ object Feeders {
 
   //how to combine together 2 or more feeders
   //as result we get feeder with 3 params: digit, string, phone
-  val gluedTogetherFeeder  = digitFeeder ** stringFeeder ** phoneFeeder
+  val gluedTogetherFeeder = digitFeeder ** stringFeeder ** phoneFeeder
+
+  //tranform values of this Feeder
+  val randomDigitWithFunction = RandomDigitFeeder("randomDigit").mapValues(_ + 1)
+
+  //tranform List to Feeder
+  val list2feeder = List(1, 2, 3).toFeeder("listId")
 
 }
