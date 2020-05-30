@@ -1,13 +1,10 @@
 package ru.tinkoff.gatling.feeders
 
-import io.gatling.core.feeder.Feeder
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
-
-import org.scalatest.prop._
+import io.gatling.core.feeder._
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Prop._
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 class FeedersBaseSpec extends AnyFlatSpec with Matchers {
 
@@ -38,11 +35,12 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
     }.check
   }
 
-  it should "transform values of this feeder" in {
-    forAll { (n: String, v: Int) =>
-      val result = List.fill(20)(v).toFeeder(n).mapValues(_ + 1)
+  it should "prepare feeder with finite size" in {
+    forAll { (n: String, v: Char) =>
+      val fdr    = RandomDigitFeeder("n")
+      val result = fdr.toFiniteLength(v)
 
-      result.forall(_.equals(Map(n -> (v + 1))))
+      result.size == v
     }.check
   }
 

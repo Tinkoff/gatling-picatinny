@@ -1,8 +1,10 @@
 package ru.tinkoff.load.example.feeders
 
+import io.gatling.core.Predef._
+import ru.tinkoff.gatling.feeders._
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import ru.tinkoff.gatling.feeders._
+
 
 object Feeders {
 
@@ -62,9 +64,11 @@ object Feeders {
   val gluedTogetherFeeder = digitFeeder ** stringFeeder ** phoneFeeder
 
   //tranform values of this Feeder
-  val randomDigitWithFunction = RandomDigitFeeder("randomDigit").mapValues(_ + 1)
+  val finiteRandomDigitsWithTransform = RandomDigitFeeder("randomDigit")
+    .toFiniteLength(20)
+    .convert { case (k, v) => k -> v.toString() }
 
   //tranform List to Feeder
-  val list2feeder = List(1, 2, 3).toFeeder("listId")
+  val list2feeder = List(1, 2, 3).toFeeder("listId").circular
 
 }

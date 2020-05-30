@@ -31,6 +31,8 @@ class SampleScenario {
     .feed(simpleRandomDate)
     .feed(vacationDate)
     .feed(gluedTogetherFeeder)
+    .feed(list2feeder)
+    .feed(finiteRandomDigitsWithTransform)
     .exec(getMainPage)
 
 }
