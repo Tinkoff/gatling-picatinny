@@ -8,11 +8,11 @@ package object feeders {
 
   implicit class FeederOps[A](val feeder: Feeder[A]) extends AnyVal {
     def **[B](other: Feeder[B]): Feeder[Any]            = feeder.zip(other).map { case (r1, r2) => r1 ++ r2 }
-    def toFiniteLength(n: Int): IndexedSeq[Record[Any]] = feeder.take(n).toIndexedSeq
+    def toFiniteLength(n: Int): IndexedSeq[Record[A]] = feeder.take(n).toIndexedSeq
   }
 
   implicit class Collection2FeederOps[A](val sequence: Traversable[A]) {
-    def toFeeder(name: String): IndexedSeq[Map[String, Any]] = sequence.toIndexedSeq.map(x => Map(name -> x))
+    def toFeeder(name: String): IndexedSeq[Map[String, A]] = sequence.toIndexedSeq.map(x => Map(name -> x))
   }
 
 }
