@@ -37,7 +37,7 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
 
   it should "prepare feeder with finite size" in {
     forAll { (n: String, v: Char) =>
-      val fdr    = RandomDigitFeeder("n")
+      val fdr    = RandomDigitFeeder(n)
       val result = fdr.toFiniteLength(v)
 
       result.size == v
