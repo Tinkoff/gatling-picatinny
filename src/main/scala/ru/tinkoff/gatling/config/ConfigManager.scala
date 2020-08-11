@@ -17,8 +17,4 @@ private[gatling] object ConfigManager {
 
   lazy val gatlingConfig: Config = configuration.config
 
-  def getProfileConfig(profileName: String): ProfileConfig = {
-    ConfigSource.resources(profileName).loadOrThrow[ProfileConfig]
-  }
-
 }
