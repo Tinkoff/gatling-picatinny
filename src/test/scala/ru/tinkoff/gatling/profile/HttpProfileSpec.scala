@@ -20,7 +20,7 @@ class HttpProfileSpec extends AnyFlatSpec with Matchers {
     name <- Gen.alphaStr
     profile <- for {
       requests <- httpRequestsGen
-      _        <- (0 to 50)
+      _        <- 0 to 50
     } yield requests
   } yield HttpProfileConfig(name, profile.toList)
 
