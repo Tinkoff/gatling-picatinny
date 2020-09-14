@@ -2,13 +2,10 @@ package ru.tinkoff.gatling.config
 
 import com.typesafe.config.{Config, ConfigFactory}
 import io.gatling.core.Predef.configuration
-import pureconfig.ConfigSource
-import pureconfig._
-import pureconfig.generic.auto._
 
 private[gatling] object ConfigManager {
 
-  lazy val simulationConfig = SimulationConfigUtils(
+  lazy val simulationConfig: SimulationConfigUtils = SimulationConfigUtils(
     ConfigFactory
       .load("simulation.conf"))
 

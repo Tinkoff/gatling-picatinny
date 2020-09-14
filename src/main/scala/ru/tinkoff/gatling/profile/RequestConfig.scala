@@ -8,5 +8,6 @@ trait RequestConfig {
   val probability: Double
 
   def toExec: ChainBuilder
+  def toTuple: (Double, ChainBuilder)
 
 }
