@@ -35,6 +35,10 @@ object Dependencies {
     "org.scalamock" %% "scalamock" % "4.4.0" % "test"
   )
 
+  lazy val generex: Seq[ModuleID] = Seq(
+    "com.github.mifmif" % "generex" % "1.0.2"
+  )
+
   lazy val scalaTesting: Seq[ModuleID] = scalaCheck ++ scalaTest ++ scalaMock
 
 }
