@@ -1,5 +1,23 @@
 language: scala
+
 jdk:
-  - openjdk11
-script:
-  - sbt compile test
+- openjdk11
+
+jobs:
+  include:
+  - stage: Tests
+    name: Unit tests
+    script:
+    - sbt compile test
+
+  - stage: Publish
+    name: Publish release
+    if: branch = master
+    before_script:
+    - gpg --import signingkey.asc
+    script:
+    - sbt publish
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_171b1c559d7b_key -iv $encrypted_171b1c559d7b_iv
+  -in signingkey.asc.enc -out signingkey.asc -d

@@ -1,13 +1,10 @@
 package ru.tinkoff.gatling.feeders
 
-import io.gatling.core.feeder.Feeder
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
-
-import org.scalatest.prop._
+import io.gatling.core.feeder._
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Prop._
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 class FeedersBaseSpec extends AnyFlatSpec with Matchers {
 
@@ -31,10 +28,29 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
 
   it should "zip two feeders" in {
     forAll { (n1: String, n2: String, v1: AnyVal, v2: AnyVal) =>
-        val feeder1: Feeder[AnyVal] = Iterator.continually(Map(n1 -> v1))
-        val feeder2: Feeder[AnyVal] = Iterator.continually(Map(n2 -> v2))
-        val result: Feeder[Any]     = feeder1 ** feeder2
-        result.next().equals(Map(n1 -> v1, n2 -> v2))
+      val feeder1: Feeder[AnyVal] = Iterator.continually(Map(n1 -> v1))
+      val feeder2: Feeder[AnyVal] = Iterator.continually(Map(n2 -> v2))
+      val result: Feeder[Any]     = feeder1 ** feeder2
+      result.next().equals(Map(n1 -> v1, n2 -> v2))
     }.check
   }
+
+  it should "prepare feeder with finite size" in {
+    forAll { (n: String, v: Char) =>
+      val fdr    = RandomDigitFeeder(n)
+      val result = fdr.toFiniteLength(v)
+
+      result.size == v
+    }.check
+  }
+
+  it should "transform Collection to Feeder" in {
+    forAll { (n: String, v: AnyVal) =>
+      val collection = List.fill(100)(v)
+      val result     = collection.toFeeder(n)
+
+      result.forall(r => r.equals(Map(n -> v)))
+    }.check
+  }
+
 }

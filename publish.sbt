@@ -49,3 +49,9 @@ ThisBuild / licenses := List("Apache 2" -> new URL("http://www.apache.org/licens
 ThisBuild / homepage := Some(url("https://github.com/TinkoffCreditSystems/gatling-picatinny.git"))
 
 ThisBuild / pomIncludeRepository := { _ => false }
+
+val NEXUS_USER = sys.env.getOrElse("NEXUS_USER", "")
+val NEXUS_PASS = sys.env.getOrElse("NEXUS_PASS", "")
+
+credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", NEXUS_USER, NEXUS_PASS)
+credentials += Credentials("GnuPG Key ID", "gpg", "gatling-picatinny", "ignored")
