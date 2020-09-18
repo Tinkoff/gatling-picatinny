@@ -33,6 +33,7 @@ class SampleScenario {
     .feed(gluedTogetherFeeder)
     .feed(list2feeder)
     .feed(finiteRandomDigitsWithTransform)
+    .feed(regexString)
     .exec(getMainPage)
 
 }
