@@ -20,7 +20,8 @@ object Dependencies {
   )
 
   lazy val pureConfig: Seq[ModuleID] = Seq(
-    "com.github.pureconfig" %% "pureconfig" % "0.12.2"
+    "com.github.pureconfig" %% "pureconfig" % "0.14.0",
+    "com.github.pureconfig" %% "pureconfig-yaml" % "0.14.0"
   )
 
   lazy val scalaTest: Seq[ModuleID] = Seq(
