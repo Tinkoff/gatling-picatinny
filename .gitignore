@@ -9,3 +9,4 @@
 *.html
 /example/target/
 /example/example.iml
+*.sc

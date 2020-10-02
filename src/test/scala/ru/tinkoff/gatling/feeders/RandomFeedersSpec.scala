@@ -23,6 +23,8 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
 
   val uuidPattern = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})"
 
+  val regexPattern = "[a-z0-9]{9}"
+
   it should "create RandomDateFeeder with specified date pattern" in {
     forAll(rndString, positiveInt, positiveInt) { (paramName, positive, negative) =>
       (positive > negative) ==>
@@ -109,6 +111,14 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
         .take(50)
         .forall(r => r(paramName).matches(uuidPattern))
     }.check
+  }
+
+  it should "create RegexFeeder with specified regex pattern" in {
+    forAll(rndString) { (paramName) =>
+      RegexFeeder(paramName, regexPattern)
+        .take(50)
+        .forall(r => r(paramName).matches(regexPattern))
+    }
   }
 
   it should "create SequentialFeeder" in {

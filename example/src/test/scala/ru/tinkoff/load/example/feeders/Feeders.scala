@@ -71,4 +71,7 @@ object Feeders {
   //tranform List to Feeder
   val list2feeder = List(1, 2, 3).toFeeder("listId").circular
 
+  // string sequentially generated from the specified pattern
+  val regexString = RegexFeeder("regex", "[a-zA-Z0-9]{8}")
+
 }
