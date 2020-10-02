@@ -1,2 +1,10 @@
-*       @chepk @jigarkhwar @MaksSieve
+/src/main/scala/ru/tinkoff/galting/config/      @chepk
+/src/main/scala/ru/tinkoff/galting/feeders/     @chepk @MaksSieve
+/src/main/scala/ru/tinkoff/galting/influxdb/    @chepk
+/src/main/scala/ru/tinkoff/galting/profile/     @MaksSieve
+/src/main/scala/ru/tinkoff/galting/templates/   @red-bashmak
+/src/main/scala/ru/tinkoff/galting/utils/       @chepk @MaksSieve
+/src/main/scala/test/                           @chepk @MaksSieve @jigarkhwar
+/project/                                       @chepk @MaksSieve @jigarkhwar
+/example/                                       @chepk @jigarkhwar
 
