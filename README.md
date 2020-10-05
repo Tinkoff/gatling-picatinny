@@ -110,57 +110,88 @@ SELECT "annotation_value"  FROM "${Prefix}" where "annotation" = 'Start'
 SELECT "annotation_value"  FROM "${Prefix}" where "annotation" = 'Stop'
 ```
 ### profile
-This module gives you a possibility to configure simple Scenarios from JSON file. Now it has some fundamental limitations but they will fixed in the future. 
+#### Features:
+* Load profile configs from HOCON or YAML files
+* Common traits to create profiles for any protocol
+* HTTP profile as an example
 
+#### Import:
+
+<<<<<<< HEAD
 <<<<<<< HEAD
 Import:
 =======
 #### Import:
 
 >>>>>>> 4e026ed... update readme: add jwt generator info
+=======
+>>>>>>> 4e026ed654230d56f632b28ac6801db1fbe6116e
 ```scala
 import ru.tinkoff.gatling.profile._
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Using:
 =======
 #### Using:
 >>>>>>> 4e026ed... update readme: add jwt generator info
+=======
+#### Using:
+>>>>>>> 4e026ed654230d56f632b28ac6801db1fbe6116e
 
-*resources/profile.conf*
-```
+HOCON configuration example:
+```hocon
 {
-  "name": "awesome_profile",
-  "requests": [
+  name: test-profile
+  profile: [
     {
-      "request-name": "POST first",
-      "method": "POST",
-      "url": "awesome/url_1/",
-      "prob": 33.33333
+      name: request-a
+      url: "http://test.url"
+      probability: 50.0
+      method: get
     },
     {
-      "request-name": "GET second"
-      "method": "GET",
-      "url": "awesome/url_1/sub_url_2",
-      "prob": 66.66667
+      name: request-b
+      url: "http://test.url"
+      probability: 50.0
+      method: post
+      body:  "{\"a\": \"1\"}"
     }
   ]
 }
 ```
 
+YAML configuration example:
+```yaml
+name: test-profile
+profile:
+  - name: request-a
+    url: "http://test.url"
+    probability: 50
+    method: get
+  - name: request-b
+    url: "http://test.url"
+    probability: 50
+    method: post
+    body: "{\"a\": \"1\"}"
+```
+
 *Simulation setUp*
 ```scala
-  val profileConfigName = "profile.conf"
-  val someTestPlan      = constantUsersPerSec(intensity) during stageDuration
-  val httpProtocol      = http.baseUrl(baseUrl)
-
-  setUp(
-    HttpProfile(profileConfigName)
-      .build()
-      .inject(someTestPlan)
-  ).protocols(httpProtocol)
-    .maxDuration(testDuration)
+  class test extends Simulation {
+      val profileConfigName = "profile.conf"
+      val someTestPlan      = constantUsersPerSec(intensity) during stageDuration
+      val httpProtocol      = http.baseUrl(baseUrl)
+      val config: HttpProfileConfig = new ProfileBuilder[HttpProfileConfig].buildFromYaml(profileConfigName)
+      val scn: ScenarioBuilder = config.toRandomScenario
+      
+      setUp(
+          scn.inject(
+            atOnceUsers(10)
+          ).protocols(httpProtocol)
+        ).maxDuration(10 )
+  }
 ```
 
 ### templates
@@ -211,7 +242,7 @@ See the examples in the examples/ directory.
 You can run these from the sbt console with the commands ```project example```
 and then ```gatling:testOnly ru.tinkoff.load.example.SampleSimulation```.
 
-Ensure that the correct influxdb parameters are specified in gatling.conf and influx.conf.
+Ensure that the correct InfluxDB parameters are specified in gatling.conf and influx.conf.
 
 ## Testing
 To test your changes use `sbt test`.
@@ -258,5 +289,3 @@ This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENS
 ## Acknowledgments
 
 TBD
-
-
