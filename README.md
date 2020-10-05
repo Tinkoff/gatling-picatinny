@@ -9,6 +9,7 @@
   * [influxdb](#influxdb)
   * [profile](#profile)
   * [templates](#templates)
+  * [utils](#utils)
   * [example](#example)
 * [Built with](#built-with)
 * [Help](#help)
@@ -114,12 +115,13 @@ SELECT "annotation_value"  FROM "${Prefix}" where "annotation" = 'Stop'
 * Common traits to create profiles for any protocol
 * HTTP profile as an example
 
-####Import:
+#### Import:
+
 ```scala
 import ru.tinkoff.gatling.profile._
 ```
 
-####Using:
+#### Using:
 
 HOCON configuration example:
 ```hocon
@@ -177,6 +179,45 @@ profile:
 
 ### templates
 TBD by v.kalyokin
+
+### utils
+#### jwt
+#### Features:
+* Generates a JWT token using a json template and stores it in a Gatling session, then you can use it to sign requests.
+
+#### Import:
+
+```scala
+import ru.tinkoff.gatling.utils.jwt._
+```
+
+#### Using:
+Prepare two json files with JWT header template and JWT payload template, save them in the resource directory.
+src/test/resources/jwtTemplates/header.json
+```json
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+```
+src/test/resources/jwtTemplates/payload.json
+```json
+{
+  "userName": "${randomString}",
+  "date": "${simpleDate}",
+  "phone": "${randomPhone}"
+}
+```
+Templating is done using [Gatling EL](https://gatling.io/docs/current/session/expression_el/).
+
+Prepare template, get JWT secret from ENV/JAVA_OPTS, generate JWT, add JWT cookie.
+```scala
+  val jwtGenerator = JwtGenerator("jwtTemplates/header.json", "jwtTemplates/payload.json")
+  val secretToken  = getStringParam("secretToken")
+...
+    .exec(_.setJwt(jwtGenerator, "myToken", secretToken, "HS256"))
+    .exec(addCookie(Cookie("JWT_TOKEN", "${myToken}", Option(getStringParam("domain")), Option("/"))))
+```
 
 ### example
 See the examples in the examples/ directory.
