@@ -40,6 +40,10 @@ object Dependencies {
     "com.github.mifmif" % "generex" % "1.0.2"
   )
 
+  lazy val jwt: Seq[ModuleID] = Seq(
+    "com.pauldijou" %% "jwt-core" % "4.2.0"
+  )
+
   lazy val scalaTesting: Seq[ModuleID] = scalaCheck ++ scalaTest ++ scalaMock
 
 }
