@@ -5,16 +5,18 @@ import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 
 object JwtFeeder {
 
-  implicit class ScenarioAppender(build: ScenarioBuilder)(implicit s: Session) {
-    def setJwt(jwtGenerator: JwtGenerator, tokenName: String, secretToken: String, jwtAlgorithm: String): ScenarioBuilder =
+  implicit class ScenarioAppender(build: ScenarioBuilder) {
+    def setJwt(jwtGenerator: JwtGenerator, tokenName: String, secretToken: String, jwtAlgorithm: String)(
+        implicit s: Session): ScenarioBuilder =
       jwtGenerator
         .generateJwt(secretToken, jwtAlgorithm)
         .map(jwt => build.exec(_.set(tokenName, jwt)))
         .getOrElse(build)
   }
 
-  implicit class ChainAppender(build: ChainBuilder)(implicit s: Session) {
-    def setJwt(jwtGenerator: JwtGenerator, tokenName: String, secretToken: String, jwtAlgorithm: String): ChainBuilder =
+  implicit class ChainAppender(build: ChainBuilder) {
+    def setJwt(jwtGenerator: JwtGenerator, tokenName: String, secretToken: String, jwtAlgorithm: String)(
+        implicit s: Session): ChainBuilder =
       jwtGenerator
         .generateJwt(secretToken, jwtAlgorithm)
         .map(jwt => build.exec(_.set(tokenName, jwt)))
