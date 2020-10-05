@@ -6,7 +6,7 @@ import pdi.jwt.{Jwt, JwtAlgorithm}
 
 import scala.io.Source
 
-private[jwt] object JwtGenerator {
+object JwtGenerator {
   def apply(headerPath: String, payloadPath: String): JwtGenerator =
     new JwtGenerator(headerPath, payloadPath)
 }
