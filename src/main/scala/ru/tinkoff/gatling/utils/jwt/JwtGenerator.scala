@@ -28,7 +28,7 @@ private[jwt] class JwtGenerator(headerPath: String, payloadPath: String) {
     Jwt.encode(header, payload, secretToken, jwtAlgorithm)
   }
 
-  def generateJwt(tokenName: String, secretToken: String, jwtAlgorithm: String)(implicit s: Session): Option[String] = {
+  def generateJwt(secretToken: String, jwtAlgorithm: String)(implicit s: Session): Option[String] = {
     for {
       header          <- header
       payload         <- payload
