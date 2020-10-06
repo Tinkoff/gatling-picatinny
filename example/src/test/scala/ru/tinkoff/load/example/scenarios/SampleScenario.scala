@@ -19,6 +19,8 @@ class SampleScenario {
   //get sensitive data from ENV or JAVA_OPTS
   val secretToken  = getStringParam("secretToken")
 
+  val jwtCookieDomain = getStringParam("domain")
+
   //single request
   val getMainPage: HttpRequestBuilder = http("GET /")
     .get("/")
@@ -46,7 +48,7 @@ class SampleScenario {
     //generate JWT using feeders current data
     .exec(_.setJwt(jwtGenerator, "myToken", secretToken, "HS256"))
     //set JWT cookie
-    .exec(addCookie(Cookie("JWT_TOKEN", "${myToken}", Option(getStringParam("domain")), Option("/"))))
+    .exec(addCookie(Cookie("JWT_TOKEN", "${myToken}", Option(jwtCookieDomain), Option("/"))))
     //execute request
     .exec(getMainPage)
 
