@@ -3,13 +3,14 @@ package ru.tinkoff.gatling.influxdb
 import org.json4s.jackson.JsonMethods.parse
 import org.json4s.{DefaultFormats, JInt}
 import requests.{RequestBlob, Response}
+import com.typesafe.scalalogging.LazyLogging
 
 private[gatling] object InfluxUtils {
   def apply(influxUrl: String, db: String, rootPathPrefix: String): InfluxUtils =
     new InfluxUtils(influxUrl, db, rootPathPrefix)
 }
 
-private[gatling] class InfluxUtils(influxUrl: String, db: String, rootPathPrefix: String) {
+private[gatling] class InfluxUtils(influxUrl: String, db: String, rootPathPrefix: String) extends LazyLogging {
 
   def get(url: String,
               params: Iterable[(String, String)],
@@ -54,11 +55,15 @@ private[gatling] class InfluxUtils(influxUrl: String, db: String, rootPathPrefix
   }
 
   def addStatusAnnotation(status: Status): Option[Response] = {
-    for {
-      q               <- query(status)
-      lastStatusValue <- getLastStatusValue(q)
-      statusValue     <- getStatusValue(status, lastStatusValue)
-    } yield writeAnnotationToInfluxdb(status, statusValue)
+    try {
+      for {
+        q <- query(status)
+        lastStatusValue <- getLastStatusValue(q)
+        statusValue <- getStatusValue(status, lastStatusValue)
+      } yield writeAnnotationToInfluxdb(status, statusValue)
+    } catch {
+      case e: Exception => logger.info("Can't write status to Influx: " + e); null
+    }
   }
 
 }
