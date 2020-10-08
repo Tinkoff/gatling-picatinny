@@ -192,15 +192,21 @@ import ru.tinkoff.gatling.utils.jwt._
 ```
 
 #### Using:
-Prepare two json files with JWT header template and JWT payload template, save them in the resource directory.
-src/test/resources/jwtTemplates/header.json
+First you need to prepare jwt generator.
+For example
+```scala
+val jwtGenerator = jwt("HS256", jwtSecretToken)
+    .defaultHeader 
+    .payloadFromResource("jwtTemplates/payload.json")
+```
+This will generate tokens with headers:
 ```json
 {
   "alg": "HS256",
   "typ": "JWT"
 }
 ```
-src/test/resources/jwtTemplates/payload.json
+Payload will be generated from json template, templating is done using [Gatling EL](https://gatling.io/docs/current/session/expression_el/)
 ```json
 {
   "userName": "${randomString}",
@@ -208,15 +214,20 @@ src/test/resources/jwtTemplates/payload.json
   "phone": "${randomPhone}"
 }
 ```
-Templating is done using [Gatling EL](https://gatling.io/docs/current/session/expression_el/).
-
-Prepare template, get JWT secret from ENV/JAVA_OPTS, generate JWT, add JWT cookie.
+Also the JWT generator has a DSL allowing you to:
 ```scala
-  val jwtGenerator = JwtGenerator("jwtTemplates/header.json", "jwtTemplates/payload.json")
-  val secretToken  = getStringParam("secretToken")
-...
-    .exec(_.setJwt(jwtGenerator, "myToken", secretToken, "HS256"))
-    .exec(addCookie(Cookie("JWT_TOKEN", "${myToken}", Option(getStringParam("domain")), Option("/"))))
+jwt("HS256", secret)
+.header("""{"alg": "HS256","typ": "JWT", "customField": "customData"}""") //use custom headers from string, it must be valid json
+.headerFromResource("jwtTemplates/header.json") //use src/test/resources/jwtTemplates/header.json as header template
+.defaultHeader //use default jwt header, algorithm from jwt("HS256", secret), template: {"alg": "$algorithm","typ": "JWT"}
+.payload("""{"userName": "${randomString}","date": "${simpleDate}","phone": "${randomPhone}"}""") //use custom payload from string, it must be valid json
+.payloadFromResource("jwtTemplates/payload.json") //use src/test/resources/jwtTemplates/payload.json as payload template
+```
+
+For sign requests add this to your scenario chain:
+```scala
+    .exec(_.setJwt(jwtGenerator, "jwtToken")) //generates token and save it to gatling session as "jwtToken"
+    .exec(addCookie(Cookie("JWT_TOKEN", "${jwtToken}", Option(jwtCookieDomain), Option("/")))) //set JWT_TOKEN cookie for subsequent requests
 ```
 
 ### example

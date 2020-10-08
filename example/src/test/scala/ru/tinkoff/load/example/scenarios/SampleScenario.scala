@@ -13,12 +13,15 @@ object SampleScenario {
 }
 
 class SampleScenario {
+  //get sensitive data from ENV
+  val jwtSecretToken = getStringParam("jwtSecret")
 
-  //load JWT templates in memory
-  val jwtGenerator = JwtGenerator("jwtTemplates/header.json", "jwtTemplates/payload.json")
-  //get sensitive data from ENV or JAVA_OPTS
-  val secretToken  = getStringParam("secretToken")
+  //prepare jwt generator
+  val jwtGenerator = jwt("HS256", jwtSecretToken) //pass here jwt algorithm and jwt secret key
+    .defaultHeader //use default jwt header: {"alg": "HS256","typ": "JWT"}
+    .payloadFromResource("jwtTemplates/payload.json") //use payload template from json file
 
+  //get some configuration param from simulation.conf/ENV/JAVA_OPTS
   val jwtCookieDomain = getStringParam("domain")
 
   //single request
@@ -45,11 +48,11 @@ class SampleScenario {
     .feed(list2feeder)
     .feed(finiteRandomDigitsWithTransform)
     .feed(regexString)
-    //generate JWT using feeders current data
-    .exec(_.setJwt(jwtGenerator, "myToken", secretToken, "HS256"))
+    //generate JWT using values from feeders
+    .exec(_.setJwt(jwtGenerator, "jwtToken"))
     //set JWT cookie
-    .exec(addCookie(Cookie("JWT_TOKEN", "${myToken}", Option(jwtCookieDomain), Option("/"))))
-    //execute request
+    .exec(addCookie(Cookie("JWT_TOKEN", "${jwtToken}", Option(jwtCookieDomain), Option("/"))))
+    //execute request signed with JWT_TOKEN cookie
     .exec(getMainPage)
 
 }
