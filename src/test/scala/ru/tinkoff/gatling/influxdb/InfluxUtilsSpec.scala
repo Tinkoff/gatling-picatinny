@@ -27,7 +27,7 @@ class InfluxUtilsSpec extends AnyFlatSpec with Matchers {
   }
 
   it should "write correct annotation to influxDb" in {
-    influx.writeAnnotationToInfluxdb(startStatus, lastStartAnnotationValue).statusCode.shouldEqual(204)
+    influx.writeAnnotationToInfluxdb(startStatus, lastStartAnnotationValue).get.statusCode.shouldEqual(204)
   }
 
   it should "add new annotation status value to influx" in {
