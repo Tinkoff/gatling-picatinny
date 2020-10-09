@@ -1,4 +1,4 @@
-# Gatling Utils
+# Gatling Picatinny
 
 ## Table of contents
 * [General info](#general-info)

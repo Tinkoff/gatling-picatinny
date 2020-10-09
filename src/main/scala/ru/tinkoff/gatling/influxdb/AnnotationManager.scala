@@ -1,8 +1,11 @@
 package ru.tinkoff.gatling.influxdb
 
+import com.typesafe.scalalogging.StrictLogging
 import ru.tinkoff.gatling.config.ConfigManager._
 
-private [gatling] object AnnotationManager {
+import scala.util.{Failure, Success}
+
+private [gatling] object AnnotationManager extends StrictLogging {
 
   private val influxHost       = gatlingConfig.getString("gatling.data.graphite.host")
   private val rootPathPrefix   = gatlingConfig.getString("gatling.data.graphite.rootPathPrefix")
@@ -15,8 +18,14 @@ private [gatling] object AnnotationManager {
 
   private val influx = InfluxUtils(influxUrl, db, rootPathPrefix)
 
-  def start(): Unit = influx.addStatusAnnotation(Start)
+  def start(): Unit = influx.addStatusAnnotation(Start) match {
+    case Success(_) => ()
+    case Failure(exception) => logger.error(s"Failed write Start annotation to influxdb: ${exception.getMessage}")
+  }
 
-  def stop(): Unit = influx.addStatusAnnotation(Stop)
+  def stop(): Unit = influx.addStatusAnnotation(Stop) match {
+    case Success(_) => ()
+    case Failure(exception) => logger.error(s"Failed write Stop annotation to influxdb: ${exception.getMessage}")
+  }
 
 }

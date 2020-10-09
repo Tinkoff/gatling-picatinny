@@ -1,7 +1,9 @@
 package ru.tinkoff.gatling.influxdb
 
 import requests.{RequestBlob, Response, ResponseBlob}
+
 import scala.collection.mutable
+import scala.util.Try
 
 object InfluxMock {
 
@@ -50,12 +52,13 @@ object InfluxMock {
 }
 
 class InfluxMock(influxUrl: String, db: String, rootPathPrefix: String) extends InfluxUtils(influxUrl, db, rootPathPrefix) {
+
   import ru.tinkoff.gatling.influxdb.InfluxMock._
 
   override def get(url: String,
                    params: Iterable[(String, String)],
                    headers: Iterable[(String, String)],
-                   data: RequestBlob): Response = {
+                   data: RequestBlob): Try[Response] = {
     val headers = Map(
       "x-influxdb-version" -> mutable.Buffer("1.7.10"),
       "x-request-id"       -> mutable.Buffer("fbe4c74d-8866-11ea-aece-00505696af00"),
@@ -67,13 +70,13 @@ class InfluxMock(influxUrl: String, db: String, rootPathPrefix: String) extends 
       "content-encoding"   -> mutable.Buffer("gzip")
     )
     val body = new ResponseBlob(getAnnotationResponseBody.getBytes())
-    Response(s"$influxUrl/$queryPath", ok, okMessage, headers, body, None)
+    Try(Response(s"$influxUrl/$queryPath", ok, okMessage, headers, body, None))
   }
 
   override def post(url: String,
                     params: Iterable[(String, String)],
                     headers: Iterable[(String, String)],
-                    data: RequestBlob): Response = {
+                    data: RequestBlob): Try[Response] = {
     val headers = Map(
       "x-influxdb-version" -> mutable.Buffer("1.7.10"),
       "x-request-id"       -> mutable.Buffer("fbe4c74d-8866-11ea-aece-00505696af00"),
@@ -83,6 +86,6 @@ class InfluxMock(influxUrl: String, db: String, rootPathPrefix: String) extends 
       "x-influxdb-build"   -> mutable.Buffer("OSS"),
     )
     val body = new ResponseBlob(writeAnnotationResponseBogy.getBytes())
-    Response(s"$influxUrl/$writePath", noContent, noContentMessage, headers, body, None)
+    Try(Response(s"$influxUrl/$writePath", noContent, noContentMessage, headers, body, None))
   }
 }
