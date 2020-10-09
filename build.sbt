@@ -13,6 +13,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= pureConfig,
     libraryDependencies ++= scalaTesting,
     libraryDependencies ++= generex,
+    libraryDependencies ++= jwt,
     scalacOptions := Seq(
       "-encoding",
       "UTF-8",
