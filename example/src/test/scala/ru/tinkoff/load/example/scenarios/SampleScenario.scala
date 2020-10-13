@@ -51,7 +51,7 @@ class SampleScenario {
     //generate JWT using values from feeders
     .exec(_.setJwt(jwtGenerator, "jwtToken"))
     //set JWT cookie
-    .exec(addCookie(Cookie("JWT_TOKEN", "${jwtToken}", Option(jwtCookieDomain), Option("/"))))
+    .exec(addCookie(Cookie("JWT_TOKEN", "${jwtToken}").withDomain(jwtCookieDomain).withPath("/")))
     //execute request signed with JWT_TOKEN cookie
     .exec(getMainPage)
 
