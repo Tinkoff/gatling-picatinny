@@ -12,7 +12,8 @@ jobs:
 
   - stage: Publish snapshot
     name: Publish snapshot
-    if: branch = master
+    on:
+      branch: master
     before_script:
     - gpg --import signingkey.asc
     script:
@@ -20,7 +21,6 @@ jobs:
 
   - stage: Publish release
     name: Publish release
-    if: branch = master
     on:
       tags: true
     before_script:
