@@ -10,19 +10,9 @@ jobs:
     script:
     - sbt compile test
 
-  - stage: Publish snapshot
-    name: Publish snapshot
-    on:
-      branch: master
-    before_script:
-    - gpg --import signingkey.asc
-    script:
-    - sbt publish
-
-  - stage: Publish release
+  - stage: Publish
     name: Publish release
-    on:
-      tags: true
+    if: branch = master
     before_script:
       - gpg --import signingkey.asc
     script:
