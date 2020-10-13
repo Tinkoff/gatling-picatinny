@@ -227,7 +227,7 @@ jwt("HS256", secret)
 For sign requests add this to your scenario chain:
 ```scala
     .exec(_.setJwt(jwtGenerator, "jwtToken")) //generates token and save it to gatling session as "jwtToken"
-    .exec(addCookie(Cookie("JWT_TOKEN", "${jwtToken}", Option(jwtCookieDomain), Option("/")))) //set JWT_TOKEN cookie for subsequent requests
+    .exec(addCookie(Cookie("JWT_TOKEN", "${jwtToken}").withDomain(jwtCookieDomain).withPath("/"))) //set JWT_TOKEN cookie for subsequent requests
 ```
 
 ### example
