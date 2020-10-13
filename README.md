@@ -244,15 +244,21 @@ To test your changes use `sbt test`.
 
 ## Built with
 * Scala version: 2.12.10
-* SBT version: 1.3.4
-* Gatling version: 3.3.1
-* SBT Gatling plugin version: 1.0.0
-* json4s version: 3.6.7
+* SBT version: 1.3.13
+* Gatling version: 3.4.0
+* SBT Gatling plugin version: 3.0.0
+* SBT git plugin version: 1.0.0
+* SBT git-versioning plugin version: 1.4.0
+* SBT sonatype plugin version: 3.9.2
+* SBT gpg plugin version: 0.2.1
+* json4s version: 3.6.10
 * requests version: 0.2.0
-* pureconfig version: 0.12.2
-* scalatest version: 3.1.0
+* pureconfig version: 0.14.0
+* scalatest version: 3.2.0
 * scalacheck version: 1.14.3
-* scalamock version: 4.4.0
+* scalamock version: 5.0.0
+* generex version: 1.0.2
+* jwt-core version: 4.2.0
 
 ## Help
 
