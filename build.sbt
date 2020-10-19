@@ -8,6 +8,7 @@ lazy val root = (project in file("."))
   .settings(
     name := "gatling-picatinny",
     libraryDependencies ++= gatlingCore,
+    libraryDependencies ++= fastUUID,
     libraryDependencies ++= json4s,
     libraryDependencies ++= requests,
     libraryDependencies ++= pureConfig,
