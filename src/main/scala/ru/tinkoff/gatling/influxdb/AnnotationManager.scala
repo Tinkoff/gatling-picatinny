@@ -7,9 +7,9 @@ import scala.util.{Failure, Success}
 
 private [gatling] object AnnotationManager extends StrictLogging {
 
-  private val influxHost       = gatlingConfig.getString("gatling.data.graphite.host")
-  private val rootPathPrefix   = gatlingConfig.getString("gatling.data.graphite.rootPathPrefix")
-  private val graphitePort     = gatlingConfig.getString("gatling.data.graphite.port")
+  private val influxHost       = gatlingConfig.data.graphite.host
+  private val rootPathPrefix   = gatlingConfig.data.graphite.rootPathPrefix
+  private val graphitePort     = gatlingConfig.data.graphite.port
   private val influxHostScheme = influxConfig.getString("influx.scheme")
   private val influxPort       = influxConfig.getString("influx.port")
   private val db               = influxConfig.getString("influx.db." + graphitePort)
