@@ -11,9 +11,9 @@ object Dependencies {
   )
 
   lazy val gatling: Seq[ModuleID] = Seq(
-    "io.gatling.highcharts" % "gatling-charts-highcharts" % "3.4.1" % Test
-
-  )
+    "io.gatling.highcharts" % "gatling-charts-highcharts",
+    "io.gatling"            % "gatling-test-framework"
+  ).map(_ % "3.4.1" % Test)
 
   lazy val json4s: Seq[ModuleID] = Seq(
     "org.json4s" %% "json4s-native"  % "3.6.10",
