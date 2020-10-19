@@ -67,6 +67,7 @@ object Feeders {
   val finiteRandomDigitsWithTransform = RandomDigitFeeder("randomDigit")
     .toFiniteLength(20)
     .convert { case (k, v) => k -> v.toString() }
+    .circular
 
   //tranform List to Feeder
   val list2feeder = List(1, 2, 3).toFeeder("listId").circular
