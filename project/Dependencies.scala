@@ -2,13 +2,18 @@ import sbt._
 
 object Dependencies {
   lazy val gatlingCore: Seq[ModuleID] = Seq(
-    "io.gatling" % "gatling-core"           % "3.4.1",
-    "io.gatling" % "gatling-test-framework" % "3.4.1"
+    "io.gatling" % "gatling-core",
+    "io.gatling" % "gatling-http"
+  ).map(_ % "3.4.1" % Provided)
+
+  lazy val fastUUID = Seq(
+    "com.eatthepath" % "fast-uuid" % "0.1" % Provided
   )
 
   lazy val gatling: Seq[ModuleID] = Seq(
-    "io.gatling.highcharts" % "gatling-charts-highcharts" % "3.4.1"
-  )
+    "io.gatling.highcharts" % "gatling-charts-highcharts",
+    "io.gatling"            % "gatling-test-framework"
+  ).map(_ % "3.4.1" % Test)
 
   lazy val json4s: Seq[ModuleID] = Seq(
     "org.json4s" %% "json4s-native"  % "3.6.10",
