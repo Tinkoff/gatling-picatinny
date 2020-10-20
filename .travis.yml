@@ -15,6 +15,7 @@ jobs:
     if: branch = master
     before_script:
       - gpg --import signingkey.asc
+      - gpg --keyserver eu.pool.sks-keyservers.net --send-keys B5DB2B0147996AB5
     script:
       - sbt publish
 
