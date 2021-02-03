@@ -51,11 +51,11 @@ object InfluxMock {
 
 }
 
-class InfluxMock(influxUrl: String, db: String, rootPathPrefix: String) extends InfluxUtils(influxUrl, db, rootPathPrefix) {
+class InfluxMock(influxUrl: String, db: String, rootPathPrefix: String) /*extends InfluxUtils(influxUrl, db, rootPathPrefix)*/ {
 
-  import ru.tinkoff.gatling.influxdb.InfluxMock._
+  //import ru.tinkoff.gatling.influxdb.InfluxMock._
 
-  override def get(url: String,
+  /*override def get(url: String,
                    params: Iterable[(String, String)],
                    headers: Iterable[(String, String)],
                    data: RequestBlob): Try[Response] = {
@@ -87,5 +87,5 @@ class InfluxMock(influxUrl: String, db: String, rootPathPrefix: String) extends 
     )
     val body = new ResponseBlob(writeAnnotationResponseBogy.getBytes())
     Try(Response(s"$influxUrl/$writePath", noContent, noContentMessage, headers, body, None))
-  }
+  }*/
 }

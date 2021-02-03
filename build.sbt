@@ -15,6 +15,9 @@ lazy val root = (project in file("."))
     libraryDependencies ++= scalaTesting,
     libraryDependencies ++= generex,
     libraryDependencies ++= jwt,
+    libraryDependencies ++= influxClientScala,
+    libraryDependencies ++= logbackClassic,
+    libraryDependencies ++= ScalaLogging,
     scalacOptions := Seq(
       "-encoding",
       "UTF-8",
