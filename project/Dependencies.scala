@@ -51,4 +51,15 @@ object Dependencies {
 
   lazy val scalaTesting: Seq[ModuleID] = scalaCheck ++ scalaTest ++ scalaMock
 
+  lazy val influxClientScala: Seq[ModuleID] = Seq(
+    "io.razem" %% "scala-influxdb-client" % "0.6.3"
+  )
+
+  lazy val logbackClassic: Seq[ModuleID] = Seq(
+    "ch.qos.logback" % "logback-classic" % "1.2.3"
+  )
+
+  lazy val ScalaLogging: Seq[ModuleID] = Seq(
+    "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2"
+  )
 }
