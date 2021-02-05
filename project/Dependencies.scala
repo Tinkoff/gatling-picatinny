@@ -4,7 +4,7 @@ object Dependencies {
   lazy val gatlingCore: Seq[ModuleID] = Seq(
     "io.gatling" % "gatling-core",
     "io.gatling" % "gatling-http"
-  ).map(_ % "3.4.1" % Provided)
+  ).map(_ % "3.5.0" % Provided)
 
   lazy val fastUUID = Seq(
     "com.eatthepath" % "fast-uuid" % "0.1" % Provided

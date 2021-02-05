@@ -5,6 +5,7 @@ import ru.tinkoff.gatling.config.SimulationConfig._
 import ru.tinkoff.gatling.influxdb.Annotations
 import ru.tinkoff.load.example.scenarios.SampleScenario
 import ru.tinkoff.gatling.utils.IntensityConverter._
+import scala.language.postfixOps
 
 /**
   * trait Annotations allows you to write Start annotation to influxdb before starting the simulation
