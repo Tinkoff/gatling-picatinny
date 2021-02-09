@@ -244,7 +244,7 @@ To test your changes use `sbt test`.
 
 ## Built with
 * Scala version: 2.13.4
-* SBT version: 1.4.4
+* SBT version: 1.3.13
 * Gatling version: 3.5.0
 * SBT Gatling plugin version: 3.2.1
 * SBT git plugin version: 1.0.0
