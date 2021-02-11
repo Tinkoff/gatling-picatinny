@@ -1,5 +1,5 @@
 # Gatling Picatinny
-[![Build Status](https://travis-ci.com/TinkoffCreditSystems/gatling-picatinny.svg?branch=master)](https://travis-ci.com/TinkoffCreditSystems/gatling-picatinny) [![Maven Central](https://img.shields.io/maven-central/v/ru.tinkoff/gatling-picatinny_2.12.svg?color=success)](https://search.maven.org/search?q=ru.tinkoff.gatling-picatinny)
+![Build](https://github.com/TinkoffCreditSystems/gatling-picatinny/workflows/Build/badge.svg) [![Maven Central](https://img.shields.io/maven-central/v/ru.tinkoff/gatling-picatinny_2.12.svg?color=success)](https://search.maven.org/search?q=ru.tinkoff.gatling-picatinny)
 
 ## Table of contents
 * [General info](#general-info)

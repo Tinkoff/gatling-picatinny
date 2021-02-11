@@ -10,13 +10,6 @@ ThisBuild / scmInfo := Some(
   )
 )
 
-ThisBuild / publishTo := Some(
-  if (isSnapshot.value)
-    Opts.resolver.sonatypeSnapshots
-  else
-    Opts.resolver.sonatypeStaging
-)
-
 ThisBuild / developers := List(
   Developer(
     id    = "chepk",
@@ -48,10 +41,5 @@ ThisBuild / description := "Gatling Utils"
 ThisBuild / licenses := List("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt"))
 ThisBuild / homepage := Some(url("https://github.com/TinkoffCreditSystems/gatling-picatinny.git"))
 
+// Remove all additional repository other than Maven Central from POM
 ThisBuild / pomIncludeRepository := { _ => false }
-
-val NEXUS_USER = sys.env.getOrElse("NEXUS_USER", "")
-val NEXUS_PASS = sys.env.getOrElse("NEXUS_PASS", "")
-
-credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", NEXUS_USER, NEXUS_PASS)
-credentials += Credentials("GnuPG Key ID", "gpg", "gatling-picatinny", "ignored")
