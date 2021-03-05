@@ -11,19 +11,19 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
   it should "create Feeder object with expected types" in {
     forAll { (n: String, v: AnyVal) =>
       feeder[AnyVal](n)(v).isInstanceOf[Iterator[Map[String, AnyVal]]]
-    }.check
+    }.check()
   }
 
   it should "generate continually Feeder" in {
     forAll { (n: String, v: AnyVal) =>
       feeder[AnyVal](n)(v).hasNext
-    }.check
+    }.check()
   }
 
   it should "generate Feeder with given params" in {
     forAll { (n: String, v: AnyVal) =>
-      feeder[AnyVal](n)(v).take(100).forall(r => r(n).equals(v))
-    }.check
+      feeder[AnyVal](n)(v).take(100).forall(r => r(n) == v)
+    }.check()
   }
 
   it should "zip two feeders" in {
@@ -32,7 +32,7 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
       val feeder2: Feeder[AnyVal] = Iterator.continually(Map(n2 -> v2))
       val result: Feeder[Any]     = feeder1 ** feeder2
       result.next().equals(Map(n1 -> v1, n2 -> v2))
-    }.check
+    }.check()
   }
 
   it should "prepare feeder with finite size" in {
@@ -41,7 +41,7 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
       val result = fdr.toFiniteLength(v)
 
       result.size == v
-    }.check
+    }.check()
   }
 
   it should "transform Collection to Feeder" in {
@@ -50,7 +50,7 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
       val result     = collection.toFeeder(n)
 
       result.forall(r => r.equals(Map(n -> v)))
-    }.check
+    }.check()
   }
 
 }
