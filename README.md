@@ -120,6 +120,7 @@ SELECT "annotation_value"  FROM "${Prefix}" where "annotation" = 'Stop'
 
 ```scala
 import ru.tinkoff.gatling.profile._
+import pureconfig.generic.auto._
 ```
 
 #### Using:
