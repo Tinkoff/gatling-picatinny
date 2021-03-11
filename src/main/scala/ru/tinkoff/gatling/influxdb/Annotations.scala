@@ -8,8 +8,8 @@ import io.gatling.core.scenario.Simulation
 trait Annotations {
   simulation: Simulation =>
   {
-    simulation.before(AnnotationManager.addAnnotation(Start, "startAnnotation"))
+    simulation.before(AnnotationManager.addAnnotation(Start))
 
-    simulation.after(AnnotationManager.addAnnotation(Stop, "stopAnnotation"))
+    simulation.after(AnnotationManager.addAnnotation(Stop))
   }
 }

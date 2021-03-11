@@ -1,38 +1,41 @@
 package ru.tinkoff.gatling.influxdb
 
-import com.typesafe.scalalogging.StrictLogging
-import io.razem.influxdbclient.{Database, InfluxDB, Point}
+import io.razem.influxdbclient.{Database, HttpConfig, InfluxDB, Point, QueryResult}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.{Try, Using}
 
-private[gatling] case class InfluxPersistent(host: String,
-                                             port: Int,
-                                             db: String,
-                                             schema: String,
-                                             username: String = null,
-                                             password: String = null)
-    extends StrictLogging {
+private[influxdb] case class InfluxPersistent(host: String,
+                                              port: Int,
+                                              db: String,
+                                              rootPathPrefix: String,
+                                              schema: String,
+                                              username: String,
+                                              password: String) {
 
   private def checkSchema(schema: String): Boolean = schema match {
     case "https" => true
     case _       => false
   }
 
-  private def exec(f: Database => Future[Boolean]): Try[Future[Boolean]] = {
-    Using(InfluxDB.connect(host, port, username, password, checkSchema(schema))) { influxDb =>
-      f(influxDb.selectDatabase(db))
-    }
-  }
+  private lazy val httpConfig = new HttpConfig().setConnectTimeout(3000).setRequestTimeout(30000) //timeout in millis
 
-  def writePoint(point: Point): Try[Future[Boolean]] = exec(_.write(point))
+  private[influxdb] def init: Future[InfluxDB] =
+    Future(InfluxDB.connect(host, port, username, password, checkSchema(schema), httpConfig))
+  private[influxdb] def close(influxDb: InfluxDB): Future[Unit] = Future(influxDb.close())
 
-  def writeStatusAnnotation(status: Status, value: String): Try[Future[Boolean]] = {
-    val point = Point(rootPathPrefix)
+  private def exec[T](influxDb: InfluxDB, f: Database => Future[T]) = f(influxDb.selectDatabase(db))
+  def read(influxDb: InfluxDB, q: String): Future[QueryResult]      = exec(influxDb, _.query(q))
+  def write(influxDb: InfluxDB, p: Point): Future[Boolean]          = exec(influxDb, _.write(p))
+
+  def readLastStatusAnnotation(influxDb: InfluxDB): Future[QueryResult] =
+    read(influxDb, s"""SELECT last("annotation_value") FROM $rootPathPrefix""")
+
+  def writeStatusAnnotation(influxDb: InfluxDB, status: Status, value: BigDecimal, timestamp: Long): Future[Boolean] = {
+    val point = Point(rootPathPrefix, timestamp)
       .addTag("annotation", status.toString)
       .addField("annotation_value", value)
-    writePoint(point)
+    write(influxDb, point)
   }
 
 }
