@@ -13,3 +13,4 @@
 /.bsp
 # coursier cache
 /null
+/results
