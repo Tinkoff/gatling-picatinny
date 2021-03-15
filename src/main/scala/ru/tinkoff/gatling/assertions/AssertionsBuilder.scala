@@ -1,67 +1,50 @@
-package assertions
+package ru.tinkoff.gatling.assertions
 
-import pureconfig.module.yaml._
+import io.gatling.commons.stats.assertion.Assertion
 import io.gatling.core.Predef._
-
-import io.gatling.core.scenario.Simulation
+import pureconfig.module.yaml.YamlConfigSource
 import pureconfig.generic.auto._
+import io.gatling.core.Predef.configuration
 
-object AssertionsBuilder extends Simulation {
+object AssertionsBuilder {
 
-  case class innerConf(key: String, value: Map[String,String])
-  case class nfr(nfr: List[innerConf])
+  case class NFR(nfr: List[Record])
 
-  def getNfr(path: String) =
-    YamlConfigSource.file(path).asObjectSource.loadOrThrow[nfr]
+  case class Record(key: String, value: Map[String, String])
+
+  def getNfr(path: String): NFR =
+    YamlConfigSource.file(path).asObjectSource.loadOrThrow[NFR]
 
   def toUtf(baseString:String): String =
     scala.io.Source.fromBytes(baseString.getBytes(), "UTF-8").mkString
 
-
-  def assertionFromYaml(path:String):Iterable[Assertion] ={
-    val NFR = getNfr(path).nfr
-    val assertList:scala.collection.mutable.ListBuffer[Assertion] = scala.collection.mutable.ListBuffer.empty[Assertion]
-
-    for(i <- 0 to NFR.length-1) {
-      toUtf(NFR.apply(i).key) match {
-        case "Процент ошибок" =>
-          for(key <- NFR.apply(i).value.keys){
-            key match{
-              case "all" => assertList += global.failedRequests.percent.lt(NFR.apply(i).value.apply("all").toInt)
-              case _ => assertList+=details(key).failedRequests.percent.lt(NFR.apply(i).value.apply("all").toInt)
-            }
-          }
-        case "99 перцентиль времени выполнения" =>
-          for(key <- NFR.apply(i).value.keys){
-            key match{
-              case "all" => assertList+=global.responseTime.percentile4.lt(NFR.apply(i).value.apply("all").toInt)
-              case _ => assertList+=details(key).responseTime.percentile4.lt(NFR.apply(i).value.apply(key).toInt)
-            }
-          }
-        case "95 перцентиль времени выполнения" =>
-          for(key <- NFR.apply(i).value.keys){
-            key match{
-              case "all" => assertList+=global.responseTime.percentile3.lt(NFR.apply(i).value.apply("all").toInt)
-              case _ => assertList+=details(key).responseTime.percentile3.lt(NFR.apply(i).value.apply(key).toInt)
-            }
-          }
-        case "75 перцентиль времени выполнения" =>
-          for(key <- NFR.apply(i).value.keys){
-            key match{
-              case "all" => assertList+=global.responseTime.percentile2.lt(NFR.apply(i).value.apply("all").toInt)
-              case _ => assertList+=details(key).responseTime.percentile2.lt(NFR.apply(i).value.apply(key).toInt)
-            }
-          }
-        case "50 перцентиль времени выполнения" =>
-          for(key <- NFR.apply(i).value.keys){
-            key match{
-              case "all" => assertList+=global.responseTime.percentile1.lt(NFR.apply(i).value.apply("all").toInt)
-              case _ => assertList+=details(key).responseTime.percentile1.lt(NFR.apply(i).value.apply(key).toInt)
-            }
-          }
-        case _ => None
-      }
-    }
-    assertList.toList
+  def buildAssertion(record: Record): Iterable[Assertion] = toUtf(record.key) match {
+    case "Процент ошибок" => buildErrorAssertion(record)
+    case "99 перцентиль времени выполнения" => buildPercentileAssertion(record, 99)
+    case "95 перцентиль времени выполнения" => buildPercentileAssertion(record, 95)
+    case "75 перцентиль времени выполнения" => buildPercentileAssertion(record, 75)
+    case "50 перцентиль времени выполнения" => buildPercentileAssertion(record, 50)
   }
+
+  def buildErrorAssertion(record: Record): Iterable[Assertion] = record.value.map {
+    case (k, v) =>
+      (k, v) match {
+        case ("all", v) => global.failedRequests.percent.lt(v.toInt)
+        case (k, v) => details(k).failedRequests.percent.lt(v.toInt)
+      }
+  }
+
+  def buildPercentileAssertion(record: Record, percentile: Int): Iterable[Assertion] =
+    record.value.map {
+      case (k, v) =>
+        (k, v) match {
+          case ("all", v) => global.responseTime.percentile(percentile).lt(v.toInt)
+          case (k, v) => details(k).responseTime.percentile(percentile).lt(v.toInt)
+        }
+    }
+
+  def assertionFromYaml(path:String): Iterable[Assertion] = {
+    getNfr(path).nfr.flatMap(buildAssertion)
+  }
+
 }
