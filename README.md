@@ -11,6 +11,7 @@
   * [profile](#profile)
   * [templates](#templates)
   * [utils](#utils)
+  * [assertion](#assertion)
   * [example](#example)
 * [Built with](#built-with)
 * [Help](#help)
@@ -230,6 +231,43 @@ For sign requests add this to your scenario chain:
 ```scala
     .exec(_.setJwt(jwtGenerator, "jwtToken")) //generates token and save it to gatling session as "jwtToken"
     .exec(addCookie(Cookie("JWT_TOKEN", "${jwtToken}").withDomain(jwtCookieDomain).withPath("/"))) //set JWT_TOKEN cookie for subsequent requests
+```
+
+### assertion
+
+Module helps to load assertion configs from YAML files
+
+#### Import:
+
+```scala
+import ru.tinkoff.gatling.assertions.AssertionsBuilder.assertionFromYaml
+```
+
+#### Using:
+
+YAML configuration example:
+```yaml
+nfr:
+  - key: '99 перцентиль времени выполнения'
+    value:
+      request_1: '500'
+      all: '1000'
+  - key: 'Процент ошибок'
+    value:
+      all: '5'
+```
+
+*Simulation setUp*
+```scala
+  class test extends Simulation {
+      
+      setUp(
+          scn.inject(
+            atOnceUsers(10)
+          ).protocols(httpProtocol)
+        ).maxDuration(10)
+      .assertions(assertionFromYaml("nfr.yaml"))
+  }
 ```
 
 ### example
