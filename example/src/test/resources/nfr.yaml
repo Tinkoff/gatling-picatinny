@@ -1,7 +1,7 @@
 nfr:
   - key: '99 перцентиль времени выполнения'
     value:
-      getClientPositions: '500'
+      request_1: '500'
       all: '1000'
   - key: 'Процент ошибок'
     value:

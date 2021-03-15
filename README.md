@@ -266,7 +266,7 @@ nfr:
             atOnceUsers(10)
           ).protocols(httpProtocol)
         ).maxDuration(10)
-      .assertions(assertionFromYaml("nfr.yaml"))
+      .assertions(assertionFromYaml("src/test/resources/nfr.yaml"))
   }
 ```
 

@@ -42,6 +42,6 @@ class SampleSimulation extends Simulation with Annotations {
     )
   ).protocols(httpProtocol)
     .maxDuration(testDuration)
-    .assertions(assertionFromYaml("ru/tinkoff/load/example/nfr.yaml"))
+    .assertions(assertionFromYaml("src/test/resources/nfr.yaml"))
 
 }

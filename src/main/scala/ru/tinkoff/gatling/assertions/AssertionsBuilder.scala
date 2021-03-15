@@ -8,17 +8,17 @@ import io.gatling.core.Predef.configuration
 
 object AssertionsBuilder {
 
-  case class NFR(nfr: List[Record])
+  private case class NFR(nfr: List[Record])
 
-  case class Record(key: String, value: Map[String, String])
+  private case class Record(key: String, value: Map[String, String])
 
-  def getNfr(path: String): NFR =
+  private def getNfr(path: String): NFR =
     YamlConfigSource.file(path).asObjectSource.loadOrThrow[NFR]
 
-  def toUtf(baseString:String): String =
+  private def toUtf(baseString:String): String =
     scala.io.Source.fromBytes(baseString.getBytes(), "UTF-8").mkString
 
-  def buildAssertion(record: Record): Iterable[Assertion] = toUtf(record.key) match {
+  private def buildAssertion(record: Record): Iterable[Assertion] = toUtf(record.key) match {
     case "Процент ошибок" => buildErrorAssertion(record)
     case "99 перцентиль времени выполнения" => buildPercentileAssertion(record, 99)
     case "95 перцентиль времени выполнения" => buildPercentileAssertion(record, 95)
@@ -26,7 +26,7 @@ object AssertionsBuilder {
     case "50 перцентиль времени выполнения" => buildPercentileAssertion(record, 50)
   }
 
-  def buildErrorAssertion(record: Record): Iterable[Assertion] = record.value.map {
+  private def buildErrorAssertion(record: Record): Iterable[Assertion] = record.value.map {
     case (k, v) =>
       (k, v) match {
         case ("all", v) => global.failedRequests.percent.lt(v.toInt)
@@ -34,7 +34,7 @@ object AssertionsBuilder {
       }
   }
 
-  def buildPercentileAssertion(record: Record, percentile: Int): Iterable[Assertion] =
+  private def buildPercentileAssertion(record: Record, percentile: Int): Iterable[Assertion] =
     record.value.map {
       case (k, v) =>
         (k, v) match {
