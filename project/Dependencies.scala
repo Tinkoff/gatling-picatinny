@@ -20,10 +20,6 @@ object Dependencies {
     "org.json4s" %% "json4s-jackson" % "3.6.11"
   )
 
-  lazy val requests: Seq[ModuleID] = Seq(
-    "com.lihaoyi" %% "requests" % "0.2.0"
-  )
-
   lazy val pureConfig: Seq[ModuleID] = Seq(
     "com.github.pureconfig" %% "pureconfig"      % "0.14.1",
     "com.github.pureconfig" %% "pureconfig-yaml" % "0.14.1"
@@ -50,5 +46,9 @@ object Dependencies {
   )
 
   lazy val scalaTesting: Seq[ModuleID] = scalaCheck ++ scalaTest ++ scalaMock
+
+  lazy val influxClientScala: Seq[ModuleID] = Seq(
+    "io.razem" %% "scala-influxdb-client" % "0.6.3"
+  )
 
 }
