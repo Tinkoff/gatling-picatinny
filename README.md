@@ -244,16 +244,30 @@ import ru.tinkoff.gatling.assertions.AssertionsBuilder.assertionFromYaml
 ```
 
 #### Using:
+File nfr contains non-functional requirements. 
 
+Requirements supports by Picatinny:
+
+|  requirement|  key |
+|---|---|
+|  99th percentile of the responseTime | 99 перцентиль времени выполнения  |
+|  95th percentile of the responseTime | 95 перцентиль времени выполнения  |
+|  75th percentile of the responseTime |  75 перцентиль времени выполнения |
+|  50th percentile of the responseTime |  50 перцентиль времени выполнения |
+|  percent of the failedRequests |  Процент ошибок |
+ 
 YAML configuration example:
 ```yaml
 nfr:
   - key: '99 перцентиль времени выполнения'
     value:
       request_1: '500'
+      group_1: '700'
+      group_1 / request_2: '300'
       all: '1000'
   - key: 'Процент ошибок'
     value:
+      group_1: '1'      
       all: '5'
 ```
 
@@ -266,7 +280,7 @@ nfr:
             atOnceUsers(10)
           ).protocols(httpProtocol)
         ).maxDuration(10)
-      .assertions(assertionFromYaml("src/test/resources/nfr.yaml"))
+      .assertions(assertionFromYaml("src/test/resources/nfr.yml"))
   }
 ```
 

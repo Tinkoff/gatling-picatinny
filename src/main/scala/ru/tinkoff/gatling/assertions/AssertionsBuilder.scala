@@ -1,5 +1,6 @@
 package ru.tinkoff.gatling.assertions
 
+import io.gatling.commons.shared.unstable.model.stats.assertion.AssertionPathParts
 import io.gatling.commons.stats.assertion.Assertion
 import io.gatling.core.Predef._
 import pureconfig.module.yaml.YamlConfigSource
@@ -18,6 +19,10 @@ object AssertionsBuilder {
   private def toUtf(baseString:String): String =
     scala.io.Source.fromBytes(baseString.getBytes(), "UTF-8").mkString
 
+  private def findGroup(key:String):AssertionPathParts={
+    AssertionPathParts.apply(key.split(" / ").toList)
+  }
+
   private def buildAssertion(record: Record): Iterable[Assertion] = toUtf(record.key) match {
     case "Процент ошибок" => buildErrorAssertion(record)
     case "99 перцентиль времени выполнения" => buildPercentileAssertion(record, 99)
@@ -30,7 +35,7 @@ object AssertionsBuilder {
     case (k, v) =>
       (k, v) match {
         case ("all", v) => global.failedRequests.percent.lt(v.toInt)
-        case (k, v) => details(k).failedRequests.percent.lt(v.toInt)
+        case (k, v) => details(findGroup(k)).failedRequests.percent.lt(v.toInt)
       }
   }
 
@@ -39,7 +44,7 @@ object AssertionsBuilder {
       case (k, v) =>
         (k, v) match {
           case ("all", v) => global.responseTime.percentile(percentile).lt(v.toInt)
-          case (k, v) => details(k).responseTime.percentile(percentile).lt(v.toInt)
+          case (k, v) => details(findGroup(k)).responseTime.percentile(percentile).lt(v.toInt)
         }
     }
 
