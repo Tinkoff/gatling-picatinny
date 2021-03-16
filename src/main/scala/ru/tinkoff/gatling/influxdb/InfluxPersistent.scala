@@ -13,7 +13,7 @@ private[influxdb] case class InfluxPersistent(host: String,
                                               username: String,
                                               password: String) {
 
-  private def checkSchema(schema: String): Boolean = schema match {
+  def checkSchema(schema: String): Boolean = schema match {
     case "https" => true
     case _       => false
   }

@@ -20,7 +20,7 @@ private[gatling] object AnnotationManager extends StrictLogging {
     }
   }
 
-  private def incrementStatusAnnotationValue(status: Status, res: QueryResult): Future[BigDecimal] = {
+  def incrementStatusAnnotationValue(status: Status, res: QueryResult): Future[BigDecimal] = {
     def incrementAndGet(i: Int): Future[BigDecimal] =
       Future(BigDecimal(res.series.last.records.last.allValues.last.toString) + i).recover {
         case _: Throwable => BigDecimal(0)
