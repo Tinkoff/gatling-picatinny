@@ -263,6 +263,8 @@ nfr:
   - key: '99 перцентиль времени выполнения'
     value:
       GET /: '500'
+      MyGroup / MyRequest: '900'
+      request_1: '700' 
       all: '1000'
   - key: 'Процент ошибок'
     value:
