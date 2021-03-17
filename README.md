@@ -11,6 +11,7 @@
   * [profile](#profile)
   * [templates](#templates)
   * [utils](#utils)
+  * [assertion](#assertion)
   * [example](#example)
 * [Built with](#built-with)
 * [Help](#help)
@@ -230,6 +231,61 @@ For sign requests add this to your scenario chain:
 ```scala
     .exec(_.setJwt(jwtGenerator, "jwtToken")) //generates token and save it to gatling session as "jwtToken"
     .exec(addCookie(Cookie("JWT_TOKEN", "${jwtToken}").withDomain(jwtCookieDomain).withPath("/"))) //set JWT_TOKEN cookie for subsequent requests
+```
+
+### assertion
+
+Module helps to load assertion configs from YAML files
+
+#### Import:
+
+```scala
+import ru.tinkoff.gatling.assertions.AssertionsBuilder.assertionFromYaml
+```
+
+#### Using:
+File nfr contains non-functional requirements. 
+
+Requirements supports by Picatinny:
+
+|  requirement|  key |
+|---|---|
+|  99th percentile of the responseTime | 99 перцентиль времени выполнения  |
+|  95th percentile of the responseTime | 95 перцентиль времени выполнения  |
+|  75th percentile of the responseTime |  75 перцентиль времени выполнения |
+|  50th percentile of the responseTime |  50 перцентиль времени выполнения |
+|  percent of the failedRequests |  Процент ошибок |
+|  maximum of the responseTime |  Максимальное время выполнения |
+ 
+YAML configuration example:
+```yaml
+nfr:
+  - key: '99 перцентиль времени выполнения'
+    value:
+      GET /: '500'
+      MyGroup / MyRequest: '900'
+      request_1: '700' 
+      all: '1000'
+  - key: 'Процент ошибок'
+    value:
+      all: '5'
+  - key: 'Максимальное время выполнения'
+    value:
+      GET /: '1000'
+      all: '2000'
+```
+
+*Simulation setUp*
+```scala
+  class test extends Simulation {
+      
+      setUp(
+          scn.inject(
+            atOnceUsers(10)
+          ).protocols(httpProtocol)
+        ).maxDuration(10)
+      .assertions(assertionFromYaml("src/test/resources/nfr.yml"))
+  }
 ```
 
 ### example
