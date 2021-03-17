@@ -255,20 +255,22 @@ Requirements supports by Picatinny:
 |  75th percentile of the responseTime |  75 перцентиль времени выполнения |
 |  50th percentile of the responseTime |  50 перцентиль времени выполнения |
 |  percent of the failedRequests |  Процент ошибок |
+|  maximum of the responseTime |  Максимальное время выполнения |
  
 YAML configuration example:
 ```yaml
 nfr:
   - key: '99 перцентиль времени выполнения'
     value:
-      request_1: '500'
-      group_1: '700'
-      group_1 / request_2: '300'
+      GET /: '500'
       all: '1000'
   - key: 'Процент ошибок'
     value:
-      group_1: '1'      
       all: '5'
+  - key: 'Максимальное время выполнения'
+    value:
+      GET /: '1000'
+      all: '2000'
 ```
 
 *Simulation setUp*

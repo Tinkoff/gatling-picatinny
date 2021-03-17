@@ -29,6 +29,8 @@ object AssertionsBuilder {
     case "95 перцентиль времени выполнения" => buildPercentileAssertion(record, 95)
     case "75 перцентиль времени выполнения" => buildPercentileAssertion(record, 75)
     case "50 перцентиль времени выполнения" => buildPercentileAssertion(record, 50)
+    case "Максимальное время выполнения" => buildMaxResponseTimeAssertion(record)
+    case _ => None
   }
 
   private def buildErrorAssertion(record: Record): Iterable[Assertion] = record.value.map {
@@ -47,6 +49,14 @@ object AssertionsBuilder {
           case (k, v) => details(findGroup(k)).responseTime.percentile(percentile).lt(v.toInt)
         }
     }
+
+  private def buildMaxResponseTimeAssertion(record: Record): Iterable[Assertion] = record.value.map {
+    case (k, v) =>
+      (k, v) match {
+        case ("all", v) => global.responseTime.max.lt(v.toInt)
+        case (k, v) => details(findGroup(k)).responseTime.max.lt(v.toInt)
+      }
+  }
 
   def assertionFromYaml(path:String): Iterable[Assertion] = {
     getNfr(path).nfr.flatMap(buildAssertion)
