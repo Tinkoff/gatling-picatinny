@@ -10,11 +10,11 @@ lazy val root = (project in file("."))
     libraryDependencies ++= gatlingCore,
     libraryDependencies ++= fastUUID,
     libraryDependencies ++= json4s,
-    libraryDependencies ++= requests,
     libraryDependencies ++= pureConfig,
     libraryDependencies ++= scalaTesting,
     libraryDependencies ++= generex,
     libraryDependencies ++= jwt,
+    libraryDependencies ++= influxClientScala,
     scalacOptions := Seq(
       "-encoding",
       "UTF-8",
