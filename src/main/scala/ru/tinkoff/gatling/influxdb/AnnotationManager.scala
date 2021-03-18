@@ -1,7 +1,7 @@
 package ru.tinkoff.gatling.influxdb
 
 import com.typesafe.scalalogging.StrictLogging
-import io.razem.influxdbclient.{InfluxDB, QueryResult}
+import io.razem.influxdbclient.{InfluxDB, Point, QueryResult}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -9,13 +9,24 @@ import scala.util.{Failure, Success}
 
 private[gatling] object AnnotationManager extends StrictLogging {
 
-  private def complete[T](connection: InfluxDB, status: Status, res: Future[T]): Unit = {
+  private def completeAddStatusAnnotation[T](connection: InfluxDB, status: Status, res: Future[T]): Unit = {
     res onComplete {
       case Success(_) =>
         logger.info(s"$status annotation has been written to influxdb")
         influx.close(connection)
       case Failure(exception) =>
         logger.error(s"Failed to write $status annotation to influxdb: ${exception.getMessage}")
+        influx.close(connection)
+    }
+  }
+
+  private def completeWrite[T](connection: InfluxDB, res: Future[T]): Unit = {
+    res onComplete {
+      case Success(_) =>
+        logger.info(s"Custom point has been written to influxdb")
+        influx.close(connection)
+      case Failure(exception) =>
+        logger.error(s"Failed to write custom point to influxdb: ${exception.getMessage}")
         influx.close(connection)
     }
   }
@@ -31,13 +42,32 @@ private[gatling] object AnnotationManager extends StrictLogging {
     }
   }
 
-  def addAnnotation(status: Status): Unit = {
+  def addStatusAnnotation(status: Status): Unit = {
     for {
       connection <- influx.init
       lastValue  <- influx.readLastStatusAnnotation(connection)
       value      <- incrementStatusAnnotationValue(status, lastValue)
       res        = influx.writeStatusAnnotation(connection, status, value, System.currentTimeMillis() * 1000000)
-    } yield complete(connection, status, res)
+    } yield completeAddStatusAnnotation(connection, status, res)
+  }
+
+  def addCustomAnnotation(tagKey: String, tagValue: String, fieldKey: String, fieldValue: String): Unit = {
+    for {
+      connection <- influx.init
+      res = influx.writeCustomAnnotation(connection,
+                                         tagKey,
+                                         tagValue,
+                                         fieldKey,
+                                         fieldValue,
+                                         System.currentTimeMillis() * 1000000)
+    } yield completeWrite(connection, res)
+  }
+
+  def addCustomPoint(point: Point): Unit = {
+    for {
+      connection <- influx.init
+      res        = influx.writeCustomPoint(connection, point)
+    } yield completeWrite(connection, res)
   }
 
 }

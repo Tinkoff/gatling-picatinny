@@ -38,4 +38,20 @@ private[influxdb] case class InfluxPersistent(host: String,
     write(influxDb, point)
   }
 
+  def writeCustomAnnotation(influxDb: InfluxDB,
+                            tagKey: String,
+                            tagValue: String,
+                            fieldKey: String,
+                            fieldValue: String,
+                            timestamp: Long): Future[Boolean] = {
+    val point = Point(rootPathPrefix, timestamp)
+      .addTag(tagKey, tagValue)
+      .addField(fieldKey, fieldValue)
+    write(influxDb, point)
+  }
+
+  def writeCustomPoint(influxDb: InfluxDB, point: Point): Future[Boolean] = {
+    write(influxDb, point)
+  }
+
 }
