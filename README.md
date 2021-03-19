@@ -1,5 +1,5 @@
 # Gatling Picatinny
-![Build](https://github.com/TinkoffCreditSystems/gatling-picatinny/workflows/Build/badge.svg) [![Maven Central](https://img.shields.io/maven-central/v/ru.tinkoff/gatling-picatinny_2.12.svg?color=success)](https://search.maven.org/search?q=ru.tinkoff.gatling-picatinny)
+![Build](https://github.com/TinkoffCreditSystems/gatling-picatinny/workflows/Build/badge.svg) [![Maven Central](https://img.shields.io/maven-central/v/ru.tinkoff/gatling-picatinny_2.13.svg?color=success)](https://search.maven.org/search?q=ru.tinkoff.gatling-picatinny)
 
 ## Table of contents
 * [General info](#general-info)
@@ -30,7 +30,7 @@ If you are using TinkoffCreditSystems/gatling-template.g8, you already have all 
 ### Install manualy
 Add dependency with version that you need
 ```scala
-libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.6.0"
+libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.7.0"
 ```
 
 ## Usage
