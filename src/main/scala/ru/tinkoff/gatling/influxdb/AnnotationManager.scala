@@ -70,4 +70,11 @@ private[gatling] object AnnotationManager extends StrictLogging {
     } yield completeWrite(connection, res)
   }
 
+  def addCustomPoints(points: Seq[Point]): Unit = {
+    for {
+      connection <- influx.init
+      res        = influx.writeCustomPoints(connection, points)
+    } yield completeWrite(connection, res)
+  }
+
 }
