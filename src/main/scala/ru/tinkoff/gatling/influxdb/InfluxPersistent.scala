@@ -27,6 +27,7 @@ private[influxdb] case class InfluxPersistent(host: String,
   private def exec[T](influxDb: InfluxDB, f: Database => Future[T]) = f(influxDb.selectDatabase(db))
   def read(influxDb: InfluxDB, q: String): Future[QueryResult]      = exec(influxDb, _.query(q))
   def write(influxDb: InfluxDB, p: Point): Future[Boolean]          = exec(influxDb, _.write(p))
+  def bulkWrite(influxDb: InfluxDB, p: Seq[Point]): Future[Boolean] = exec(influxDb, _.bulkWrite(p))
 
   def readLastStatusAnnotation(influxDb: InfluxDB): Future[QueryResult] =
     read(influxDb, s"""SELECT last("annotation_value") FROM $rootPathPrefix""")
@@ -52,6 +53,10 @@ private[influxdb] case class InfluxPersistent(host: String,
 
   def writeCustomPoint(influxDb: InfluxDB, point: Point): Future[Boolean] = {
     write(influxDb, point)
+  }
+
+  def writeCustomPoints(influxDb: InfluxDB, points: Seq[Point]): Future[Boolean] = {
+    bulkWrite(influxDb, points)
   }
 
 }

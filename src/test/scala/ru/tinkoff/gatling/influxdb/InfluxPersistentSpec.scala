@@ -34,6 +34,12 @@ class InfluxPersistentSpec extends AnyFlatSpec with Matchers {
       Await.result(future, 100 milliseconds)
     }
   }
+  it should "bulk write Points to InfluxDB" in {
+    assert {
+      val future = testInfluxDbPersistent.bulkWrite(influxDbMock, Seq(testPoint, testPoint2))
+      Await.result(future, 100 milliseconds)
+    }
+  }
 
   it should "read last status annotation from InfluxDB" in {
     assert {

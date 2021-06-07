@@ -31,6 +31,10 @@ object Annotations {
     AnnotationManager.addCustomPoint(point)
   }
 
+  def influxDataPoint(point: Seq[Point]) = {
+    AnnotationManager.addCustomPoints(point)
+  }
+
   //for write custom points from setUp
   def userDataPoint(uniqScnName: String, point: Point): PopulationBuilder = {
     //TODO: how to do it without scenario?
