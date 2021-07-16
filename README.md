@@ -374,7 +374,7 @@ To test your changes use `sbt test`.
 ## Built with
 * Scala version: 2.13.4
 * SBT version: 1.4.7
-* Gatling version: 3.5.1
+* Gatling version: 3.6.1
 * SBT Gatling plugin version: 3.2.1
 * SBT CI release plugin version: 1.5.5
 * json4s version: 3.6.11
