@@ -48,7 +48,19 @@ object Dependencies {
   lazy val scalaTesting: Seq[ModuleID] = scalaCheck ++ scalaTest ++ scalaMock
 
   lazy val influxClientScala: Seq[ModuleID] = Seq(
-    "io.razem" %% "scala-influxdb-client" % "0.6.3"
+    "io.razem" %% "scala-influxdb-client" % "0.6.3" excludeAll (
+      ExclusionRule("io.netty", "netty-codec-http"),
+      ExclusionRule("io.netty", "netty-buffer"),
+      ExclusionRule("io.netty", "netty-codec-dns"),
+      ExclusionRule("io.netty", "netty-codec-socks"),
+      ExclusionRule("io.netty", "netty-codec"),
+      ExclusionRule("io.netty", "netty-common"),
+      ExclusionRule("io.netty", "netty-handler-proxy"),
+      ExclusionRule("io.netty", "netty-handler"),
+      ExclusionRule("io.netty", "netty-resolver-dns"),
+      ExclusionRule("io.netty", "netty-resolver"),
+      ExclusionRule("io.netty", "netty-transport")
+    )
   )
 
 }
