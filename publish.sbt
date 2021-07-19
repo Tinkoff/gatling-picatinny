@@ -1,5 +1,5 @@
 ThisBuild / organization := "ru.tinkoff"
-ThisBuild / scalaVersion := "2.13.4"
+ThisBuild / scalaVersion := "2.13.6"
 
 ThisBuild / publishMavenStyle := true
 
@@ -12,28 +12,28 @@ ThisBuild / scmInfo := Some(
 
 ThisBuild / developers := List(
   Developer(
-    id    = "chepk",
-    name  = "Sergey Chepkasov",
+    id = "chepk",
+    name = "Sergey Chepkasov",
     email = "s.chepkasov@tinkoff.ru",
-    url   = url("https://github.com/chepk")
+    url = url("https://github.com/chepk")
   ),
   Developer(
-    id    = "MaksSieve",
-    name  = "Maksim Sitnikov",
+    id = "MaksSieve",
+    name = "Maksim Sitnikov",
     email = "m.sintikov@tinkoff.ru",
-    url   = url("https://github.com/MaksSieve")
+    url = url("https://github.com/MaksSieve")
   ),
   Developer(
-    id    = "jigarkhwar",
-    name  = "Ioann Akhaltsev",
+    id = "jigarkhwar",
+    name = "Ioann Akhaltsev",
     email = "i.akhaltsev@tinkoff.ru",
-    url   = url("https://github.com/jigarkhwar")
+    url = url("https://github.com/jigarkhwar")
   ),
   Developer(
-    id    = "red-bashmak",
-    name  = "Vyacheslav Kalyokin",
+    id = "red-bashmak",
+    name = "Vyacheslav Kalyokin",
     email = "v.kalyokin@tinkoff.ru",
-    url   = url("https://github.com/red-bashmak")
+    url = url("https://github.com/red-bashmak")
   )
 )
 
@@ -42,4 +42,6 @@ ThisBuild / licenses := List("Apache 2" -> new URL("http://www.apache.org/licens
 ThisBuild / homepage := Some(url("https://github.com/TinkoffCreditSystems/gatling-picatinny.git"))
 
 // Remove all additional repository other than Maven Central from POM
-ThisBuild / pomIncludeRepository := { _ => false }
+ThisBuild / pomIncludeRepository := { _ =>
+  false
+}

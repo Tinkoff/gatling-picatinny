@@ -372,10 +372,10 @@ Ensure that the correct InfluxDB parameters are specified in gatling.conf and in
 To test your changes use `sbt test`.
 
 ## Built with
-* Scala version: 2.13.4
-* SBT version: 1.4.7
+* Scala version: 2.13.6
+* SBT version: 1.5.5
 * Gatling version: 3.6.1
-* SBT Gatling plugin version: 3.2.1
+* SBT Gatling plugin version: 3.2.2
 * SBT CI release plugin version: 1.5.5
 * json4s version: 3.6.11
 * requests version: 0.2.0
