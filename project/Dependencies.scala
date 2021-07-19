@@ -47,6 +47,7 @@ object Dependencies {
 
   lazy val scalaTesting: Seq[ModuleID] = scalaCheck ++ scalaTest ++ scalaMock
 
+  // Add excludeAll netty to solve conflict run GatlinRunner with using Gatling 3.6.1 and io.netty:4.1.42.Final. Problem java.lang.NoSuchFieldError: DNT
   lazy val influxClientScala: Seq[ModuleID] = Seq(
     "io.razem" %% "scala-influxdb-client" % "0.6.3" excludeAll (
       ExclusionRule("io.netty", "netty-codec-http"),
