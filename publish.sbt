@@ -1,8 +1,6 @@
 ThisBuild / organization := "ru.tinkoff"
 ThisBuild / scalaVersion := "2.13.6"
 
-ThisBuild / publishMavenStyle := true
-
 ThisBuild / scmInfo := Some(
   ScmInfo(
     url("https://github.com/TinkoffCreditSystems/gatling-picatinny.git"),
@@ -40,8 +38,3 @@ ThisBuild / developers := List(
 ThisBuild / description := "Gatling Utils"
 ThisBuild / licenses := List("Apache 2" -> new URL("http://www.apache.org/licenses/LICENSE-2.0.txt"))
 ThisBuild / homepage := Some(url("https://github.com/TinkoffCreditSystems/gatling-picatinny.git"))
-
-// Remove all additional repository other than Maven Central from POM
-ThisBuild / pomIncludeRepository := { _ =>
-  false
-}
