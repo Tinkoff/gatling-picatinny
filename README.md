@@ -253,7 +253,90 @@ profile:
 ```
 
 ### templates
-TBD by v.kalyokin
+This module contains some syntax extensions for http requests with json body. It allows embed json-body in request with `jsonBody` method for `HttpRequestBuilder`.
+And this module is provided ability to send request body templates from files in resource subfolder `resources/templates` by filename. 
+Sending of templates may be done with method `postTemplate` from trait `Templates`
+
+#### jsonBody
+This part contains http request Json body DSL.
+
+For use this you need import this:
+
+```scala
+import ru.tinkoff.gatling.templates.HttpBodyExt._
+import ru.tinkoff.gatling.templates.Syntax._
+```
+Then use described later constructions for embed jsonBody in http requests.
+For example, you write something like this:
+```scala
+class SampleScenario{
+  val sendJson: ScenarioBuilder = 
+    scenario("Post some")
+            .exec(
+              http("PostData")
+                      .post(url)
+                      .jsonBody(
+                        "id" - 23,                   // in json - "id" : 23 
+                        "name",                      // in json it interpreted as - "name" : get value from session variable ${name}
+                        "project" - (                // in json - "project" : { ... }
+                          "id" ~ "projectId",        // in json - "id" : value from session var ${projectId}
+                          "name" - "Super Project",  // in json - "name": "Super Project"
+                          "sub" > ( 1,2,3,4,5,6)     // in json - "sub" : [ 1,2,3,4,5,6 ]
+                        )
+                      )
+            )   
+}
+```
+As result this scenario sent POST request with body:
+```json
+{
+  "id": 23,
+  "name": "Test",
+  "project": {
+    "id": 23421,
+    "name": "Super Project",
+    "sub": [1,2,3,4,5,6]
+  }
+}
+```
+As you can see in the example:
+
+- construction `"some_name" - <val>` map to `"some_name": <val>` in json;
+- construction `"varName"` map to `"varName" : <get value from session variable ${varName}>` in json;
+- construction `"some_name" ~ "sesVar"` map to `"some_name" : <value from session var ${sesVar}>` in json;
+- `"some_name" > (<...items>)` map to array field `"some_name": [ ...items ]` in json;
+- `"some_name" - (<...fields>)` map to object field `"some_name": { ...fields }` in json;
+
+#### postTemplate
+Suppose in folder resources/templates contains this:
+```shell
+$ tree resources/
+.
+├── gatling.conf
+├── logback.xml
+├── pools
+│   └── example_pool.csv
+├── simulation.conf
+└── templates
+    └── example_template1.json
+    └── example_template2.json
+```
+For use templates in `resources/templates` you need import trait `Templates`.
+```scala
+import ru.tinkoff.gatling.templates.Templates._
+```
+Then add this trait to your Scenario and use `postTemplate` method like show later:
+```scala
+class SampleScenario extends Templates {
+  val sendTemplates: ScenarioBuilder = 
+    scenario("Templates scenario")
+            .exec(postTemplate("example_template1", "/post_route"))
+            .exec(postTemplate("example_template2", "/post_route"))
+}
+```
+This Scenario will send 2 post requests one with body from `example_template1.json`, second
+with body from `example_template2.json` to route `$baseUrl/post_route`. In template files you may use
+[gatling expression syntax](https://gatling.io/docs/gatling/reference/current/session/expression_el/).
 
 ### utils
 #### jwt
