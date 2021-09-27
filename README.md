@@ -12,6 +12,7 @@
   * [templates](#templates)
   * [utils](#utils)
   * [assertion](#assertion)
+  * [transactions](#transactions)
   * [example](#example)
 * [Built with](#built-with)
 * [Help](#help)
@@ -443,6 +444,65 @@ nfr:
   }
 ```
 
+### transactions
+This extension introduce new syntax (`startTransaction`/`endTransaction`) for gatling scenario. Transaction is union of
+actions, that able to measure summary response time of actions with pauses. It is same as groups, but response time
+measuring include pauses, and you may pass endTime manually. That make possible write something like:
+
+```scala
+exec(Actions.createEntity())
+  .startTransaction("transaction1")
+  .doWhile(_("i").as[Int] < 10)(
+    feed(feeder)
+      .exec(Actions.insertTest())
+      .pause(2)
+      .exec(Actions.selectTest)
+  )
+  .endTransaction("transaction1")
+  .exec(Actions.batchTest)
+  .exec(Actions.selectAfterBatch)
+
+```
+#### Usage:
+For use this you need gatling with version greater or equal than **3.6.1** and import this in Scenario and Simulations:
+
+```scala
+import ru.tinkoff.gatling.transactions.Predef._
+```
+**Attention!**
+*Your simulation should inherit the class `SimulationWithTransactions` instead of `Simulation`, then the transaction 
+mechanism will work correctly.*
+
+#### Example Simulation:
+```scala
+import io.gatling.core.Predef._
+import io.gatling.core.structure.ScenarioBuilder
+...
+import ru.tinkoff.gatling.transactions.Predef._
+
+object DebugScenario{
+  val scn: ScenarioBuilder = scenario("Debug")
+          .exec(Actions.createEntity())
+          .startTransaction("transaction1")
+          .doWhile(_("i").as[Int] < 10)(
+            feed(feeder)
+                    .exec(Actions.insertTest())
+                    .pause(2)
+                    .exec(Actions.selectTest)
+          )
+          .endTransaction("transaction1")
+          .exec(Actions.batchTest)
+          .exec(Actions.selectAfterBatch)
+}
+
+class DebugTest extends SimulationWithTransactions {
+
+  setUp(
+    DebugScenario.scn.inject(atOnceUsers(1))
+  ).protocols(dataBase)
+  
+}
+```
 ### example
 See the examples in the examples/ directory.
 
