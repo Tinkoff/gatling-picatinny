@@ -9,6 +9,7 @@
   * [feeders](#feeders)
   * [influxdb](#influxdb)
   * [profile](#profile)
+  * [redis](#redis)
   * [templates](#templates)
   * [utils](#utils)
   * [assertion](#assertion)
@@ -269,6 +270,37 @@ profile:
         ).maxDuration(10 )
   }
 ```
+
+### redis
+
+This module allows you to use redis commands.
+
+#### Features:
+
+- Support redis commands: SADD, DEL, SREM
+- Support Gatling EL
+
+#### Import:
+
+```scala
+import com.redis.RedisClientPool
+import ru.tinkoff.gatling.redis.RedisActionBuilder._
+```
+
+#### Using:
+
+First you need to prepare RedisClientPool:
+```scala
+val redisPool = new RedisClientPool(redisUrl, 6379)
+```
+
+Add the redis commands to your scenario chain:
+```scala
+.exec(redisPool.SADD("key", "values", "values")) //add the specified members to the set stored at key
+.exec(redisPool.DEL("key", "keys")) //removes the specified keys
+.exec(redisPool.SREM("key", "values", "values")) //remove the specified members from the set stored at key
+```
+
 
 ### templates
 This module contains some syntax extensions for http requests with json body. It allows embed json-body in request with `jsonBody` method for `HttpRequestBuilder`.
