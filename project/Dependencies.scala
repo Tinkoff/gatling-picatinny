@@ -3,7 +3,8 @@ import sbt._
 object Dependencies {
   lazy val gatlingCore: Seq[ModuleID] = Seq(
     "io.gatling" % "gatling-core",
-    "io.gatling" % "gatling-http"
+    "io.gatling" % "gatling-http",
+    "io.gatling" % "gatling-redis"
   ).map(_ % "3.6.1" % Provided)
 
   lazy val fastUUID = Seq(
@@ -43,6 +44,10 @@ object Dependencies {
 
   lazy val jwt: Seq[ModuleID] = Seq(
     "com.pauldijou" %% "jwt-core" % "5.0.0"
+  )
+
+  lazy val redisClient = Seq(
+    "net.debasishg" %% "redisclient" % "3.30"
   )
 
   lazy val scalaTesting: Seq[ModuleID] = scalaCheck ++ scalaTest ++ scalaMock
