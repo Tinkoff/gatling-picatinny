@@ -5,12 +5,12 @@ import com.typesafe.scalalogging.StrictLogging
 
 object OperationsManager extends StrictLogging{
 
-  def redisDeleteKey(key: String, keys: Seq[Any])= {
+  def redisDeleteKey(key: String, keys: Seq[Any]): Unit = {
     val connection = redis.init
     completeDeleteKey(connection, redis.deleteKey(connection, key, keys))
   }
 
-  def redisDeleteKeyMember(key: String, value: Any, values: Seq[Any])= {
+  def redisDeleteKeyMember(key: String, value: Any, values: Seq[Any]): Unit = {
     val connection = redis.init
     completeDeleteKeyMember(connection, redis.deleteKeyMember(connection, key, value, values))
   }

@@ -5,15 +5,15 @@ import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 
 object Operations {
 
-  def redisDeleteKey(key: String, keys: Seq[Any]) = {
+  def redisDeleteKey(key: String, keys: Seq[Any]): Unit = {
     OperationsManager.redisDeleteKey(key, keys)
   }
 
-  def redisDeleteKeyMember(key: String, value: Any, values: Seq[Any]) = {
+  def redisDeleteKeyMember(key: String, value: Any, values: Seq[Any]): Unit = {
     OperationsManager.redisDeleteKeyMember(key, value, values)
   }
 
-  def redisAddKeyMember(key: String, value: Any, values: Seq[Any]) = {
+  def redisAddKeyMember(key: String, value: Any, values: Seq[Any]): Unit = {
     OperationsManager.redisAddKeyMember(key, value, values)
   }
 
