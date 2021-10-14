@@ -1,7 +1,6 @@
 package ru.tinkoff.gatling.redis
 
 import com.typesafe.scalalogging.StrictLogging
-import ru.tinkoff.gatling.redis.redis.deleteKeyMember
 
 object OperationsManager extends StrictLogging{
 
@@ -10,7 +9,7 @@ object OperationsManager extends StrictLogging{
   }
 
   def redisDeleteKeyMember(key: String, value: Any, values: Seq[Any]): Unit = {
-    completeOperation(deleteKeyMember(key, value, values))
+    completeOperation(redis.deleteKeyMember(key, value, values))
   }
 
   def redisAddKeyMember(key: String, value: Any, values: Seq[Any]): Unit = {
