@@ -1,14 +1,31 @@
 package ru.tinkoff.gatling.redis
 
-import com.redis.RedisClient
+import com.redis.RedisClientPool
 
-private[redis] case class RedisPersistent(host: String, port: Int) {
+private[redis] case class RedisPersistent(init: RedisClientPool) {
 
-  private[redis] def init: RedisClient = new RedisClient(host, port)
-  private[redis] def close(connect: RedisClient): Unit = connect.close()
+  def deleteKey(key: String, keys: Seq[Any]): Option[Long] = {
+    init.withClient {
+      client => {
+        client.del(key, keys: _*)
+      }
+    }
+  }
 
-  def deleteKey(redis: RedisClient, key: String, keys: Seq[Any]): Option[Long]  = redis.del(key, keys: _*)
-  def deleteKeyMember(redis: RedisClient, key: String, value: Any, values: Seq[Any]): Option[Long]  = redis.srem(key, value, values: _*)
-  def addKeyMember(redis: RedisClient, key: String, value: Any, values: Seq[Any]): Option[Long]  = redis.sadd(key, value, values: _*)
+  def deleteKeyMember(key: String, value: Any, values: Seq[Any]): Option[Long] = {
+    init.withClient {
+      client => {
+        client.srem(key, value, values: _*)
+      }
+    }
+  }
+
+  def addKeyMember(key: String, value: Any, values: Seq[Any]): Option[Long] = {
+    init.withClient {
+      client => {
+        client.sadd(key, value, values: _*)
+      }
+    }
+  }
 
 }

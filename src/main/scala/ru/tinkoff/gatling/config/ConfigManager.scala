@@ -16,7 +16,4 @@ private[gatling] object ConfigManager {
 
   lazy val gatlingConfig: GatlingConfiguration = configuration
 
-  lazy val redisConfig: Config = ConfigFactory
-    .load("redis.conf")
-    .withFallback(ConfigFactory.load("redis-default.conf"))
 }
