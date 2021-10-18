@@ -6,28 +6,24 @@ import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import ru.tinkoff.gatling.redis.Operations.ScenarioAppender
 
-object RedisGetTokenScenario {
-  def apply(): ScenarioBuilder = new RedisGetTokenScenario().redisGetTokenScenario
+object RedisScenario {
+  def apply(): ScenarioBuilder = new RedisScenario().redisGetTokenScenario
 }
 
-  class RedisGetTokenScenario {
+  class RedisScenario {
 
-  val getToken: HttpRequestBuilder = http("getToken")
-    .get("https://httpbin.org/get")
-    .check(jsonPath("$..X-Amzn-Trace-Id") saveAs "access_token")
+  val getParameter: HttpRequestBuilder = http("GET PARAMETER")
+    .get("/")
+    .check(regex("""SPDX-License-Identifier: (\w.+)""").saveAs("parameter_1"))
+    .check(regex("""Copyright (\w.+)""").saveAs("parameter_2"))
 
-  val redisGetTokenScenario: ScenarioBuilder = scenario("Redis get token scenario")
-    .exec(getToken)
-    .exec(session => session.set("param", "key0"))
-    .exec(session => session.set("param1", List(0,1,2)))
-    .exec(session => session.set("param2", 12))
-    .exec(session => session.set("22", "key3"))
-    .redisSADD1000("access_token22447", "${param1}", "${param2}", "${22}", "ddddddd", 23)
-    .exec(session => {
+  val redisGetTokenScenario: ScenarioBuilder = scenario("Redis scenario")
+    .exec(getParameter)
+    //Add the specified members to the set stored at key
+    .redisSADD("key", "${parameter_1}", "${parameter_2}")
+    //Remove the specified members from the set stored at key
+    .redisSREM("key","${parameter_1}")
+    //Removes the specified keys
+    .redisDEL("key", "key1")
 
-//    .redisDEL("refresh_token")
-//    .redisSADD("access_token", session.attributes("access_token") )
-      session
-    })
-//    .redisSADD("refresh_token", session.attributes("refresh_token"))
 }

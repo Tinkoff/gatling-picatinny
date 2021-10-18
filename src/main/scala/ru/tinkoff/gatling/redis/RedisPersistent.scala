@@ -4,7 +4,7 @@ import com.redis.RedisClientPool
 
 private[redis] case class RedisPersistent(init: RedisClientPool) {
 
-  def deleteKey(key: String, keys: Seq[Any]): Option[Long] = {
+  def deleteKey(key: Any, keys: Seq[Any]): Option[Long] = {
     init.withClient {
       client => {
         client.del(key, keys: _*)
@@ -12,7 +12,7 @@ private[redis] case class RedisPersistent(init: RedisClientPool) {
     }
   }
 
-  def deleteKeyMember(key: String, value: Any, values: Seq[Any]): Option[Long] = {
+  def deleteKeyMember(key: Any, value: Any, values: Seq[Any]): Option[Long] = {
     init.withClient {
       client => {
         client.srem(key, value, values: _*)
@@ -20,7 +20,7 @@ private[redis] case class RedisPersistent(init: RedisClientPool) {
     }
   }
 
-  def addKeyMember(key: String, value: Any, values: Seq[Any]): Option[Long] = {
+  def addKeyMember(key: Any, value: Any, values: Seq[Any]): Option[Long] = {
     init.withClient {
       client => {
         client.sadd(key, value, values: _*)

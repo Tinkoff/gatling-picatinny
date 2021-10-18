@@ -4,15 +4,15 @@ import com.typesafe.scalalogging.StrictLogging
 
 object OperationsManager extends StrictLogging{
 
-  def redisDeleteKey(key: String, keys: Seq[Any]): Unit = {
+  def redisDeleteKey(key: Any, keys: Seq[Any]): Unit = {
     completeOperation(redis.deleteKey(key, keys))
   }
 
-  def redisDeleteKeyMember(key: String, value: Any, values: Seq[Any]): Unit = {
+  def redisDeleteKeyMember(key: Any, value: Any, values: Seq[Any]): Unit = {
     completeOperation(redis.deleteKeyMember(key, value, values))
   }
 
-  def redisAddKeyMember(key: String, value: Any, values: Seq[Any]): Unit = {
+  def redisAddKeyMember(key: Any, value: Any, values: Seq[Any]): Unit = {
     completeOperation(redis.addKeyMember(key, value, values))
   }
 
