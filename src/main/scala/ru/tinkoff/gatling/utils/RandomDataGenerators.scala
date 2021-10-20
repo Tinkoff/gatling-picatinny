@@ -1,6 +1,6 @@
 package ru.tinkoff.gatling.utils
 
-import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
+import java.time.{Instant, LocalDateTime, ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalUnit
 import java.util.UUID
@@ -84,8 +84,8 @@ private[gatling] object RandomDataGenerators {
     dateFrom.plus(randomDigit(1, offsetDate), unit).atZone(timezone).format(DateTimeFormatter.ofPattern(datePattern))
   }
 
-  def randomDatePattern(datePattern: DateTimeFormatter, dateFrom: LocalDateTime, timezone: ZoneId): String = {
-    dateFrom.atZone(timezone).format(datePattern)
+  def currentDate(datePattern: DateTimeFormatter, timezone: ZoneId): String = {
+    Instant.now.atZone(timezone).format(datePattern)
   }
 
 }
