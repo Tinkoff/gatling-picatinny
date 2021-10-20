@@ -32,22 +32,12 @@ class SampleScenario {
   //compose all in scenario
   val sampleScenario: ScenarioBuilder = scenario("Sample scenario")
   //include feeders in scenario as usual
-    .feed(firstWorkDayHours)
-    .feed(holidaysDate)
-    .feed(myCustomFeeder)
-    .feed(randomDigit)
-    .feed(randomPhone)
-    .feed(randomRangeString)
-    .feed(randomString)
-    .feed(randomUsaPhone)
-    .feed(randomUuid)
-    .feed(sequenceLong)
-    .feed(simpleRandomDate)
-    .feed(vacationDate)
-    .feed(gluedTogetherFeeder)
-    .feed(list2feeder)
-    .feed(finiteRandomDigitsWithTransform)
-    .feed(regexString)
+    .feed(timeShort)
+    .feed(simpleRandomTime)
+    .feed(timezoneRandom)
+    .exec { session =>
+      session
+    }
     //generate JWT using values from feeders
     .exec(_.setJwt(jwtGenerator, "jwtToken"))
     //set JWT cookie

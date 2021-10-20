@@ -1,12 +1,11 @@
 package ru.tinkoff.gatling.utils
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZonedDateTime}
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalUnit
 import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.AtomicLong
-
 import com.eatthepath.uuid.FastUUID
 import ru.tinkoff.gatling.utils.RandomDigitMagnet.DigitMagnet
 
@@ -82,6 +81,22 @@ private[gatling] object RandomDataGenerators {
   def randomDate(offsetDate: Long, datePattern: String = "yyyy-MM-dd", dateFrom: LocalDateTime, unit: TemporalUnit): String = {
     require(offsetDate > 1, s"RandomRangeDateFeeder offset requires value >1. Current values: offsetDate= $offsetDate")
     dateFrom.plus(randomDigit(1, offsetDate), unit).format(DateTimeFormatter.ofPattern(datePattern))
+  }
+
+  def randomDatePattern(datePattern: DateTimeFormatter, dateFrom: LocalDateTime): String = {
+    dateFrom.format(datePattern)
+  }
+
+  def randomTimezoneDate(positiveDelta: Int,
+                         negativeDelta: Int,
+                         datePattern: String,
+                         dateFrom: ZonedDateTime,
+                         unit: TemporalUnit): String = {
+    require(
+      positiveDelta >= 0 && negativeDelta >= 0,
+      s"RandomDateFeeder delta requires values >0. Current values: positiveDelta= $positiveDelta, negativeDelta= $negativeDelta"
+    )
+    dateFrom.plus(randomDigit(-negativeDelta, positiveDelta), unit).format(DateTimeFormatter.ofPattern(datePattern))
   }
 
 }
