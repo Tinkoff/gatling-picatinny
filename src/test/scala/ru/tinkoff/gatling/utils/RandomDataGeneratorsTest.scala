@@ -2,9 +2,8 @@ package ru.tinkoff.gatling.utils
 
 
 import java.time.temporal.{ChronoUnit, TemporalUnit}
-import java.time.{LocalDate, LocalDateTime}
+import java.time.{LocalDate, LocalDateTime, ZoneId}
 import java.util.UUID
-
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalacheck.Prop.{forAll, propBoolean}
@@ -18,6 +17,7 @@ class RandomDataGeneratorsTest extends AnyFlatSpec with Matchers {
   val dateFormat     = "yyyy-MM-dd'T'HH:mm"
   val datePattern    = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
   val dateFrom       = LocalDateTime.now()
+  val dateTimezone   = ZoneId.systemDefault()
   val dateUnit       = ChronoUnit.DAYS
 
   it should "generate a string of the specified length" in {
@@ -41,7 +41,7 @@ class RandomDataGeneratorsTest extends AnyFlatSpec with Matchers {
   it should "generate correct random date pattern" in {
     forAll{ (positiveOffset:Int, negativeOffset:Int) =>
       (positiveOffset<101 && positiveOffset > 0 && negativeOffset<101 && negativeOffset>0) ==>
-        RandomDataGenerators.randomDate(positiveOffset, negativeOffset, dateFormat, dateFrom, dateUnit)
+        RandomDataGenerators.randomDate(positiveOffset, negativeOffset, dateFormat, dateFrom, dateTimezone, dateUnit)
           .matches(datePattern)
     }.check
   }

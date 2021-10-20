@@ -1,9 +1,9 @@
 package ru.tinkoff.load.example.feeders
 
 import io.gatling.core.Predef._
-import ru.tinkoff.gatling.feeders.{RandomDateOfPattern, _}
+import ru.tinkoff.gatling.feeders.{CurrentDateFeeder, _}
 
-import java.time.{LocalDateTime, ZonedDateTime}
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.TimeZone
@@ -16,28 +16,26 @@ object Feeders {
   private val formatterShort: DateTimeFormatter = DateTimeFormatter.ofPattern("MM:dd")
 
   // date2pattern
-  val timeShort = RandomDateOfPattern("timeShort", formatterShort)
+  val timeShort = CurrentDateFeeder("timeShort", formatterShort)
 
-  // random hours +/- 5 from now
-  val simpleRandomTime = RandomDateFeeder("randomTime", 5, 5, "hh:mm:ss", unit=ChronoUnit.HOURS)
-
-  // random date +/- 5 days from timezone
-  val timezoneRandom = RandomDateTimezoneFeeder("timezoneRandom", 5, 5, dateFrom=ZonedDateTime.now())
+  // random date +/- 5 minutes from timezone
+  val ausTZ = ZoneId.of("Australia/Sydney")
+  val timezoneRandom = RandomDateFeeder("timezoneRandom", 5, 5, "hh:mm:dd", timezone=ausTZ, unit=ChronoUnit.MINUTES)
 
   //random date +/- 3 days from now
   val simpleRandomDate = RandomDateFeeder("simpleDate", 3, 3)
 
   //random date from newYearDate  with specified date string pattern
-  val holidaysDate = RandomDateFeeder("holidays", 8, 0, "yyyy-MM-dd'T'HH:mm", newYearDate, ChronoUnit.DAYS)
+  val holidaysDate = RandomDateFeeder("holidays", 8, 0, "yyyy-MM-dd'T'HH:mm", newYearDate, unit=ChronoUnit.DAYS)
 
   //random time from 9:00 to 18:00
-  val firstWorkDayHours = RandomDateFeeder("firstWorkDayHours", 9 * 60, 0, "HH:mm", goToWorkDate, ChronoUnit.MINUTES)
+  val firstWorkDayHours = RandomDateFeeder("firstWorkDayHours", 9 * 60, 0, "HH:mm", goToWorkDate, unit=ChronoUnit.MINUTES)
 
   //feeder provide two params:
   //startOfVacation = LocalDateTime.now()
   //endOfVacation = random date from now() to 14 days in the future
   val vacationDate =
-    RandomDateRangeFeeder("startOfVacation", "endOfVacation", 14, "yyyy-MM-dd", LocalDateTime.now(), ChronoUnit.DAYS)
+    RandomDateRangeFeeder("startOfVacation", "endOfVacation", 14, "yyyy-MM-dd", LocalDateTime.now(), unit=ChronoUnit.DAYS)
 
   //random Int
   val randomDigit = RandomDigitFeeder("randomDigit")

@@ -1,6 +1,6 @@
 package ru.tinkoff.gatling.utils
 
-import java.time.{LocalDateTime, ZonedDateTime}
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalUnit
 import java.util.UUID
@@ -70,33 +70,22 @@ private[gatling] object RandomDataGenerators {
                  negativeDelta: Int,
                  datePattern: String,
                  dateFrom: LocalDateTime,
+                 timezone: ZoneId,
                  unit: TemporalUnit): String = {
     require(
       positiveDelta >= 0 && negativeDelta >= 0,
       s"RandomDateFeeder delta requires values >0. Current values: positiveDelta= $positiveDelta, negativeDelta= $negativeDelta"
     )
-    dateFrom.plus(randomDigit(-negativeDelta, positiveDelta), unit).format(DateTimeFormatter.ofPattern(datePattern))
+    dateFrom.plus(randomDigit(-negativeDelta, positiveDelta), unit).atZone(timezone).format(DateTimeFormatter.ofPattern(datePattern))
   }
 
-  def randomDate(offsetDate: Long, datePattern: String = "yyyy-MM-dd", dateFrom: LocalDateTime, unit: TemporalUnit): String = {
+  def randomDate(offsetDate: Long, datePattern: String = "yyyy-MM-dd", dateFrom: LocalDateTime, timezone: ZoneId, unit: TemporalUnit): String = {
     require(offsetDate > 1, s"RandomRangeDateFeeder offset requires value >1. Current values: offsetDate= $offsetDate")
-    dateFrom.plus(randomDigit(1, offsetDate), unit).format(DateTimeFormatter.ofPattern(datePattern))
+    dateFrom.plus(randomDigit(1, offsetDate), unit).atZone(timezone).format(DateTimeFormatter.ofPattern(datePattern))
   }
 
-  def randomDatePattern(datePattern: DateTimeFormatter, dateFrom: LocalDateTime): String = {
-    dateFrom.format(datePattern)
-  }
-
-  def randomTimezoneDate(positiveDelta: Int,
-                         negativeDelta: Int,
-                         datePattern: String,
-                         dateFrom: ZonedDateTime,
-                         unit: TemporalUnit): String = {
-    require(
-      positiveDelta >= 0 && negativeDelta >= 0,
-      s"RandomDateFeeder delta requires values >0. Current values: positiveDelta= $positiveDelta, negativeDelta= $negativeDelta"
-    )
-    dateFrom.plus(randomDigit(-negativeDelta, positiveDelta), unit).format(DateTimeFormatter.ofPattern(datePattern))
+  def randomDatePattern(datePattern: DateTimeFormatter, dateFrom: LocalDateTime, timezone: ZoneId): String = {
+    dateFrom.atZone(timezone).format(datePattern)
   }
 
 }
