@@ -22,7 +22,7 @@ object VaultFeeder {
   }
 
   def apply(vaultUrl: String, secretPath: String, roleId: String, secretId: String, keys: List[String]): Feeder[String] = {
-    var resultMap = Map[String, String]()
+    var resultMap: Map[String, String] = Map[String, String]()
 
     val postRequest: HttpPost = new HttpPost(vaultUrl + "/v1/auth/approle/login")
     postRequest.addHeader("Content-Type", "application/json")
@@ -41,9 +41,9 @@ object VaultFeeder {
     val data: JValue = json \ "data"
 
     try {
-      val vaultMap = data.values.asInstanceOf[Map[Any, Any]]
+      val vaultMap: Map[Any, Any] = data.values.asInstanceOf[Map[Any, Any]]
 
-      for (k <- keys) {
+      for (k: String <- keys) {
         if (vaultMap.contains(k)) {
           resultMap += (k -> vaultMap(k).toString)
         }
