@@ -2,14 +2,25 @@ package ru.tinkoff.load.example.feeders
 
 import io.gatling.core.Predef._
 import ru.tinkoff.gatling.feeders._
-import java.time.LocalDateTime
+
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.util.TimeZone
 
 
 object Feeders {
 
   private val newYearDate  = LocalDateTime.of(2020, 1, 1, 0, 0)
   private val goToWorkDate = LocalDateTime.of(2020, 1, 9, 9, 0)
+  private val formatterShort: DateTimeFormatter = DateTimeFormatter.ofPattern("MM:dd")
+
+  // date2pattern
+  val timeShort = CurrentDateFeeder("timeShort", formatterShort)
+
+  // random date +/- 5 minutes with "Australia/Sydney" timezone
+  val ausTZ = ZoneId.of("Australia/Sydney")
+  val timezoneRandom = RandomDateFeeder("timezoneRandom", 5, 5, "hh:mm:dd", unit=ChronoUnit.MINUTES, timezone=ausTZ)
 
   //random date +/- 3 days from now
   val simpleRandomDate = RandomDateFeeder("simpleDate", 3, 3)
