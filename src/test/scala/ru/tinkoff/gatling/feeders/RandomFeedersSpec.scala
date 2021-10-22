@@ -29,7 +29,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
   it should "create RandomDateFeeder with specified date pattern" in {
     forAll(rndString, positiveInt, positiveInt) { (paramName, positive, negative) =>
       (positive > negative) ==>
-        RandomDateFeeder(paramName, positive, negative, datePattern, dateFrom, timezone, unit)
+        RandomDateFeeder(paramName, positive, negative, datePattern, dateFrom, unit, timezone)
           .take(50)
           .forall(r => r(paramName).matches(datePatternRegex))
     }.check
@@ -37,14 +37,14 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
 
   it should "produce IllegalArgumentException when RandomDateFeeder creates with delta dates params <0" in {
     assertThrows[IllegalArgumentException] {
-      RandomDateFeeder("paramName", -1, -1, datePattern, dateFrom, timezone, unit).next()
+      RandomDateFeeder("paramName", -1, -1, datePattern, dateFrom, unit, timezone).next()
     }
   }
 
   it should "create RandomDateRangeFeeder with specified date pattern" in {
     forAll(rndString, rndString, positiveInt) { (paramNameFrom, paramNameTo, offset) =>
       (offset > 1 && paramNameFrom.nonEmpty && paramNameTo.nonEmpty) ==>
-        RandomDateRangeFeeder(paramNameFrom, paramNameTo, offset, datePattern, dateFrom, timezone, unit)
+        RandomDateRangeFeeder(paramNameFrom, paramNameTo, offset, datePattern, dateFrom, unit, timezone)
           .take(50)
           .forall { r =>
             {
@@ -57,7 +57,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
 
   it should "produce IllegalArgumentException when RandomDateRangeFeeder creates with offset param =<1" in {
     assertThrows[IllegalArgumentException] {
-      RandomDateRangeFeeder("paramNameFrom", "paramNameTo", 1, datePattern, dateFrom, timezone, unit).next()
+      RandomDateRangeFeeder("paramNameFrom", "paramNameTo", 1, datePattern, dateFrom, unit, timezone).next()
     }
   }
 

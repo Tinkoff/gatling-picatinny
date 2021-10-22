@@ -41,7 +41,7 @@ class RandomDataGeneratorsTest extends AnyFlatSpec with Matchers {
   it should "generate correct random date pattern" in {
     forAll{ (positiveOffset:Int, negativeOffset:Int) =>
       (positiveOffset<101 && positiveOffset > 0 && negativeOffset<101 && negativeOffset>0) ==>
-        RandomDataGenerators.randomDate(positiveOffset, negativeOffset, dateFormat, dateFrom, dateTimezone, dateUnit)
+        RandomDataGenerators.randomDate(positiveOffset, negativeOffset, dateFormat, dateFrom, dateUnit, dateTimezone)
           .matches(datePattern)
     }.check
   }
