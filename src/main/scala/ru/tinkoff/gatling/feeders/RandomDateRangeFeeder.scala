@@ -13,9 +13,9 @@ object RandomDateRangeFeeder {
             offsetDate: Long,
             datePattern: String = "yyyy-MM-dd",
             dateFrom: LocalDateTime = LocalDateTime.now(),
-            timezone: ZoneId = ZoneId.systemDefault(),
-            unit: TemporalUnit = ChronoUnit.DAYS): Feeder[String] =
+            unit: TemporalUnit = ChronoUnit.DAYS,
+            timezone: ZoneId = ZoneId.systemDefault()): Feeder[String] =
     feeder[String](paramNameFrom)(dateFrom.format(DateTimeFormatter.ofPattern(datePattern)))
-      .map(m => m + (paramNameTo -> RandomDataGenerators.randomDate(offsetDate, datePattern, dateFrom, timezone, unit)))
+      .map(m => m + (paramNameTo -> RandomDataGenerators.randomDate(offsetDate, datePattern, dateFrom, unit, timezone)))
 
 }

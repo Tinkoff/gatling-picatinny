@@ -12,9 +12,9 @@ object RandomDateFeeder {
             negativeDaysDelta: Int = 1,
             datePattern: String = "yyyy-MM-dd",
             dateFrom: LocalDateTime = LocalDateTime.now(),
-            timezone: ZoneId = ZoneId.systemDefault(),
-            unit: TemporalUnit = ChronoUnit.DAYS): Feeder[String] =
+            unit: TemporalUnit = ChronoUnit.DAYS,
+            timezone: ZoneId = ZoneId.systemDefault()): Feeder[String] =
     feeder[String](paramName)(
-      RandomDataGenerators.randomDate(positiveDaysDelta, negativeDaysDelta, datePattern, dateFrom, timezone, unit))
+      RandomDataGenerators.randomDate(positiveDaysDelta, negativeDaysDelta, datePattern, dateFrom, unit, timezone))
 
 }

@@ -18,24 +18,24 @@ object Feeders {
   // date2pattern
   val timeShort = CurrentDateFeeder("timeShort", formatterShort)
 
-  // random date +/- 5 minutes from timezone
+  // random date +/- 5 minutes with "Australia/Sydney" timezone
   val ausTZ = ZoneId.of("Australia/Sydney")
-  val timezoneRandom = RandomDateFeeder("timezoneRandom", 5, 5, "hh:mm:dd", timezone=ausTZ, unit=ChronoUnit.MINUTES)
+  val timezoneRandom = RandomDateFeeder("timezoneRandom", 5, 5, "hh:mm:dd", unit=ChronoUnit.MINUTES, timezone=ausTZ)
 
   //random date +/- 3 days from now
   val simpleRandomDate = RandomDateFeeder("simpleDate", 3, 3)
 
   //random date from newYearDate  with specified date string pattern
-  val holidaysDate = RandomDateFeeder("holidays", 8, 0, "yyyy-MM-dd'T'HH:mm", newYearDate, unit=ChronoUnit.DAYS)
+  val holidaysDate = RandomDateFeeder("holidays", 8, 0, "yyyy-MM-dd'T'HH:mm", newYearDate, ChronoUnit.DAYS)
 
   //random time from 9:00 to 18:00
-  val firstWorkDayHours = RandomDateFeeder("firstWorkDayHours", 9 * 60, 0, "HH:mm", goToWorkDate, unit=ChronoUnit.MINUTES)
+  val firstWorkDayHours = RandomDateFeeder("firstWorkDayHours", 9 * 60, 0, "HH:mm", goToWorkDate, ChronoUnit.MINUTES)
 
   //feeder provide two params:
   //startOfVacation = LocalDateTime.now()
   //endOfVacation = random date from now() to 14 days in the future
   val vacationDate =
-    RandomDateRangeFeeder("startOfVacation", "endOfVacation", 14, "yyyy-MM-dd", LocalDateTime.now(), unit=ChronoUnit.DAYS)
+    RandomDateRangeFeeder("startOfVacation", "endOfVacation", 14, "yyyy-MM-dd", LocalDateTime.now(), ChronoUnit.DAYS)
 
   //random Int
   val randomDigit = RandomDigitFeeder("randomDigit")

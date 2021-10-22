@@ -70,8 +70,8 @@ private[gatling] object RandomDataGenerators {
                  negativeDelta: Int,
                  datePattern: String,
                  dateFrom: LocalDateTime,
-                 timezone: ZoneId,
-                 unit: TemporalUnit): String = {
+                 unit: TemporalUnit,
+                 timezone: ZoneId): String = {
     require(
       positiveDelta >= 0 && negativeDelta >= 0,
       s"RandomDateFeeder delta requires values >0. Current values: positiveDelta= $positiveDelta, negativeDelta= $negativeDelta"
@@ -79,7 +79,7 @@ private[gatling] object RandomDataGenerators {
     dateFrom.plus(randomDigit(-negativeDelta, positiveDelta), unit).atZone(timezone).format(DateTimeFormatter.ofPattern(datePattern))
   }
 
-  def randomDate(offsetDate: Long, datePattern: String = "yyyy-MM-dd", dateFrom: LocalDateTime, timezone: ZoneId, unit: TemporalUnit): String = {
+  def randomDate(offsetDate: Long, datePattern: String = "yyyy-MM-dd", dateFrom: LocalDateTime, unit: TemporalUnit, timezone: ZoneId): String = {
     require(offsetDate > 1, s"RandomRangeDateFeeder offset requires value >1. Current values: offsetDate= $offsetDate")
     dateFrom.plus(randomDigit(1, offsetDate), unit).atZone(timezone).format(DateTimeFormatter.ofPattern(datePattern))
   }
