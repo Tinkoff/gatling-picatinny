@@ -65,6 +65,7 @@ doubleVariable: 3.1415,
 duration: {
     durationVariable: 3600s
 }
+booleanVariable: true
 ```
 ```scala
 import ru.tinkoff.gatling.config.SimulationConfig._
@@ -73,6 +74,7 @@ val stringVariable      = getStringParam("stringVariable")
 val intVariable         = getIntParam("intVariable")
 val doubleVariable      = getDoubleParam("doubleVariable")
 val durationVariable    = getDurationParam("duration.durationVariable")
+val booleanVariable     = getBooleanParam("booleanVariable")
 
 ```
 
