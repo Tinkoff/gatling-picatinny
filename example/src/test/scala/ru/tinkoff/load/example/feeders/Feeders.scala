@@ -1,7 +1,7 @@
 package ru.tinkoff.load.example.feeders
 
 import io.gatling.core.Predef._
-import ru.tinkoff.gatling.feeders.{CurrentDateFeeder, _}
+import ru.tinkoff.gatling.feeders._
 
 import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
