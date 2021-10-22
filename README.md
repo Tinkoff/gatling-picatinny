@@ -73,6 +73,7 @@ val stringVariable      = getStringParam("stringVariable")
 val intVariable         = getIntParam("intVariable")
 val doubleVariable      = getDoubleParam("doubleVariable")
 val durationVariable    = getDurationParam("duration.durationVariable")
+val booleanVariable     = getBooleanParam("booleanVariable")
 
 ```
 
