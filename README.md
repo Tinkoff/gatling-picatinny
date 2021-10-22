@@ -65,6 +65,7 @@ doubleVariable: 3.1415,
 duration: {
     durationVariable: 3600s
 }
+booleanVariable: true
 ```
 ```scala
 import ru.tinkoff.gatling.config.SimulationConfig._
