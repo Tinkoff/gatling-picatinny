@@ -9,6 +9,7 @@ import java.net.http.HttpRequest.{BodyPublisher, BodyPublishers}
 import java.net.http.HttpResponse.BodyHandlers
 import java.net.http.{HttpClient, HttpRequest}
 import java.time.Duration
+import java.util.Objects.requireNonNull
 import scala.util.{Failure, Success, Try}
 
 object VaultFeeder {
@@ -19,7 +20,7 @@ object VaultFeeder {
         .newBuilder()
         .build()
 
-      val request = HttpRequest.newBuilder
+      val request: HttpRequest = HttpRequest.newBuilder
         .uri(URI.create(uri))
         .header(header1, header2)
         .method(method, body)
@@ -33,6 +34,8 @@ object VaultFeeder {
     }
 
   def apply(vaultUrl: String, secretPath: String, roleId: String, secretId: String, keys: List[String]): Feeder[String] = {
+    requireNonNull(keys, "Keys list should not be Null")
+
     val body: String = s"""{"role_id":"$roleId","secret_id":"$secretId"}"""
     val vaultTokenResponse: String = getResponse(vaultUrl + "/v1/auth/approle/login",
       "Content-Type",
@@ -50,21 +53,18 @@ object VaultFeeder {
     val vaultDataJson: JValue = JsonMethods.parse(vaultDataResponse)
     val data: JValue          = vaultDataJson \ "data"
 
-    keys match {
-      case null => Iterator.continually(Map[String, String]())
-      case _ =>
-        Iterator.continually(
-          data.foldField[Map[String, String]](Map[String, String]())(
-            (res, kv) => {
-              val (k, v) = kv
-              keys.contains(k) match {
-                case true  => res + (k -> v.values.toString)
-                case false => Map[String, String]()
-              }
-            }
-          )
-        )
-    }
+    Iterator.continually(
+      data.foldField[Map[String, String]](Map[String, String]())(
+        (res, kv) => {
+          val (k, v) = kv
+          keys.contains(k) match {
+            case true  => res + (k -> v.values.toString)
+            case false => Map[String, String]()
+          }
+        }
+      )
+    )
+
   }
 
 }
