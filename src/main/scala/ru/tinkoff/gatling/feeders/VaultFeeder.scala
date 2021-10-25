@@ -4,47 +4,67 @@ import io.gatling.core.feeder.Feeder
 import org.json4s.JValue
 import org.json4s.native.JsonMethods
 
-import java.net.{URL, URLConnection}
-import scala.io.Source
-import scala.util.{Failure, Success, Using}
+import java.net.URI
+import java.net.http.HttpRequest.{BodyPublisher, BodyPublishers}
+import java.net.http.HttpResponse.BodyHandlers
+import java.net.http.{HttpClient, HttpRequest}
+import java.time.Duration
+import scala.util.{Failure, Success, Try}
 
 object VaultFeeder {
 
-  private def getResponseFromConnection(connection: URLConnection): String = {
-    Using(Source.fromInputStream(connection.getInputStream)) { source =>
-      source.mkString
+  private def getResponse(uri: String, header1: String, header2: String, method: String, body: BodyPublisher): String =
+    Try {
+      val client: HttpClient = HttpClient
+        .newBuilder()
+        .build()
+
+      val request = HttpRequest.newBuilder
+        .uri(URI.create(uri))
+        .header(header1, header2)
+        .method(method, body)
+        .timeout(Duration.ofMinutes(1))
+        .build()
+
+      client.send(request, BodyHandlers.ofString).body
     } match {
-      case Success(value) => value
-      case Failure(_)     => ""
+      case Success(response) => response
+      case Failure(_)        => ""
     }
-  }
 
   def apply(vaultUrl: String, secretPath: String, roleId: String, secretId: String, keys: List[String]): Feeder[String] = {
-    var resultMap: Map[String, String] = Map[String, String]()
+    val body: String = s"""{"role_id":"$roleId","secret_id":"$secretId"}"""
+    val vaultTokenResponse: String = getResponse(vaultUrl + "/v1/auth/approle/login",
+      "Content-Type",
+      "application/json",
+      "POST",
+      BodyPublishers.ofString(body))
 
-    val approleLoginConnection: URLConnection = new URL(vaultUrl + "/v1/auth/approle/login").openConnection
-    approleLoginConnection.setRequestProperty("Content-Type", "application/json")
-    approleLoginConnection.setDoOutput(true)
+    val vaultTokenJson: JValue = JsonMethods.parse(vaultTokenResponse)
+    val client_token: JValue   = vaultTokenJson \ "auth" \ "client_token"
+    val vaultToken: String     = client_token.values.toString
 
-    val body: Array[Byte] = s"""{"role_id":"$roleId","secret_id":"$secretId"}""".getBytes
-    approleLoginConnection.getOutputStream.write(body, 0, body.length)
+    val vaultDataResponse: String =
+      getResponse(vaultUrl + "/v1/" + secretPath, "X-Vault-Token", vaultToken, "GET", BodyPublishers.noBody)
 
-    var json: JValue         = JsonMethods.parse(getResponseFromConnection(approleLoginConnection))
-    val client_token: JValue = json \ "auth" \ "client_token"
-    val vaultToken: String   = client_token.values.toString
+    val vaultDataJson: JValue = JsonMethods.parse(vaultDataResponse)
+    val data: JValue          = vaultDataJson \ "data"
 
-    val vaultSecretsConnection: URLConnection = new URL(vaultUrl + "/v1/" + secretPath).openConnection
-    vaultSecretsConnection.setRequestProperty("X-Vault-Token", vaultToken)
-
-    json = JsonMethods.parse(getResponseFromConnection(vaultSecretsConnection))
-    val data: JValue = json \ "data"
-
-    data.foldField[Any](0)(
-      (_, kv) =>
-        if (keys.contains(kv._1))
-          resultMap += (kv._1 -> kv._2.values.toString))
-
-    Iterator.continually(resultMap)
+    keys match {
+      case null => Iterator.continually(Map[String, String]())
+      case _ =>
+        Iterator.continually(
+          data.foldField[Map[String, String]](Map[String, String]())(
+            (res, kv) => {
+              val (k, v) = kv
+              keys.contains(k) match {
+                case true  => res + (k -> v.values.toString)
+                case false => Map[String, String]()
+              }
+            }
+          )
+        )
+    }
   }
 
 }
