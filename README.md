@@ -21,14 +21,14 @@
 * [Acknowledgments](#acknowledgments)
 
 ## General info
-Library with a bunch of usefull functions that extend Gatling DSL and make your performance better.
+Library with a bunch of useful functions that extend Gatling DSL and make your performance better.
 
 ## Installation
 
 ### Using Gatling Template Project
-If you are using TinkoffCreditSystems/gatling-template.g8, you already have all dependecies in it. [Gatling Template Project](https://github.com/TinkoffCreditSystems/gatling-template.g8.git)
+If you are using TinkoffCreditSystems/gatling-template.g8, you already have all dependencies in it. [Gatling Template Project](https://github.com/TinkoffCreditSystems/gatling-template.g8.git)
 
-### Install manualy
+### Install manually
 Add dependency with version that you need
 ```scala
 libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.7.2"
@@ -37,7 +37,7 @@ libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.7.2"
 ## Usage
 
 ### config
-The only class the you need from this module is `SimulationConfig`. It could be used to attach some default variables such as `intensity`, `baseUrl`, `baseAuthUrl` and some others to your scripts. Also it provides functions to get custom variables fom config.
+The only class that you need from this module is `SimulationConfig`. It could be used to attach some default variables such as `intensity`, `baseUrl`, `baseAuthUrl` and some others to your scripts. Also, it provides functions to get custom variables fom config.
 
 Import:
 ```scala
@@ -77,8 +77,8 @@ val durationVariable    = getDurationParam("duration.durationVariable")
 ```
 
 ### feeders
-This module contains vast number of random feeders. They could be used as regular feeders and realize common needs, i.e random phone number or random digit. Now it supports feeders for dates, numbers and digits, strings, uuids, phones.
-There we'll provide some examples, other feeders can be used same way. Now it supports feeders for dates, digits, strings, uuids, phones.
+This module contains vast number of random feeders. They could be used as regular feeders and realize common needs, i.e. random phone number or random digit. Now it supports feeders for dates, numbers and digits, strings, uuids, phones.
+There we'll provide some examples, other feeders can be used same way.
 
 ```scala
 import ru.tinkoff.gatling.feeders._
@@ -140,7 +140,7 @@ import ru.tinkoff.gatling.influxdb.Annotations._
 Using:
 
 ```scala
-//if default prepared Point doesn`t suit you
+//if default prepared Point doesn't suit you
     Point(configuration.data.graphite.rootPathPrefix, System.currentTimeMillis() * 1000000)
       .addTag(tagName, tagValue)
       .addField(fieldName, fieldValue)
@@ -373,7 +373,7 @@ Payload will be generated from json template, templating is done using [Gatling 
   "phone": "${randomPhone}"
 }
 ```
-Also the JWT generator has a DSL allowing you to:
+Also, the JWT generator has a DSL allowing you to:
 ```scala
 jwt("HS256", secret)
 .header("""{"alg": "HS256","typ": "JWT", "customField": "customData"}""") //use custom headers from string, it must be valid json
@@ -402,7 +402,7 @@ import ru.tinkoff.gatling.assertions.AssertionsBuilder.assertionFromYaml
 #### Using:
 File nfr contains non-functional requirements. 
 
-Requirements supports by Picatinny:
+Requirements supported by Picatinny:
 
 |  requirement|  key |
 |---|---|

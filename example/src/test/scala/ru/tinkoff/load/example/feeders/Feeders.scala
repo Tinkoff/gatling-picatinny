@@ -2,9 +2,9 @@ package ru.tinkoff.load.example.feeders
 
 import io.gatling.core.Predef._
 import ru.tinkoff.gatling.feeders._
+
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-
 
 object Feeders {
 
@@ -59,17 +59,25 @@ object Feeders {
   private val stringFeeder = RandomStringFeeder("string")
   private val phoneFeeder  = RandomStringFeeder("phone")
 
+  //Vault HC feeder
+  private val vaultUrl   = System.getenv("vaultUrl")
+  private val secretPath = System.getenv("secretPath")
+  private val roleId     = System.getenv("roleId")
+  private val secretId   = System.getenv("secretId")
+  private val keys       = List("k1", "k2", "k3")
+  val vaultFeeder        = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
+
   //how to combine together 2 or more feeders
   //as result we get feeder with 3 params: digit, string, phone
   val gluedTogetherFeeder = digitFeeder ** stringFeeder ** phoneFeeder
 
-  //tranform values of this Feeder
+  //transform values of this Feeder
   val finiteRandomDigitsWithTransform = RandomDigitFeeder("randomDigit")
     .toFiniteLength(20)
     .convert { case (k, v) => k -> v.toString() }
     .circular
 
-  //tranform List to Feeder
+  //transform List to Feeder
   val list2feeder = List(1, 2, 3).toFeeder("listId").circular
 
   // string sequentially generated from the specified pattern

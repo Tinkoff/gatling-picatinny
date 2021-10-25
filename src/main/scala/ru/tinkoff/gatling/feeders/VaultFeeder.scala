@@ -22,7 +22,7 @@ object VaultFeeder {
 
       val request: HttpRequest = HttpRequest.newBuilder
         .uri(URI.create(uri))
-        .header(header1, header2)
+        .headers(header1, header2)
         .method(method, body)
         .timeout(Duration.ofMinutes(1))
         .build()
@@ -34,21 +34,24 @@ object VaultFeeder {
     }
 
   def apply(vaultUrl: String, secretPath: String, roleId: String, secretId: String, keys: List[String]): Feeder[String] = {
-    requireNonNull(keys, "Keys list should not be Null")
+    requireNonNull(keys, "Keys list must not be null")
 
     val body: String = s"""{"role_id":"$roleId","secret_id":"$secretId"}"""
     val vaultTokenResponse: String = getResponse(vaultUrl + "/v1/auth/approle/login",
-      "Content-Type",
-      "application/json",
-      "POST",
-      BodyPublishers.ofString(body))
+                                                 "Content-Type",
+                                                 "application/json",
+                                                 "POST",
+                                                 BodyPublishers.ofString(body))
 
     val vaultTokenJson: JValue = JsonMethods.parse(vaultTokenResponse)
     val client_token: JValue   = vaultTokenJson \ "auth" \ "client_token"
     val vaultToken: String     = client_token.values.toString
 
-    val vaultDataResponse: String =
-      getResponse(vaultUrl + "/v1/" + secretPath, "X-Vault-Token", vaultToken, "GET", BodyPublishers.noBody)
+    val vaultDataResponse: String = getResponse(vaultUrl + "/v1/" + secretPath,
+                                                "X-Vault-Token",
+                                                vaultToken,
+                                                "GET",
+                                                BodyPublishers.noBody)
 
     val vaultDataJson: JValue = JsonMethods.parse(vaultDataResponse)
     val data: JValue          = vaultDataJson \ "data"
