@@ -78,7 +78,7 @@ val durationVariable    = getDurationParam("duration.durationVariable")
 
 ### feeders
 This module contains vast number of random feeders. They could be used as regular feeders and realize common needs, i.e. random phone number or random digit. Now it supports feeders for dates, numbers and digits, strings, uuids, phones.
-There we'll provide some examples, other feeders can be used same way.
+Basic examples will be provided below. Other feeders can be used in a similar way.
 
 ```scala
 import ru.tinkoff.gatling.feeders._
@@ -91,6 +91,21 @@ val digitFeeder = RandomDigitFeeder("digit")
 
 //creates feeder with name 'uuid' that gets random uuid
 val uuidFeeder = RandomUUIDFeeder("uuid")
+```
+#### HC Vault feeder
+Creates feeder capable of retrieving secret data from HC Vault
+- authorises via approle;
+- uses v1 API;
+- works with kv Secret Engine;
+- does not iterate over keys, returns full map with keys it found on each call;
+- params:
+  - vaultUrl - vault URL *e.g. "https://vault.ru"*
+  - secretPath - path to secret data within your vault e.g. *"testing/data"*
+  - roleId - approle login
+  - secretId - approle password
+  - keys - list of keys you are interested in
+```scala
+  val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
 ### influxdb 
 
