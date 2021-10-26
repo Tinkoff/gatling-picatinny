@@ -100,10 +100,10 @@ Creates feeder capable of retrieving secret data from HC Vault
 - does not iterate over keys, returns full map with keys it found on each call;
 - params:
   - vaultUrl - vault URL *e.g. "https://vault.ru"*
-  - secretPath - path to secret data within your vault e.g. *"testing/data"*
+  - secretPath - path to secret data within your vault *e.g. "testing/data"*
   - roleId - approle login
   - secretId - approle password
-  - keys - list of keys you are interested in
+  - keys - list of keys you are willing to retrieve from vault
 ```scala
   val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
