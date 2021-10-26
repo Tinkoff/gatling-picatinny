@@ -2,7 +2,6 @@ package ru.tinkoff.load.example.feeders
 
 import io.gatling.core.Predef._
 import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
-import ru.tinkoff.gatling.config.SimulationConfig.getStringParam
 import ru.tinkoff.gatling.feeders._
 
 import java.time.LocalDateTime
@@ -63,10 +62,10 @@ object Feeders {
   private val phoneFeeder  = RandomStringFeeder("phone")
 
   //Vault HC feeder
-  private val vaultUrl            = getStringParam("vaultUrl")
-  private val secretPath          = getStringParam("secretPath")
-  private val roleId              = getStringParam("roleId")
-  private val secretId            = getStringParam("secretId")
+  private val vaultUrl            = System.getenv("vaultUrl")
+  private val secretPath          = System.getenv("secretPath")
+  private val roleId              = System.getenv("roleId")
+  private val secretId            = System.getenv("secretId")
   private val keys                = List("k1", "k2", "k3")
   val vaultFeeder: Feeder[String] = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 
