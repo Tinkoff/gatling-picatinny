@@ -13,6 +13,14 @@ object Feeders {
 
   private val newYearDate  = LocalDateTime.of(2020, 1, 1, 0, 0)
   private val goToWorkDate = LocalDateTime.of(2020, 1, 9, 9, 0)
+  private val formatterShort: DateTimeFormatter = DateTimeFormatter.ofPattern("MM:dd")
+
+  // date2pattern
+  val timeShort = CurrentDateFeeder("timeShort", formatterShort)
+
+  // random date +/- 5 minutes with "Australia/Sydney" timezone
+  val ausTZ = ZoneId.of("Australia/Sydney")
+  val timezoneRandom = RandomDateFeeder("timezoneRandom", 5, 5, "hh:mm:dd", unit=ChronoUnit.MINUTES, timezone=ausTZ)
 
   //random date +/- 3 days from now
   val simpleRandomDate: Feeder[String] = RandomDateFeeder("simpleDate", 3, 3)
