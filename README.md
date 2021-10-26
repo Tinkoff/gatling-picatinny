@@ -21,14 +21,14 @@
 * [Acknowledgments](#acknowledgments)
 
 ## General info
-Library with a bunch of usefull functions that extend Gatling DSL and make your performance better.
+Library with a bunch of useful functions that extend Gatling DSL and make your performance better.
 
 ## Installation
 
 ### Using Gatling Template Project
-If you are using TinkoffCreditSystems/gatling-template.g8, you already have all dependecies in it. [Gatling Template Project](https://github.com/TinkoffCreditSystems/gatling-template.g8.git)
+If you are using TinkoffCreditSystems/gatling-template.g8, you already have all dependencies in it. [Gatling Template Project](https://github.com/TinkoffCreditSystems/gatling-template.g8.git)
 
-### Install manualy
+### Install manually
 Add dependency with version that you need
 ```scala
 libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.7.2"
@@ -37,7 +37,7 @@ libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.7.2"
 ## Usage
 
 ### config
-The only class the you need from this module is `SimulationConfig`. It could be used to attach some default variables such as `intensity`, `baseUrl`, `baseAuthUrl` and some others to your scripts. Also it provides functions to get custom variables fom config.
+The only class that you need from this module is `SimulationConfig`. It could be used to attach some default variables such as `intensity`, `baseUrl`, `baseAuthUrl` and some others to your scripts. Also, it provides functions to get custom variables fom config.
 
 Import:
 ```scala
@@ -65,6 +65,7 @@ doubleVariable: 3.1415,
 duration: {
     durationVariable: 3600s
 }
+booleanVariable: true
 ```
 ```scala
 import ru.tinkoff.gatling.config.SimulationConfig._
@@ -73,12 +74,13 @@ val stringVariable      = getStringParam("stringVariable")
 val intVariable         = getIntParam("intVariable")
 val doubleVariable      = getDoubleParam("doubleVariable")
 val durationVariable    = getDurationParam("duration.durationVariable")
+val booleanVariable     = getBooleanParam("booleanVariable")
 
 ```
 
 ### feeders
-This module contains vast number of random feeders. They could be used as regular feeders and realize common needs, i.e random phone number or random digit. Now it supports feeders for dates, numbers and digits, strings, uuids, phones.
-There we'll provide some examples, other feeders can be used same way. Now it supports feeders for dates, digits, strings, uuids, phones.
+This module contains vast number of random feeders. They could be used as regular feeders and realize common needs, i.e. random phone number or random digit. Now it supports feeders for dates, numbers and digits, strings, uuids, phones.
+Basic examples will be provided below. Other feeders can be used in a similar way.
 
 ```scala
 import ru.tinkoff.gatling.feeders._
@@ -91,6 +93,21 @@ val digitFeeder = RandomDigitFeeder("digit")
 
 //creates feeder with name 'uuid' that gets random uuid
 val uuidFeeder = RandomUUIDFeeder("uuid")
+```
+#### HC Vault feeder
+Creates feeder capable of retrieving secret data from HC Vault
+- authorises via approle;
+- uses v1 API;
+- works with kv Secret Engine;
+- does not iterate over keys, returns full map with keys it found on each call;
+- params:
+  - vaultUrl - vault URL *e.g. "https://vault.ru"*
+  - secretPath - path to secret data within your vault *e.g. "testing/data"*
+  - roleId - approle login
+  - secretId - approle password
+  - keys - list of keys you are willing to retrieve from vault
+```scala
+  val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
 ### influxdb 
 
@@ -140,7 +157,7 @@ import ru.tinkoff.gatling.influxdb.Annotations._
 Using:
 
 ```scala
-//if default prepared Point doesn`t suit you
+//if default prepared Point doesn't suit you
     Point(configuration.data.graphite.rootPathPrefix, System.currentTimeMillis() * 1000000)
       .addTag(tagName, tagValue)
       .addField(fieldName, fieldValue)
@@ -373,7 +390,7 @@ Payload will be generated from json template, templating is done using [Gatling 
   "phone": "${randomPhone}"
 }
 ```
-Also the JWT generator has a DSL allowing you to:
+Also, the JWT generator has a DSL allowing you to:
 ```scala
 jwt("HS256", secret)
 .header("""{"alg": "HS256","typ": "JWT", "customField": "customData"}""") //use custom headers from string, it must be valid json
@@ -402,7 +419,7 @@ import ru.tinkoff.gatling.assertions.AssertionsBuilder.assertionFromYaml
 #### Using:
 File nfr contains non-functional requirements. 
 
-Requirements supports by Picatinny:
+Requirements supported by Picatinny:
 
 |  requirement|  key |
 |---|---|

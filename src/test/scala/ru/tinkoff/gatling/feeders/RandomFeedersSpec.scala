@@ -1,8 +1,7 @@
 package ru.tinkoff.gatling.feeders
 
 import java.time.temporal.{ChronoUnit, TemporalUnit}
-import java.time.{LocalDate, LocalDateTime}
-
+import java.time.{LocalDate, LocalDateTime, ZoneId}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalacheck.Prop.{forAll, propBoolean}
@@ -19,6 +18,8 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
 
   val dateFrom: LocalDateTime = LocalDateTime.now()
 
+  val timezone: ZoneId = ZoneId.systemDefault()
+
   val unit: TemporalUnit = ChronoUnit.DAYS
 
   val uuidPattern = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})"
@@ -28,7 +29,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
   it should "create RandomDateFeeder with specified date pattern" in {
     forAll(rndString, positiveInt, positiveInt) { (paramName, positive, negative) =>
       (positive > negative) ==>
-        RandomDateFeeder(paramName, positive, negative, datePattern, dateFrom, unit)
+        RandomDateFeeder(paramName, positive, negative, datePattern, dateFrom, unit, timezone)
           .take(50)
           .forall(r => r(paramName).matches(datePatternRegex))
     }.check
@@ -36,14 +37,14 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
 
   it should "produce IllegalArgumentException when RandomDateFeeder creates with delta dates params <0" in {
     assertThrows[IllegalArgumentException] {
-      RandomDateFeeder("paramName", -1, -1, datePattern, dateFrom, unit).next()
+      RandomDateFeeder("paramName", -1, -1, datePattern, dateFrom, unit, timezone).next()
     }
   }
 
   it should "create RandomDateRangeFeeder with specified date pattern" in {
     forAll(rndString, rndString, positiveInt) { (paramNameFrom, paramNameTo, offset) =>
       (offset > 1 && paramNameFrom.nonEmpty && paramNameTo.nonEmpty) ==>
-        RandomDateRangeFeeder(paramNameFrom, paramNameTo, offset, datePattern, dateFrom, unit)
+        RandomDateRangeFeeder(paramNameFrom, paramNameTo, offset, datePattern, dateFrom, unit, timezone)
           .take(50)
           .forall { r =>
             {
@@ -56,7 +57,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
 
   it should "produce IllegalArgumentException when RandomDateRangeFeeder creates with offset param =<1" in {
     assertThrows[IllegalArgumentException] {
-      RandomDateRangeFeeder("paramNameFrom", "paramNameTo", 1, datePattern, dateFrom, unit).next()
+      RandomDateRangeFeeder("paramNameFrom", "paramNameTo", 1, datePattern, dateFrom, unit, timezone).next()
     }
   }
 
