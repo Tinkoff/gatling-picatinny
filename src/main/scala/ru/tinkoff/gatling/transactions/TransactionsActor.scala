@@ -31,13 +31,13 @@ class TransactionsActor(statsEngine: StatsEngine) extends BaseActor {
       stopTimestamp,
       if (session.isFailed) KO else OK,
       None,
-      if (session.isFailed) Some(s"transaction '$name' failed") else None
+      if (session.isFailed) Some(s"transaction '$name' failed") else None,
     )
     next ! session.logGroupRequestTimings(startTimestamp, stopTimestamp)
   }
 
   def onTransaction(transactionsStack: List[TransactionsActor.TransactionStarted]): Receive = {
-    case t: TransactionsActor.TransactionStarted =>
+    case t: TransactionsActor.TransactionStarted                            =>
       context.become(onTransaction(t :: transactionsStack))
     case TransactionsActor.TransactionEnded(name, timestamp, session, next) =>
       transactionsStack match {

@@ -13,10 +13,3 @@ class ProfileBuilder[A <: ProfileConfig] {
     ConfigSource.file(path).loadOrThrow[A]
 
 }
-
-
-
-
-
-
-

@@ -5,22 +5,24 @@ import io.razem.influxdbclient.{Database, HttpConfig, InfluxDB, Point, QueryResu
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-private[influxdb] case class InfluxPersistent(host: String,
-                                              port: Int,
-                                              db: String,
-                                              rootPathPrefix: String,
-                                              schema: String,
-                                              username: String,
-                                              password: String) {
+private[influxdb] case class InfluxPersistent(
+    host: String,
+    port: Int,
+    db: String,
+    rootPathPrefix: String,
+    schema: String,
+    username: String,
+    password: String,
+) {
 
   def checkSchema(schema: String): Boolean = schema match {
     case "https" => true
     case _       => false
   }
 
-  private lazy val httpConfig = new HttpConfig().setConnectTimeout(3000).setRequestTimeout(30000) //timeout in millis
+  private lazy val httpConfig = new HttpConfig().setConnectTimeout(3000).setRequestTimeout(30000) // timeout in millis
 
-  private[influxdb] def init: Future[InfluxDB] =
+  private[influxdb] def init: Future[InfluxDB]                  =
     Future(InfluxDB.connect(host, port, username, password, checkSchema(schema), httpConfig))
   private[influxdb] def close(influxDb: InfluxDB): Future[Unit] = Future(influxDb.close())
 
@@ -39,12 +41,14 @@ private[influxdb] case class InfluxPersistent(host: String,
     write(influxDb, point)
   }
 
-  def writeCustomAnnotation(influxDb: InfluxDB,
-                            tagKey: String,
-                            tagValue: String,
-                            fieldKey: String,
-                            fieldValue: String,
-                            timestamp: Long): Future[Boolean] = {
+  def writeCustomAnnotation(
+      influxDb: InfluxDB,
+      tagKey: String,
+      tagValue: String,
+      fieldKey: String,
+      fieldValue: String,
+      timestamp: Long,
+  ): Future[Boolean] = {
     val point = Point(rootPathPrefix, timestamp)
       .addTag(tagKey, tagValue)
       .addField(fieldKey, fieldValue)

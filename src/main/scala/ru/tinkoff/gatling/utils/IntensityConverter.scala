@@ -5,7 +5,7 @@ import scala.util.Try
 
 object IntensityConverter {
 
-  //implicit conversions to rps
+  // implicit conversions to rps
   implicit class toRps(val count: Double) extends AnyVal {
     def rph: Double = count / 3600
 

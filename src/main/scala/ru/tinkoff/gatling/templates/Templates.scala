@@ -7,17 +7,16 @@ import io.gatling.core.session.Expression
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
-/**
- * Send templates from same folder in resources by file name
- * */
+/** Send templates from same folder in resources by file name
+  */
 trait Templates {
 
   protected val templates: Map[String, Body with Expression[String]] =
     Files
       .list(
-        Paths.get(Thread.currentThread.getContextClassLoader.getResource("templates").toURI)
+        Paths.get(Thread.currentThread.getContextClassLoader.getResource("templates").toURI),
       )
       .iterator()
       .asScala

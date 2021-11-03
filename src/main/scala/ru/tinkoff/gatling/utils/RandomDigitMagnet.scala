@@ -2,7 +2,7 @@ package ru.tinkoff.gatling.utils
 
 import java.util.concurrent.ThreadLocalRandom
 
-private[gatling] object RandomDigitMagnet {
+object RandomDigitMagnet {
 
   trait DigitMagnet {
     type Result

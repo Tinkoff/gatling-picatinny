@@ -8,7 +8,8 @@ private[gatling] object ConfigManager {
 
   lazy val simulationConfig: SimulationConfigUtils = SimulationConfigUtils(
     ConfigFactory
-      .load("simulation.conf"))
+      .load("simulation.conf"),
+  )
 
   lazy val influxConfig: Config = ConfigFactory
     .load("influx.conf")

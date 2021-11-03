@@ -7,11 +7,12 @@ import io.gatling.core.structure.ScenarioContext
 import io.gatling.core.util.NameGen
 import ru.tinkoff.gatling.transactions.TransactionsProtocol
 
-class EndTransactionAction(transactionName: Expression[String],
-                           stopTime: Expression[Long],
-                           ctx: ScenarioContext,
-                           val next: Action)
-    extends ChainableAction with NameGen {
+class EndTransactionAction(
+    transactionName: Expression[String],
+    stopTime: Expression[Long],
+    ctx: ScenarioContext,
+    val next: Action,
+) extends ChainableAction with NameGen {
 
   override def name: String                = genName("endTransactionAction")
   private val components                   = ctx.protocolComponentsRegistry.components(TransactionsProtocol.key)
@@ -21,9 +22,12 @@ class EndTransactionAction(transactionName: Expression[String],
     for {
       resolvedName  <- transactionName(session)
       stopTimestamp <- stopTime(session)
-    } yield
-      throttler.fold(components.transactionTracker.endTransaction(resolvedName, stopTimestamp, session, next))(
-        _.throttle(session.scenario, () => {
+    } yield throttler.fold(components.transactionTracker.endTransaction(resolvedName, stopTimestamp, session, next))(
+      _.throttle(
+        session.scenario,
+        () => {
           components.transactionTracker.endTransaction(resolvedName, stopTimestamp, session, next)
-        }))
+        },
+      ),
+    )
 }

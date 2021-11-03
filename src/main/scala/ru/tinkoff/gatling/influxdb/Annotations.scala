@@ -6,8 +6,7 @@ import io.gatling.core.structure.{ChainBuilder, PopulationBuilder, ScenarioBuild
 import io.razem.influxdbclient.Point
 import io.gatling.core.session.el._
 
-/**
-  * Mix this trait in Simulation class to write Start/Stop annotations in influxDb before/after simulation run
+/** Mix this trait in Simulation class to write Start/Stop annotations in influxDb before/after simulation run
   */
 trait Annotations {
   simulation: Simulation =>
@@ -18,8 +17,7 @@ trait Annotations {
   }
 }
 
-/**
-  * Use this object to write custom points to InfluxDB
+/** Use this object to write custom points to InfluxDB
   */
 object Annotations {
 
@@ -35,27 +33,29 @@ object Annotations {
     AnnotationManager.addCustomPoints(point)
   }
 
-  //for write custom points from setUp
+  // for write custom points from setUp
   def userDataPoint(uniqScnName: String, point: Point): PopulationBuilder = {
-    //TODO: how to do it without scenario?
+    // TODO: how to do it without scenario?
     scenario(uniqScnName)
       .userDataPoint(point)
       .inject(atOnceUsers(1))
   }
 
-  //for write default prepared points from setUp
-  def userDataPoint(uniqScnName: String,
-                    tagKey: String,
-                    tagValue: String,
-                    fieldKey: String,
-                    fieldValue: String): PopulationBuilder = {
-    //TODO: how to do it without scenario?
+  // for write default prepared points from setUp
+  def userDataPoint(
+      uniqScnName: String,
+      tagKey: String,
+      tagValue: String,
+      fieldKey: String,
+      fieldValue: String,
+  ): PopulationBuilder = {
+    // TODO: how to do it without scenario?
     scenario(uniqScnName)
       .userDataPoint(tagKey, tagValue, fieldKey, fieldValue)
       .inject(atOnceUsers(1))
   }
 
-  //for usage in chain builder
+  // for usage in chain builder
   implicit class ChainAppender(cb: ChainBuilder) {
     def userDataPoint(point: Point): ChainBuilder =
       cb.exec(session => {
@@ -73,7 +73,7 @@ object Annotations {
       })
   }
 
-  //for usage in scenario
+  // for usage in scenario
   implicit class ScenarioAppender(sb: ScenarioBuilder) {
     def userDataPoint(point: Point): ScenarioBuilder =
       sb.exec(session => {
@@ -91,17 +91,19 @@ object Annotations {
       })
   }
 
-  //for usage in simulation setUp
+  // for usage in simulation setUp
   implicit class PopulationBuilderAppender(pb: PopulationBuilder) {
     def userDataPoint(uniqScpName: String, point: Point): PopulationBuilder = {
       pb.andThen(Annotations.userDataPoint(uniqScpName, point))
     }
 
-    def userDataPoint(uniqScpName: String,
-                      tagKey: String,
-                      tagValue: String,
-                      fieldKey: String,
-                      fieldValue: String): PopulationBuilder = {
+    def userDataPoint(
+        uniqScpName: String,
+        tagKey: String,
+        tagValue: String,
+        fieldKey: String,
+        fieldValue: String,
+    ): PopulationBuilder = {
       pb.andThen(Annotations.userDataPoint(uniqScpName, tagKey, tagValue, fieldKey, fieldValue))
     }
   }

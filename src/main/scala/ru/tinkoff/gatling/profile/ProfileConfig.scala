@@ -8,6 +8,6 @@ trait ProfileConfig {
   val profile: Seq[RequestConfig]
 
   def toRandomScenario: ScenarioBuilder = scenario(name)
-    .randomSwitch(profile.map(requestConfig => requestConfig.toTuple):_*)
+    .randomSwitch(profile.map(requestConfig => requestConfig.toTuple): _*)
 
 }

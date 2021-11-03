@@ -26,7 +26,7 @@ final case class JwtGeneratorBuilder(header: Header, payload: Payload, algorithm
     val resource = Source.fromResource(path).mkString
     validateJson(resource) match {
       case Right(json) => this.modify(_.header.json).setTo(json)
-      case Left(msg) =>
+      case Left(msg)   =>
         logger.error(msg)
         this
     }
@@ -35,7 +35,7 @@ final case class JwtGeneratorBuilder(header: Header, payload: Payload, algorithm
   def header(header: String): JwtGeneratorBuilder = {
     validateJson(header) match {
       case Right(json) => this.modify(_.header.json).setTo(json)
-      case Left(msg) =>
+      case Left(msg)   =>
         logger.error(msg)
         this
     }
@@ -54,7 +54,7 @@ final case class JwtGeneratorBuilder(header: Header, payload: Payload, algorithm
     val resource = Source.fromResource(path).mkString
     validateJson(resource) match {
       case Right(json) => this.modify(_.payload.json).setTo(json)
-      case Left(msg) =>
+      case Left(msg)   =>
         logger.error(msg)
         this
     }
@@ -63,7 +63,7 @@ final case class JwtGeneratorBuilder(header: Header, payload: Payload, algorithm
   def payload(payload: String): JwtGeneratorBuilder = {
     validateJson(payload) match {
       case Right(json) => this.modify(_.payload.json).setTo(json)
-      case Left(msg) =>
+      case Left(msg)   =>
         logger.error(msg)
         this
     }
