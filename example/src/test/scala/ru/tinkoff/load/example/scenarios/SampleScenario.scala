@@ -1,10 +1,12 @@
 package ru.tinkoff.load.example.scenarios
 
+import com.redis.RedisClientPool
 import io.gatling.core.Predef._
 import io.gatling.core.structure.ScenarioBuilder
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import ru.tinkoff.gatling.config.SimulationConfig._
+import ru.tinkoff.gatling.redis.RedisActionBuilder.RedisActions
 import ru.tinkoff.gatling.utils.jwt._
 import ru.tinkoff.load.example.feeders.Feeders._
 
@@ -23,6 +25,8 @@ class SampleScenario {
 
   //get some configuration param from simulation.conf/ENV/JAVA_OPTS
   val jwtCookieDomain = getStringParam("domain")
+
+  val redisPool = new RedisClientPool("localhost", 6379)
 
   //single request
   val getMainPage: HttpRequestBuilder = http("GET /")
@@ -48,6 +52,10 @@ class SampleScenario {
     .feed(list2feeder)
     .feed(finiteRandomDigitsWithTransform)
     .feed(regexString)
+    //redis commands
+    .exec(redisPool.SADD("key", "values", "values"))
+    .exec(redisPool.DEL("key", "keys"))
+    .exec(redisPool.SREM("key", "values", "values"))
     //generate JWT using values from feeders
     .exec(_.setJwt(jwtGenerator, "jwtToken"))
     //set JWT cookie
