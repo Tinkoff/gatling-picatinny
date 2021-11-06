@@ -1,12 +1,12 @@
 package ru.tinkoff.gatling.utils
 
 import com.eatthepath.uuid.FastUUID
-import java.time.{Instant, LocalDateTime, ZoneId}
-import java.util.concurrent.ThreadLocalRandom
+import ru.tinkoff.gatling.utils.RandomDigitMagnet.DigitMagnet
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalUnit
+import java.time.{Instant, LocalDateTime, ZoneId}
 import java.util.UUID
-import ru.tinkoff.gatling.utils.RandomDigitMagnet.DigitMagnet
+import java.util.concurrent.ThreadLocalRandom
 import scala.annotation.tailrec
 import scala.util.Random
 
@@ -36,8 +36,6 @@ object RandomDataGenerators {
 
   def randomCyrillicString(n: Int): String =
     randomString("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя")(n)
-
-  def randomPhone(countryCode: String = "+7"): String = s"""$countryCode${this.digitString(10)}"""
 
   def randomDigit(): Int = ThreadLocalRandom.current().nextInt()
 

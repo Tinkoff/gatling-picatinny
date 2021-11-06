@@ -46,7 +46,6 @@ class SampleScenario {
     .feed(randomPhone)
     .feed(randomRangeString)
     .feed(randomString)
-    .feed(randomUsaPhone)
     .feed(randomUuid)
     .feed(sequenceLong)
     .feed(simpleRandomDate)

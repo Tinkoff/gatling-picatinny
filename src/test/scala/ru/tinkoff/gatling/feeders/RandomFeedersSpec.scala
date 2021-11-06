@@ -1,11 +1,13 @@
 package ru.tinkoff.gatling.feeders
 
-import java.time.temporal.{ChronoUnit, TemporalUnit}
-import java.time.{LocalDate, LocalDateTime, ZoneId}
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
 import org.scalacheck.Prop.{forAll, propBoolean}
 import org.scalacheck._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+import ru.tinkoff.gatling.utils.Brackets
+
+import java.time.temporal.{ChronoUnit, TemporalUnit}
+import java.time.{LocalDateTime, ZoneId}
 
 class RandomFeedersSpec extends AnyFlatSpec with Matchers {
 
@@ -21,6 +23,12 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
   val timezone: ZoneId = ZoneId.systemDefault()
 
   val unit: TemporalUnit = ChronoUnit.DAYS
+
+  // phone generators
+  val rndNumStr    = (n: Int) => Gen.listOfN(n, Gen.numChar).map(_.mkString)
+  val rndBrackets  = Gen.oneOf(Brackets.Round, Brackets.Square, Brackets.Curly, Brackets.None)
+  val rndDelimiter = Gen.oneOf("", "-", " ")
+  val phonePattern = """(\+?\d{1,3}[\(\[\{]?(?!0{3})\d{3}[\)\]\}]?\d{3}-?\s?\d{2}-?\s?\d{2})"""
 
   val uuidPattern = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})"
 
@@ -69,11 +77,12 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
     }.check()
   }
 
-  it should "create RandomPhoneFeeder with specified country code" in {
-    forAll(rndString, rndString) { (paramName, countryCode) =>
-      RandomPhoneFeeder(paramName, countryCode)
-        .take(50)
-        .forall(r => r(paramName).startsWith(countryCode))
+  it should "create RandomPhoneFeeder with specified parameters" in {
+    forAll(rndString, rndNumStr(1), rndNumStr(3), rndDelimiter, rndBrackets) {
+      (paramName, countryCode, regionCode, delimiter, rndBrackets) =>
+        RandomPhoneFeeder(paramName, countryCode, regionCode, delimiter, rndBrackets)
+          .take(50)
+          .forall(r => r(paramName).matches(phonePattern))
     }.check()
   }
 

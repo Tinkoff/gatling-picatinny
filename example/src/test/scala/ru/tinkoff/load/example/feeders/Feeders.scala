@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit
 import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
 import io.gatling.core.Predef._
 import ru.tinkoff.gatling.feeders._
-import ru.tinkoff.gatling.utils.RandomDataGenerators
+import ru.tinkoff.gatling.utils.{Brackets, RandomDataGenerators}
 
 object Feeders {
 
@@ -45,9 +45,7 @@ object Feeders {
     CustomFeeder("randomRangeFloat", RandomDataGenerators.randomDigit { (1.toFloat, 10.toFloat) })
 
   // random phone
-  // +7 country code is default
-  val randomPhone: Feeder[String]    = RandomPhoneFeeder("randomPhone")
-  val randomUsaPhone: Feeder[String] = RandomPhoneFeeder("randomUsaPhone", "+1")
+  val randomPhone: Feeder[String] = RandomPhoneFeeder("randomPhone", "+7", "912", "-", Brackets.Round)
 
   // random alphanumeric String with specified length
   val randomString: Feeder[String] = RandomStringFeeder("randomString", 16)

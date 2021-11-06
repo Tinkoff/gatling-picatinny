@@ -1,18 +1,17 @@
 package ru.tinkoff.gatling.utils
 
-import java.time.temporal.{ChronoUnit, TemporalUnit}
-import java.time.{LocalDate, LocalDateTime, ZoneId}
-import java.util.UUID
+import org.scalacheck.Prop.{forAll, propBoolean}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalacheck.Prop.{forAll, propBoolean}
-import org.scalacheck._
+
+import java.time.temporal.ChronoUnit
+import java.time.{LocalDateTime, ZoneId}
 class RandomDataGeneratorsTest extends AnyFlatSpec with Matchers {
 
-//  //uuid generator
+  //  //uuid generator
   val uuidPattern = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})"
 
-//  //date generator
+  //  //date generator
   val dateFormat   = "yyyy-MM-dd'T'HH:mm"
   val datePattern  = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
   val dateFrom     = LocalDateTime.now()
@@ -23,13 +22,6 @@ class RandomDataGeneratorsTest extends AnyFlatSpec with Matchers {
     forAll { (alphabet: String, length: Int) =>
       (length < 100 && length > 0 && !alphabet.equals("")) ==>
         RandomDataGenerators.randomString(alphabet)(length).length.equals(length)
-    }.check()
-  }
-
-  it should "generate correct random phone" in {
-    forAll { (countryCode: Int) =>
-      (countryCode < 100 && countryCode > -1) ==>
-        RandomDataGenerators.randomPhone(s"+$countryCode").matches(s"\\+$countryCode\\d{10}")
     }.check()
   }
 

@@ -280,7 +280,7 @@ This module allows you to use Redis commands.
 - Support Redis commands: SADD, DEL, SREM
 - Support Gatling EL
 
-####Read before use:
+#### Read before use:
 - Мethods are not taken into account in statistics Gatling.
 - Not intended for load testing of Redis.
 
