@@ -36,6 +36,8 @@ class SampleScenario {
   //compose all in scenario
   val sampleScenario: ScenarioBuilder = scenario("Sample scenario")
   //include feeders in scenario as usual
+    .feed(timeShort)
+    .feed(timezoneRandom)
     .feed(firstWorkDayHours)
     .feed(holidaysDate)
     .feed(myCustomFeeder)
