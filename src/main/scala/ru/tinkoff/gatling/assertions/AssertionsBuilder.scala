@@ -33,26 +33,20 @@ object AssertionsBuilder {
     case _                                  => None
   }
 
-  private def buildErrorAssertion(record: Record): Iterable[Assertion] = record.value.map { case (k, v) =>
-    (k, v) match {
-      case ("all", v) => global.failedRequests.percent.lt(v.toInt)
-      case (k, v)     => details(findGroup(k)).failedRequests.percent.lt(v.toInt)
-    }
+  private def buildErrorAssertion(record: Record): Iterable[Assertion] = record.value.map {
+    case ("all", v) => global.failedRequests.percent.lt(v.toInt)
+    case (k, v)     => details(findGroup(k)).failedRequests.percent.lt(v.toInt)
   }
 
   private def buildPercentileAssertion(record: Record, percentile: Int): Iterable[Assertion] =
-    record.value.map { case (k, v) =>
-      (k, v) match {
-        case ("all", v) => global.responseTime.percentile(percentile).lt(v.toInt)
-        case (k, v)     => details(findGroup(k)).responseTime.percentile(percentile).lt(v.toInt)
-      }
+    record.value.map {
+      case ("all", v) => global.responseTime.percentile(percentile).lt(v.toInt)
+      case (k, v)     => details(findGroup(k)).responseTime.percentile(percentile).lt(v.toInt)
     }
 
-  private def buildMaxResponseTimeAssertion(record: Record): Iterable[Assertion] = record.value.map { case (k, v) =>
-    (k, v) match {
-      case ("all", v) => global.responseTime.max.lt(v.toInt)
-      case (k, v)     => details(findGroup(k)).responseTime.max.lt(v.toInt)
-    }
+  private def buildMaxResponseTimeAssertion(record: Record): Iterable[Assertion] = record.value.map {
+    case ("all", v) => global.responseTime.max.lt(v.toInt)
+    case (k, v)     => details(findGroup(k)).responseTime.max.lt(v.toInt)
   }
 
   def assertionFromYaml(path: String): Iterable[Assertion] = {
