@@ -24,8 +24,12 @@ class StartTransactionAction(transactionName: Expression[String], ctx: ScenarioC
     for {
       resolvedName   <- transactionName(session)
       startTimestamp <- ctx.coreComponents.clock.nowMillis.success
-    } yield
-      throttler.fold(startAndNext(resolvedName, startTimestamp, session))(_.throttle(session.scenario, () => {
-        startAndNext(resolvedName, startTimestamp, session)
-      }))
+    } yield throttler.fold(startAndNext(resolvedName, startTimestamp, session))(
+      _.throttle(
+        session.scenario,
+        () => {
+          startAndNext(resolvedName, startTimestamp, session)
+        },
+      ),
+    )
 }

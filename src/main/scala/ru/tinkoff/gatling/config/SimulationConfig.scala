@@ -20,7 +20,7 @@ object SimulationConfig {
 
   lazy val rampDuration: FiniteDuration  = simulationConfig.get[FiniteDuration]("rampDuration")
   lazy val stageDuration: FiniteDuration = simulationConfig.get[FiniteDuration]("stageDuration")
-  lazy val testDuration: FiniteDuration =
+  lazy val testDuration: FiniteDuration  =
     simulationConfig.get[FiniteDuration]("testDuration", (rampDuration + stageDuration) * stagesNumber)
 
   lazy val intensity: Double = getIntensityFromString(simulationConfig.get[String]("intensity"))

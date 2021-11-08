@@ -22,12 +22,14 @@ object fixtures {
 
   val fakeEventLoop = new FakeEventLoop
 
-  case class Evt(evtType: String,
-                 name: String,
-                 startTimestamp: Long,
-                 endTimestamp: Long,
-                 status: String,
-                 errorMsg: Option[String])
+  case class Evt(
+      evtType: String,
+      name: String,
+      startTimestamp: Long,
+      endTimestamp: Long,
+      status: String,
+      errorMsg: Option[String],
+  )
   final class InMemoryStatsEngine extends StatsEngine {
 
     private val events: ConcurrentLinkedQueue[Evt] = new ConcurrentLinkedQueue()
@@ -40,14 +42,16 @@ object fixtures {
 
     override def logUserEnd(userMessage: UserEndMessage): Unit = ()
 
-    override def logResponse(scenario: String,
-                             groups: List[String],
-                             requestName: String,
-                             startTimestamp: Long,
-                             endTimestamp: Long,
-                             status: Status,
-                             responseCode: Option[String],
-                             message: Option[String]): Unit = {
+    override def logResponse(
+        scenario: String,
+        groups: List[String],
+        requestName: String,
+        startTimestamp: Long,
+        endTimestamp: Long,
+        status: Status,
+        responseCode: Option[String],
+        message: Option[String],
+    ): Unit = {
       events.add(Evt("REQUEST", requestName, startTimestamp, endTimestamp, status.name, message))
     }
 

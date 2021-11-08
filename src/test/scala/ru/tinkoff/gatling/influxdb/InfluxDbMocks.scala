@@ -25,13 +25,13 @@ private[influxdb] object InfluxDbMocks extends MockFactory {
     "experiment",
     "http",
     "admin",
-    "admin"
+    "admin",
   )
 
-  val testQuery       = s"""SELECT last("annotation_value") FROM ${testInfluxDbPersistent.rootPathPrefix}"""
-  val testQueryResult = lastStatusValueMock(List(BigDecimal(0)))
-  val testPoint       = Point("test", -1, Nil, Nil)
-  val testPoint2      = Point("test2", -1, Nil, Nil)
+  val testQuery                 = s"""SELECT last("annotation_value") FROM ${testInfluxDbPersistent.rootPathPrefix}"""
+  val testQueryResult           = lastStatusValueMock(List(BigDecimal(0)))
+  val testPoint                 = Point("test", -1, Nil, Nil)
+  val testPoint2                = Point("test2", -1, Nil, Nil)
   val testAnnotationStatusPoint = Point(testInfluxDbPersistent.rootPathPrefix)
     .addTag("annotation", Start.toString)
     .addField("annotation_value", BigDecimal(0))

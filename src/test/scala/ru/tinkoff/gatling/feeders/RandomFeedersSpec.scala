@@ -32,7 +32,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
         RandomDateFeeder(paramName, positive, negative, datePattern, dateFrom, unit, timezone)
           .take(50)
           .forall(r => r(paramName).matches(datePatternRegex))
-    }.check
+    }.check()
   }
 
   it should "produce IllegalArgumentException when RandomDateFeeder creates with delta dates params <0" in {
@@ -52,7 +52,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
               r(paramNameTo).matches(datePatternRegex)
             }
           }
-    }.check
+    }.check()
   }
 
   it should "produce IllegalArgumentException when RandomDateRangeFeeder creates with offset param =<1" in {
@@ -66,7 +66,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
       RandomDigitFeeder(paramName)
         .take(50)
         .forall(r => r(paramName).isInstanceOf[Int])
-    }.check
+    }.check()
   }
 
   it should "create RandomPhoneFeeder with specified country code" in {
@@ -74,7 +74,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
       RandomPhoneFeeder(paramName, countryCode)
         .take(50)
         .forall(r => r(paramName).startsWith(countryCode))
-    }.check
+    }.check()
   }
 
   it should "create RandomStringFeeder with specified param length interval" in {
@@ -82,16 +82,16 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
       RandomStringFeeder(paramName, length)
         .take(50)
         .forall(r => r(paramName).length == length)
-    }.check
+    }.check()
   }
 
   it should "create RandomRangeStringFeeder with param length in the specified interval" in {
     forAll(rndString, positiveInt, positiveInt, rndString) { (paramName, lengthFrom, lengthTo, alphabet) =>
-      (lengthFrom > 0 && lengthTo > 0 && lengthFrom < lengthTo && alphabet.length > 0) ==>
+      (lengthFrom > 0 && lengthTo > 0 && lengthFrom < lengthTo && alphabet.nonEmpty) ==>
         RandomRangeStringFeeder(paramName, lengthFrom, lengthTo, alphabet)
           .take(50)
           .forall(r => (r(paramName).length >= lengthFrom) && (r(paramName).length < lengthTo))
-    }.check
+    }.check()
   }
 
   it should "produce IllegalArgumentException when RandomRangeStringFeeder creates with length params =<0" in {
@@ -111,7 +111,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
       RandomUUIDFeeder(paramName)
         .take(50)
         .forall(r => r(paramName).matches(uuidPattern))
-    }.check
+    }.check()
   }
 
   it should "create RegexFeeder with specified regex pattern" in {
@@ -126,7 +126,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
     forAll(rndString, positiveInt, positiveInt) { (paramName, start, step) =>
       val list = SequentialFeeder(paramName, start, step).take(50).toList.flatten
       list.equals(list.sorted)
-    }.check
+    }.check()
   }
 
 }

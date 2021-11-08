@@ -27,7 +27,7 @@ trait Mocks extends MockFactory with BeforeAndAfterAll {
     fixtures.statsEngine,
     new DefaultClock,
     fixtures.noAction,
-    null
+    null,
   )
 
   val ProtocolComponentsRegistryMock: ProtocolComponentsRegistry =
@@ -39,7 +39,7 @@ trait Mocks extends MockFactory with BeforeAndAfterAll {
     testCoreComponents,
     ProtocolComponentsRegistryMock,
     Disabled,
-    false
+    false,
   )
 
   override protected def afterAll(): Unit = {

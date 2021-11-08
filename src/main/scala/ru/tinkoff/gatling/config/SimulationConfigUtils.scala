@@ -40,11 +40,11 @@ private[gatling] class SimulationConfigUtils(config: Config) extends LazyLogging
       case TypeTag.Boolean   => cfg.getBoolean(path)
       case BigDecimalTag     => BigDecimal(cfg.getString(path))
       case ConfigTag         => cfg.getConfig(path)
-      case _ =>
+      case _                 =>
         logger.error(s"Configuration option type $tag is not implemented")
         throw new IllegalArgumentException(s"Configuration option type $tag not implemented")
     }
-    val res = result.asInstanceOf[T]
+    val res    = result.asInstanceOf[T]
     logger.info(s"Simulation param for $path is set to: ${res}")
     res
   }

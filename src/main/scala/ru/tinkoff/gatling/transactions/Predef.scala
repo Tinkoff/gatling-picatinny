@@ -23,8 +23,10 @@ object Predef {
     def startTransaction(tName: Expression[String]): ScenarioBuilder =
       scenarioBuilder.exec(StartTransactionActionBuilder(tName))
 
-    def endTransaction(tName: Expression[String],
-                       stopTime: Expression[Long] = _ => System.currentTimeMillis().success): ScenarioBuilder =
+    def endTransaction(
+        tName: Expression[String],
+        stopTime: Expression[Long] = _ => System.currentTimeMillis().success,
+    ): ScenarioBuilder =
       scenarioBuilder.exec(EndTransactionActionBuilder(tName, stopTime))
   }
 }

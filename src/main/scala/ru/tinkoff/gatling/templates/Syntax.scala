@@ -22,9 +22,9 @@ object Syntax {
     ArrayVal(vs.map {
       case o: ObjectVal => o
       case a: ArrayVal  => a
-      case s: String =>
+      case s: String    =>
         interpolateRegExpr.findFirstMatchIn(s).fold[FieldVal](RawValString(s))(m => InterpolateStrVal(m.group(1)))
-      case other => RawValGen(other)
+      case other        => RawValGen(other)
     }.toList)
 
   implicit def strToField(str: String): Field = Field(str, InterpolateStrVal(str))
@@ -90,16 +90,15 @@ object Syntax {
 
   def makeXmlArray(stringBuilder: StringBuilder, vs: List[FieldVal]): String =
     vs.foldLeft(stringBuilder) {
-        case (sb, RawValString(s))            => sb.append(s"<item>$s</item>")
-        case (sb, RawValGen(f @ Field(_, _))) => sb.append(s"""<item>${makeXml(List(f))}</item>""")
-        case (sb, RawValGen(()))              => sb.append("")
-        case (sb, RawValGen(s))               => sb.append(s"<item>$s</item>")
-        case (sb, InterpolateStrVal(in))      => sb.append(s"<item>$${$in}</item>")
-        case (sb, InterpolateGenVal(in))      => sb.append(s"<item>$${$in}</item>")
-        case (sb, ObjectVal(f))               => sb.append(s"""<item>${makeXml(f)}</item>""")
-        case (sb, ArrayVal(vs))               => sb.append(s"""<item>${makeXmlArray(sb, vs)}</item>""")
-      }
-      .mkString
+      case (sb, RawValString(s))            => sb.append(s"<item>$s</item>")
+      case (sb, RawValGen(f @ Field(_, _))) => sb.append(s"""<item>${makeXml(List(f))}</item>""")
+      case (sb, RawValGen(()))              => sb.append("")
+      case (sb, RawValGen(s))               => sb.append(s"<item>$s</item>")
+      case (sb, InterpolateStrVal(in))      => sb.append(s"<item>$${$in}</item>")
+      case (sb, InterpolateGenVal(in))      => sb.append(s"<item>$${$in}</item>")
+      case (sb, ObjectVal(f))               => sb.append(s"""<item>${makeXml(f)}</item>""")
+      case (sb, ArrayVal(vs))               => sb.append(s"""<item>${makeXmlArray(sb, vs)}</item>""")
+    }.mkString
 
   def makeXml(fs: Field*): String = makeXml(fs.toList)
 

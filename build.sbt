@@ -6,7 +6,7 @@ def UtilsModule(id: String) = Project(id, file(id))
 
 lazy val root = (project in file("."))
   .settings(
-    name := "gatling-picatinny",
+    name          := "gatling-picatinny",
     libraryDependencies ++= gatlingCore,
     libraryDependencies ++= fastUUID,
     libraryDependencies ++= json4s,
@@ -24,14 +24,14 @@ lazy val root = (project in file("."))
       "-language:implicitConversions",
       "-language:higherKinds",
       "-language:existentials",
-      "-language:postfixOps"
-    )
+      "-language:postfixOps",
+    ),
   )
 
 lazy val example = (project in file("example"))
   .enablePlugins(GatlingPlugin)
   .settings(
     name := "gatling-picatinny-example",
-    libraryDependencies ++= gatling
+    libraryDependencies ++= gatling,
   )
   .dependsOn(root)

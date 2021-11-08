@@ -24,7 +24,7 @@ object VaultFeeder {
     val client_token: JValue   = vaultTokenJson \ "auth" \ "client_token"
     val vaultToken: String     = client_token.values.toString
 
-    val getHeaders: Seq[String] = Seq("X-Vault-Token", s"""$vaultToken""")
+    val getHeaders: Seq[String]   = Seq("X-Vault-Token", s"""$vaultToken""")
     val vaultDataResponse: String = THttpClient()
       .GET(s"""$vaultUrl/v1/$secretPath""", getHeaders)
       .body()

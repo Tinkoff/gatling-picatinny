@@ -16,7 +16,7 @@ import ru.tinkoff.gatling.transactions.fixtures.Evt
 import org.scalatest.OptionValues._
 
 object TransactionsSpec {
-  private val now = System.currentTimeMillis()
+  private val now                          = System.currentTimeMillis()
   val transactionScenario: ScenarioBuilder =
     scenario("Test transaction scenario")
       .startTransaction("t1")
@@ -62,11 +62,9 @@ class TransactionsSpec extends AnyFlatSpec with Matchers with Mocks with BeforeA
 
   before(fixtures.statsEngine.stop(testContext.coreComponents.controller, None))
 
-  private val session = fixtures.emptySession(transactionScenario.name)
+  private val session                         = fixtures.emptySession(transactionScenario.name)
   private def runScenario(s: ScenarioBuilder) = {
-    val actions = s.actionBuilders.foldLeft(fixtures.noAction)(
-      (next, builder) => builder.build(testContext, next)
-    )
+    val actions = s.actionBuilders.foldLeft(fixtures.noAction)((next, builder) => builder.build(testContext, next))
     actions ! session
     Thread.sleep(200)
     actions
