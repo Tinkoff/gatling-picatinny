@@ -43,8 +43,8 @@ object Feeders {
   // random Int
   val randomDigit: Feeder[Int]        = RandomDigitFeeder("randomDigit")
   val randomRangeInt: Feeder[Int]     = CustomFeeder[Int]("randomRangeInt", RandomDataGenerators.randomDigit(1, 50))
-  val randomRangeFloat: Feeder[RandomDigitMagnet.DigitMagnet#Result] =
-    CustomFeeder("randomRangeFloat", RandomDataGenerators.randomDigit(1.toFloat))
+  val randomRangeFloat: Feeder[Any] =
+    CustomFeeder("randomRangeFloat", RandomDataGenerators.randomDigit { (1.toFloat, 10.toFloat) })
 
   // random phone
   // +7 country code is default
