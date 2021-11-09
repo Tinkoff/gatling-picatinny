@@ -17,15 +17,14 @@ case class RedisSremAction(ctx: ScenarioContext,
 
   override val name: String = genName("redisSremAction")
 
-  private def deleteKeyMember(key: Any, value: Any, values: Seq[Any]): Option[Long] = {
+  private def deleteKeyMember(key: Any, value: Any, values: Seq[Any]): Option[Long] =
     clientPool.withClient { client =>
       {
         client.srem(key, value, values: _*)
       }
     }
-  }
 
-  override def execute(session: Session): Unit = {
+  override def execute(session: Session): Unit =
     try {
       for {
         resolvedKey <- key(session)
@@ -48,6 +47,5 @@ case class RedisSremAction(ctx: ScenarioContext,
         )
         next ! session
     }
-  }
 
 }

@@ -273,12 +273,16 @@ profile:
 
 ### redis
 
-This module allows you to use redis commands.
+This module allows you to use Redis commands.
 
 #### Features:
 
-- Support redis commands: SADD, DEL, SREM
+- Support Redis commands: SADD, DEL, SREM
 - Support Gatling EL
+
+####Read before use:
+- Мethods are not taken into account in statistics Gatling.
+- Not intended for load testing of Redis.
 
 #### Import:
 
@@ -294,7 +298,7 @@ First you need to prepare RedisClientPool:
 val redisPool = new RedisClientPool(redisUrl, 6379)
 ```
 
-Add the redis commands to your scenario chain:
+Add the Redis commands to your scenario chain:
 ```scala
 .exec(redisPool.SADD("key", "values", "values")) //add the specified members to the set stored at key
 .exec(redisPool.DEL("key", "keys")) //removes the specified keys

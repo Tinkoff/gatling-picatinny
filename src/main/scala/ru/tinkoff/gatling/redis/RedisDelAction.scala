@@ -7,33 +7,33 @@ import io.gatling.core.session.{Expression, Session}
 import io.gatling.core.structure.ScenarioContext
 import io.gatling.core.util.NameGen
 
-case class RedisDelAction(ctx: ScenarioContext,
-                          next: Action,
-                          clientPool: RedisClientPool,
-                          key: Expression[Any],
-                          keys: Seq[Expression[Any]])
-    extends ChainableAction with NameGen {
+case class RedisDelAction(
+    ctx: ScenarioContext,
+    next: Action,
+    clientPool: RedisClientPool,
+    key: Expression[Any],
+    keys: Seq[Expression[Any]],
+) extends ChainableAction with NameGen {
 
   override val name: String = genName("redisDelAction")
 
-  private def redisDeleteKey(key: Any, keys: Seq[Any]): Option[Long] = {
+  private def redisDeleteKey(key: Any, keys: Seq[Any]): Option[Long] =
     clientPool.withClient { client =>
       {
         client.del(key, keys: _*)
       }
     }
-  }
 
-  override def execute(session: Session): Unit = {
+  override def execute(session: Session): Unit =
     try {
       for {
-        resolvedKey <- key(session)
+        resolvedKey  <- key(session)
         resolvedKeys <- keys
-                         .map(_(session) match {
-                           case Success(v) => v
-                           case Failure(e) => logger.debug(e)
-                         })
-                         .success
+                          .map(_(session) match {
+                            case Success(v) => v
+                            case Failure(e) => logger.debug(e)
+                          })
+                          .success
       } yield redisDeleteKey(resolvedKey, resolvedKeys)
       next ! session
     } catch {
@@ -42,10 +42,9 @@ case class RedisDelAction(ctx: ScenarioContext,
           session.scenario,
           session.groups,
           requestName = name,
-          e.getMessage
+          e.getMessage,
         )
         next ! session
     }
-  }
 
 }

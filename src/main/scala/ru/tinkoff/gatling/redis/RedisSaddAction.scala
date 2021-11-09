@@ -17,15 +17,14 @@ case class RedisSaddAction(ctx: ScenarioContext,
 
   override val name: String = genName("redisSaddAction")
 
-  private def addKeyMember(key: Any, value: Any, values: Seq[Any]): Option[Long] = {
+  private def addKeyMember(key: Any, value: Any, values: Seq[Any]): Option[Long] =
     clientPool.withClient { client =>
       {
         client.sadd(key, value, values: _*)
       }
     }
-  }
 
-  override def execute(session: Session): Unit = {
+  override def execute(session: Session): Unit =
     try {
       for {
         resolvedKey <- key(session)
@@ -48,6 +47,5 @@ case class RedisSaddAction(ctx: ScenarioContext,
         )
         next ! session
     }
-  }
 
 }
