@@ -21,26 +21,26 @@ object RedisActionBuilder {
 
   }
 
-  case class RedisDelActionBuilder(clientPool: RedisClientPool,
-                                   key: Expression[Any],
-                                   keys: Seq[Expression[Any]])
+  case class RedisDelActionBuilder(clientPool: RedisClientPool, key: Expression[Any], keys: Seq[Expression[Any]])
       extends ActionBuilder {
     override def build(ctx: ScenarioContext, next: Action): Action = RedisDelAction(ctx, next, clientPool, key, keys)
   }
 
-  case class RedisSremActionBuilder(clientPool: RedisClientPool,
-                                    key: Expression[Any],
-                                    value: Expression[Any],
-                                    values: Seq[Expression[Any]])
-      extends ActionBuilder {
+  case class RedisSremActionBuilder(
+      clientPool: RedisClientPool,
+      key: Expression[Any],
+      value: Expression[Any],
+      values: Seq[Expression[Any]],
+  ) extends ActionBuilder {
     override def build(ctx: ScenarioContext, next: Action): Action = RedisSremAction(ctx, next, clientPool, key, value, values)
   }
 
-  case class RedisSaddActionBuilder(clientPool: RedisClientPool,
-                                    key: Expression[Any],
-                                    value: Expression[Any],
-                                    values: Seq[Expression[Any]])
-      extends ActionBuilder {
+  case class RedisSaddActionBuilder(
+      clientPool: RedisClientPool,
+      key: Expression[Any],
+      value: Expression[Any],
+      values: Seq[Expression[Any]],
+  ) extends ActionBuilder {
     override def build(ctx: ScenarioContext, next: Action): Action = RedisSaddAction(ctx, next, clientPool, key, value, values)
   }
 

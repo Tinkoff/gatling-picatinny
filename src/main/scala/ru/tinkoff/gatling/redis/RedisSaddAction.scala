@@ -7,13 +7,14 @@ import io.gatling.core.session.{Expression, Session}
 import io.gatling.core.structure.ScenarioContext
 import io.gatling.core.util.NameGen
 
-case class RedisSaddAction(ctx: ScenarioContext,
-                           next: Action,
-                           clientPool: RedisClientPool,
-                           key: Expression[Any],
-                           value: Expression[Any],
-                           values: Seq[Expression[Any]])
-    extends ChainableAction with NameGen {
+case class RedisSaddAction(
+    ctx: ScenarioContext,
+    next: Action,
+    clientPool: RedisClientPool,
+    key: Expression[Any],
+    value: Expression[Any],
+    values: Seq[Expression[Any]],
+) extends ChainableAction with NameGen {
 
   override val name: String = genName("redisSaddAction")
 
@@ -27,14 +28,14 @@ case class RedisSaddAction(ctx: ScenarioContext,
   override def execute(session: Session): Unit =
     try {
       for {
-        resolvedKey <- key(session)
-        resolvedVal <- value(session)
+        resolvedKey  <- key(session)
+        resolvedVal  <- value(session)
         resolvedVals <- values
-                         .map(_(session) match {
-                           case Success(v) => v
-                           case Failure(e) => logger.debug(e)
-                         })
-                         .success
+                          .map(_(session) match {
+                            case Success(v) => v
+                            case Failure(e) => logger.debug(e)
+                          })
+                          .success
       } yield addKeyMember(resolvedKey, resolvedVal, resolvedVals)
       next ! session
     } catch {
@@ -43,7 +44,7 @@ case class RedisSaddAction(ctx: ScenarioContext,
           session.scenario,
           session.groups,
           requestName = name,
-          e.getMessage
+          e.getMessage,
         )
         next ! session
     }
