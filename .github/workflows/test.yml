@@ -20,4 +20,4 @@ jobs:
           java-version: adopt@1.11
 
       - name: Test
-        run: sbt clean scalafmtCheckAll scalafmtSbtСheck compile test
+        run: sbt clean scalafmtCheckAll scalafmtSbtCheck compile test
