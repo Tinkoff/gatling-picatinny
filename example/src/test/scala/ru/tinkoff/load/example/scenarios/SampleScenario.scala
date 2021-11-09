@@ -7,12 +7,17 @@ import io.gatling.http.request.builder.HttpRequestBuilder
 import ru.tinkoff.load.example.feeders.Feeders._
 import ru.tinkoff.gatling.utils.jwt._
 import ru.tinkoff.gatling.config.SimulationConfig._
+import com.redis.RedisClientPool
+import ru.tinkoff.gatling.redis.RedisActionBuilder._
 
 object SampleScenario {
   def apply(): ScenarioBuilder = new SampleScenario().sampleScenario
 }
 
 class SampleScenario {
+  //prepare RedisClientPool
+  val redisPool = new RedisClientPool("localhost", 6379)
+
   //get sensitive data from ENV
   val jwtSecretToken = getStringParam("jwtSecret")
 
@@ -50,6 +55,10 @@ class SampleScenario {
     .feed(list2feeder)
     .feed(finiteRandomDigitsWithTransform)
     .feed(regexString)
+    //redis commands
+    .exec(redisPool.SADD("key", "values", "values")) //add the specified members to the set stored at key
+    .exec(redisPool.DEL("key", "keys")) //removes the specified keys
+    .exec(redisPool.SREM("key", "values", "values")) //remove the specified members from the set stored at key
     //generate JWT using values from feeders
     .exec(_.setJwt(jwtGenerator, "jwtToken"))
     //set JWT cookie
