@@ -34,7 +34,16 @@ object RandomDataGenerators {
   def randomCyrillicString(n: Int): String =
     randomString("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя")(n)
 
-  def randomPhone(countryCode: String = "+7"): String = s"""$countryCode${this.digitString(10)}"""
+  def randomPhone(countryCode: String = "+7", regionCode: String = "000", delimiter: String = "", braces: String = ""): String = {
+    if (braces == "(" || braces == ")")
+      s"""$countryCode($regionCode)${this.digitString(3)}$delimiter${this.digitString(2)}$delimiter${this.digitString(2)}"""
+    else if (braces == "[" || braces == "]")
+      s"""$countryCode[$regionCode]${this.digitString(3)}$delimiter${this.digitString(2)}$delimiter${this.digitString(2)}"""
+    else if (braces == "{" || braces == "}")
+      s"""$countryCode{$regionCode}${this.digitString(3)}$delimiter${this.digitString(2)}$delimiter${this.digitString(2)}"""
+    else
+      s"""$countryCode$delimiter$regionCode$delimiter${this.digitString(3)}$delimiter${this.digitString(2)}$delimiter${this.digitString(2)}"""
+  }
 
   def randomDigit(): Int = ThreadLocalRandom.current().nextInt()
 

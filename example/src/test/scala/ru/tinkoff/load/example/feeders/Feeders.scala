@@ -50,6 +50,10 @@ object Feeders {
   // +7 country code is default
   val randomPhone: Feeder[String]    = RandomPhoneFeeder("randomPhone")
   val randomUsaPhone: Feeder[String] = RandomPhoneFeeder("randomUsaPhone", "+1")
+  val randomMoscowPhone: Feeder[String] = RandomPhoneFeeder("randomMoscowPhone", "8", "495")
+  val randomPhoneRoundBrackets: Feeder[String] = RandomPhoneFeeder("randomPhoneRoundBrackets", "7", "945", braces = "(")
+  val randomPhoneCurlyBrackets: Feeder[String] = RandomPhoneFeeder("randomPhoneCurlyBrackets", "+7", "585", braces = "{")
+  val randomPhoneDash: Feeder[String] = RandomPhoneFeeder("randomPhoneDash", "8", "945", "-", "(")
 
   // random alphanumeric String with specified length
   val randomString: Feeder[String] = RandomStringFeeder("randomString", 16)
