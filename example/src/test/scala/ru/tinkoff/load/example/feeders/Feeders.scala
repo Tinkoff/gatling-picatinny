@@ -3,12 +3,10 @@ package ru.tinkoff.load.example.feeders
 import io.gatling.core.Predef._
 import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
 import ru.tinkoff.gatling.feeders._
-import ru.tinkoff.gatling.utils.{RandomDataGenerators, RandomDigitMagnet}
-
-import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
+import ru.tinkoff.gatling.utils.RandomDataGenerators
+import java.time.{LocalDateTime, ZoneId}
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.util.TimeZone
 
 object Feeders {
 
@@ -99,5 +97,32 @@ object Feeders {
 
   // string sequentially generated from the specified pattern
   val regexString: Feeder[String] = RegexFeeder("regex", "[a-zA-Z0-9]{8}")
+
+  // random PAN
+  val feederPAN: Feeder[String] = RandomPANFeeder("feederPAN")
+  val feederCompanyPAN: Feeder[String] = RandomPANFeeder("feederCompanyPAN", "C", "S")
+
+  // random INN
+  val feederPhysINN: Feeder[String] = RandomINNFeeder("feederPhysINN")
+  val feederNotPhysINN: Feeder[String] = RandomINNFeeder("feederNotPhysINN", isPhysPers = false)
+
+  // random OGRN
+  val feederOGRN: Feeder[String] = RandomOGRNFeeder("feederOGRN", "6")
+  val feederOGRNDateReg: Feeder[String] = RandomOGRNFeeder("feederOGRNDateReg", date = "02", reg = "32")
+
+  // random KPP
+  def randomKPP(code: Int = scala.util.Random.between(1, 10000),
+                reason: Int = scala.util.Random.between(1, 100)): String = {
+    String.format("%04d", code) + String.format("%02d", reason) + scala.util.Random.between(1, 1000)
+  }
+
+  val feederKPP: Feeder[String] = CustomFeeder("randomKPPFeeder", randomKPP(12, 1))
+
+  // random SNILS
+  val feederSNILS: Feeder[String] = RandomSNILSFeeder("randomSNILS")
+
+  // random passport
+  val feederPassport: Feeder[String] = RandomPassportFeeder("feederPassport")
+  val feederPassportDateReg: Feeder[String] = RandomPassportFeeder("feederPassportDateReg", "12", "13")
 
 }
