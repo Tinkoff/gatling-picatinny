@@ -105,8 +105,8 @@ object Feeders {
   val feederPhysITN: Feeder[String] = RandomPhysITNFeeder("feederPhysITN")
   val feederLegalEntityITN: Feeder[String] = RandomLegalEntityITNFeeder("feederLegalEntityITN")
 
-  // random OGRN
-  val feederOGRN: Feeder[String] = RandomOGRNFeeder("feederOGRN")
+  // random PSRN
+  val feederPSRN: Feeder[String] = RandomPSRNFeeder("feederPSRN")
 
   // random KPP
   def randomKPP(code: Int = scala.util.Random.between(1, 10000),
@@ -115,8 +115,8 @@ object Feeders {
 
   val feederKPP: Feeder[String] = CustomFeeder("randomKPPFeeder", randomKPP(12, 1))
 
-  // random SNILS
-  val feederSNILS: Feeder[String] = RandomSNILSFeeder("randomSNILS")
+  // random INILA
+  val feederINILA: Feeder[String] = RandomINILAFeeder("randomINILA")
 
   // random passport
   val feederPassport: Feeder[String] = RandomPassportFeeder("feederPassport")

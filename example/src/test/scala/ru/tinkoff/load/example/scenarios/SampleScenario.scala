@@ -58,9 +58,9 @@ class SampleScenario {
     .feed(feederPAN)
     .feed(feederPhysITN)
     .feed(feederLegalEntityITN)
-    .feed(feederOGRN)
+    .feed(feederPSRN)
     .feed(feederKPP)
-    .feed(feederSNILS)
+    .feed(feederINILA)
     .feed(feederPassport)
     //redis commands
     .exec(redisPool.SADD("key", "values", "values")) //add the specified members to the set stored at key

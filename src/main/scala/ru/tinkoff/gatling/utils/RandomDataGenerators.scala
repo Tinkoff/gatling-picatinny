@@ -84,12 +84,11 @@ object RandomDataGenerators {
     s"""${result.mkString("")}$control"""
   }
 
-  /** Метод для генерации ОГРН.
+  /** Метод для генерации PSRN (Primary State Registration Number).
     *
-    *  Данный метод генерирует случайный ОГРН (Основной государственный регистрационный номер).
-    *  ОГРН используется только в РФ.
+    *  Данный метод генерирует случайный ОГРН (PSRN) - основной государственный регистрационный номер.
     */
-  def randomOGRN(): String = {
+  def randomPSRN(): String = {
     val r: Random = new Random()
     val result: String = s"""${this.getRandomElement(List(1, 5), r)}${this.getYear.slice(2, 4)}${String.format("%02d", r.between(1, 90))}${this.digitString(getRandomElement(List(7, 9), r))}"""
     val num: Int = if (result.length == 12) 11 else 13
@@ -112,7 +111,7 @@ object RandomDataGenerators {
     def itnPhysRecursion(n: Int, sum: Int, result: List[Int]): String = {
       val r: Random = new Random()
       val rnd: Int = r.nextInt(10)
-      val num: List[Int] = List(3, 7, 2, 4, 10, 3, 5, 9, 4)
+      val num: List[Int] = List(2, 4, 10, 3, 5, 9, 4, 6, 8)
 
       def checkSum: Int = sum + rnd * num(9 - n)
 
@@ -152,15 +151,15 @@ object RandomDataGenerators {
     itnLegalEntityRecursion(11, 0, 0, List.empty[Int])
   }
 
-  /** Метод для генерации СНИЛС.
+  /** Метод для генерации INILA (Insurance Number of Individual Ledger Account).
     *
-    *  Данный метод генерирует случайный СНИЛС (Страховой номер индивидуального лицевого счёта).
+    *  Данный метод генерирует случайный СНИЛС (INILA) - страховой номер индивидуального лицевого счёта.
     *  СНИЛС используется только в РФ.
     */
-  def randomSNILS(): String = {
+  def randomINILA(): String = {
 
     @tailrec
-    def snilsRecursion(n: Int, sum: Int, result: List[Int]): String = {
+    def inilaRecursion(n: Int, sum: Int, result: List[Int]): String = {
       val r: Random = new Random()
       val rnd: Int = r.nextInt(10)
 
@@ -168,11 +167,11 @@ object RandomDataGenerators {
 
       n match {
         case 1 => (result :+ rnd :+ checkSum % 101).mkString("")
-        case _ => snilsRecursion(n - 1, checkSum, result :+ rnd)
+        case _ => inilaRecursion(n - 1, checkSum, result :+ rnd)
       }
     }
 
-    snilsRecursion(9, 0, List.empty[Int])
+    inilaRecursion(9, 0, List.empty[Int])
   }
 
   /** Метод для генерации серии/номера российского паспорта.
