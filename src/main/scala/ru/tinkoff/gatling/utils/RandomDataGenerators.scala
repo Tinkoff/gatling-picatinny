@@ -7,9 +7,13 @@ import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
 import com.eatthepath.uuid.FastUUID
 import ru.tinkoff.gatling.utils.RandomDigitMagnet.DigitMagnet
+
+import scala.annotation.tailrec
 import scala.util.Random
 
 object RandomDataGenerators {
+
+  val random: Random.type = scala.util.Random
 
   def randomString(alphabet: String)(n: Int): String = {
     require(alphabet.nonEmpty, "randomString generator required non empty alphabet input")
@@ -54,71 +58,131 @@ object RandomDataGenerators {
 
   def randomUUID: String = FastUUID.toString(UUID.randomUUID)
 
-  def randomPAN(status: String = getRandomElement(Seq('P', 'C', 'H', 'A', 'B', 'G', 'J', 'L', 'F', 'I'), new Random()).toString,
-                name: String = randomLettersString(1)): String =
-    (randomLettersString(3) + status + name + digitString(4) + randomLettersString(1)).toUpperCase
+  def getRandomElement[T](items: List[T], random: Random): T = items(random.nextInt(items.length))
 
-  def getRandomElement[T](seq: Seq[T], random: Random): T =
-    seq(random.nextInt(seq.length))
+  def getYear: String = LocalDateTime.now().getYear.toString
 
-  def randomOGRN(owner: String = getRandomElement(Seq(1, 5), new Random()).toString,
-                 date: String = LocalDateTime.now().getYear.toString.slice(2, 4),
-                 reg: String = scala.util.Random.between(1, 90).toString): String = {
-    val number: String =
-      if (owner != "1" || owner != "5")
-        getRandomElement(Seq(1, 5), new Random()).toString + date + reg + String.format("%07d", scala.util.Random.between(1, 10000000))
-      else
-        owner + date + reg + String.format("%07d", scala.util.Random.between(1, 10000000))
-    if (number.toLong % 11 == 10)
-      number + '0'
-    else
-      number + (number.toLong % 11).toString
+  /** Метод для генерации PAN.
+    *
+    *  Данный метод генерирует случайный PAN (Primary Account Number) - постоянный номер счёта.
+    */
+  def randomPAN(bin: List[String] = List.empty[String]): String = {
+    val r: Random = new Random()
+    val result: List[Char] = s"""${this.getRandomElement(bin, r)}${this.digitString(9)}""".toList
+    val even: Int = result.zipWithIndex.filter(_._2 % 2 == 1).map(_._1).flatMap(_.toString.toIntOption).sum
+    val oddList: List[Int] = result.zipWithIndex.filter(_._2 % 2 == 0).map(_._1).flatMap(_.toString.toIntOption)
+
+    @tailrec
+    def iterateOdd(source: List[Int], destination:List[Int]): List[Int] = source match {
+      case el::tail => iterateOdd(tail, destination :+ (if (el * 2 > 9) el * 2 - 9 else el * 2))
+      case _ => destination
+    }
+
+    val odd: Int = iterateOdd(oddList, List()).sum
+    val control: Int = 10 - (even + odd) % 10
+
+    s"""${result.mkString("")}$control"""
   }
 
-  def randomINN(isPhysPers: Boolean = true,
-                reg: Int = scala.util.Random.between(1, 90),
-                number: Int = scala.util.Random.between(1, 100)): String = {
-    def check(result: Int): String = {
-      if (result > 9)
-        (result % 10).toString
-      else
-        result.toString
-    }
-    var inn: String = String.format("%02d", reg) + String.format("%02d", number)
-    if (isPhysPers) {
-      inn += String.format("%05d", scala.util.Random.between(1, 100000))
-      val control: Array[Int] = inn.split("").map(_.toInt)
-      val result: Int = (control(0) * 2 + control(1) * 4 + control(2) * 10 + control(3) * 3 + control(4) * 5 +
-        control(5) * 9 + control(6) * 4 + control(7) * 6 + control(8) * 8) % 11
-      inn + check(result)
-    }
+  /** Метод для генерации ОГРН.
+    *
+    *  Данный метод генерирует случайный ОГРН (Основной государственный регистрационный номер).
+    *  ОГРН используется только в РФ.
+    */
+  def randomOGRN(): String = {
+    val r: Random = new Random()
+    val result: String = s"""${this.getRandomElement(List(1, 5), r)}${this.getYear.slice(2, 4)}${String.format("%02d", r.between(1, 90))}${this.digitString(getRandomElement(List(7, 9), r))}"""
+    val num: Int = if (result.length == 12) 11 else 13
+    val rem: Long = result.toLong % num
+
+    if (rem == 10)
+      result + "0"
     else {
-      inn += String.format("%06d", scala.util.Random.between(1, 1000000))
-      val control_1: Array[Int] = inn.split("").map(_.toInt)
-      val result_1: Int = (control_1(0) * 7 + control_1(1) * 2 + control_1(2) * 4 + control_1(3) * 10 + control_1(4) * 3 +
-        control_1(5) * 5 + control_1(6) * 9 + control_1(7) * 4 + control_1(8) * 6 + control_1(9) * 8) % 11
-      inn += check(result_1)
-      val control_2: Array[Int] = inn.split("").map(_.toInt)
-      val result_2: Int = (control_2(0) * 3 + control_2(1) * 7 + control_2(2) * 2 + control_2(3) * 4 + control_2(4) * 10 +
-        control_2(5) * 3 + control_2(6) * 5 + control_2(7) * 9 + control_2(8) * 4 + control_2(9) * 6 + control_2(10) * 8) % 11
-      inn + check(result_2)
+      result + rem.toString
     }
   }
 
-  def randomSNILS(): String = {
-    val snilsBefore: String = String.format("%09d", scala.util.Random.between(1, 1000000000))
-    val control: Array[Int] = snilsBefore.split("").map(_.toInt)
-    val result: Int = control(0) * 9 + control(1) * 8 + control(2) * 7 + control(3) * 6 + control(4) * 5 +
-      control(5) * 4 + control(6) * 3 + control(7) * 2 + control(8) * 1
-    if (result < 100)
-      snilsBefore.slice(0, 3) + '-' + snilsBefore.slice(3, 6) + '-' + snilsBefore.slice(6, 9) + ' ' + result.toString
-    else
-      snilsBefore.slice(0, 3) + '-' + snilsBefore.slice(3, 6) + '-' + snilsBefore.slice(6, 9) + ' ' + "00"
+  /** Метод для генерации ITN (Individual Taxpayer Number) для физических лиц.
+    *
+    *  Данный метод генерирует случайный ИНН (ITN) - идентификационный номер налогоплательщика - для физических лиц.
+    */
+  def randomPhysITN(): String = {
+
+    @tailrec
+    def itnPhysRecursion(n: Int, sum: Int, result: List[Int]): String = {
+      val r: Random = new Random()
+      val rnd: Int = r.nextInt(10)
+      val num: List[Int] = List(3, 7, 2, 4, 10, 3, 5, 9, 4)
+
+      def checkSum: Int = sum + rnd * num(9 - n)
+
+      n match {
+        case 1 => (result :+ rnd :+ checkSum % 11).mkString("")
+        case _ => itnPhysRecursion(n - 1, checkSum, result :+ rnd)
+      }
+    }
+
+    itnPhysRecursion(9, 0, List.empty[Int])
   }
 
-  def randomPassport(region: String = scala.util.Random.between(1, 90).toString,
-                     date: String = LocalDateTime.now().getYear.toString.slice(2, 4)): String =
-    region + date + " " + String.format("%06d", scala.util.Random.between(1, 1000000))
+  /** Метод для генерации ITN (Individual Taxpayer Number) для юридических лиц.
+    *
+    *  Данный метод генерирует случайный ИНН (ITN) - идентификационный номер налогоплательщика - для юридических лиц.
+    */
+  def randomLegalEntityITN(): String = {
+
+    @tailrec
+    def itnLegalEntityRecursion(n: Int, sum1: Int, sum2: Int, result: List[Int]): String = {
+      val r: Random = new Random()
+      val rnd: Int = r.nextInt(10)
+      val num1: List[Int] = List(7, 2, 4, 10, 3, 5, 9, 4, 6, 8)
+      val num2: List[Int] = List(3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8)
+
+      def checkSum1: Int = sum1 + rnd * num1(11 - n)
+
+      def checkSum2: Int = sum2 + rnd * num2(11 - n)
+
+      n match {
+        case 1 => (result :+ (if ((sum2 + result.last * num2(11 - n)) % 11 == 10) 0 else (sum2 + result.last * num2(11 - n)) % 11)).mkString("")
+        case 2 => itnLegalEntityRecursion(n - 1, checkSum1, checkSum2, result :+ rnd :+ (if (checkSum1 % 11 == 10) 0 else checkSum1 % 11))
+        case _ => itnLegalEntityRecursion(n - 1, checkSum1, checkSum2, result :+ rnd)
+      }
+    }
+
+    itnLegalEntityRecursion(11, 0, 0, List.empty[Int])
+  }
+
+  /** Метод для генерации СНИЛС.
+    *
+    *  Данный метод генерирует случайный СНИЛС (Страховой номер индивидуального лицевого счёта).
+    *  СНИЛС используется только в РФ.
+    */
+  def randomSNILS(): String = {
+
+    @tailrec
+    def snilsRecursion(n: Int, sum: Int, result: List[Int]): String = {
+      val r: Random = new Random()
+      val rnd: Int = r.nextInt(10)
+
+      def checkSum = sum + rnd * n
+
+      n match {
+        case 1 => (result :+ rnd :+ checkSum % 101).mkString("")
+        case _ => snilsRecursion(n - 1, checkSum, result :+ rnd)
+      }
+    }
+
+    snilsRecursion(9, 0, List.empty[Int])
+  }
+
+  /** Метод для генерации серии/номера российского паспорта.
+    *
+    *  Данный метод генерирует случайные серию и номер российского паспорта.
+    */
+  def randomPassport(): String = {
+    val r: Random = new Random()
+    s"""${String.format("%02d", r.between(1, 90))}${getYear.slice(2, 4)}${digitString(6)}"""
+  }
 
   /** Pattern examples: yyyy.MM.dd G 'at' HH:mm:ss z 2001.07.04 AD at 12:08:56 PDT EEE, MMM d, ''yy Wed, Jul 4, '01 h:mm a 12:08
     * PM hh 'o''clock' a, zzzz 12 o'clock PM, Pacific Daylight Time K:mm a, z 0:08 PM, PDT yyyyy.MMMMM.dd GGG hh:mm aaa
