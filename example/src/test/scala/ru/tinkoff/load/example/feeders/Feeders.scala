@@ -99,6 +99,7 @@ object Feeders {
   val regexString: Feeder[String] = RegexFeeder("regex", "[a-zA-Z0-9]{8}")
 
   // random PAN
+  val feederWithoutBinPAN: Feeder[String] = RandomPANFeeder("feederWithoutBinPAN")
   val feederPAN: Feeder[String] = RandomPANFeeder("feederPAN", List("421345", "541673"))
 
   // random ITN

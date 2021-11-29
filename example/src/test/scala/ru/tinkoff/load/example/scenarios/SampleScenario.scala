@@ -56,6 +56,7 @@ class SampleScenario {
     .feed(finiteRandomDigitsWithTransform)
     .feed(regexString)
     .feed(feederPAN)
+    .feed(feederWithoutBinPAN)
     .feed(feederNatITN)
     .feed(feederJurITN)
     .feed(feederOGRN)

@@ -72,7 +72,8 @@ object RandomDataGenerators {
     */
   def randomPAN(bin: List[String] = List.empty[String]): String = {
     val r: Random = new Random()
-    val result: List[Char] = s"""${this.getRandomElement(bin, r)}${this.digitString(9)}""".toList
+    val result: List[Char] = if (bin.isEmpty) s"""${this.digitString(6)}${this.digitString(9)}""".toList else
+      s"""${this.getRandomElement(bin, r)}${this.digitString(9)}""".toList
     val even: Int = result.zipWithIndex.filter(_._2 % 2 == 1).map(_._1).flatMap(_.toString.toIntOption).sum
     val oddList: List[Int] = result.zipWithIndex.filter(_._2 % 2 == 0).map(_._1).flatMap(_.toString.toIntOption)
 
