@@ -101,24 +101,23 @@ object Feeders {
   // random PAN
   val feederPAN: Feeder[String] = RandomPANFeeder("feederPAN", List("421345", "541673"))
 
-  // random INN
-  val feederPhysITN: Feeder[String] = RandomPhysITNFeeder("feederPhysITN")
-  val feederLegalEntityITN: Feeder[String] = RandomLegalEntityITNFeeder("feederLegalEntityITN")
+  // random ITN
+  val feederNatITN: Feeder[String] = RandomNatITNFeeder("feederNatITN")
+  val feederJurITN: Feeder[String] = RandomJurITNFeeder("feederJurITN")
 
-  // random PSRN
-  val feederPSRN: Feeder[String] = RandomPSRNFeeder("feederPSRN")
+  // random OGRN
+  val feederOGRN: Feeder[String] = RandomOGRNFeeder("feederOGRN")
+
+  // random PSRNSP
+  val feederPSRNSP: Feeder[String] = RandomPSRNSPFeeder("feederPSRNSP")
 
   // random KPP
-  def randomKPP(code: Int = scala.util.Random.between(1, 10000),
-                reason: Int = scala.util.Random.between(1, 100)): String =
-    new StringBuilder(String.format("%04d", code) + String.format("%02d", reason) + scala.util.Random.between(1, 1000)).toString
+  val feederKPP: Feeder[String] = RandomKPPFeeder("feederKPP")
 
-  val feederKPP: Feeder[String] = CustomFeeder("randomKPPFeeder", randomKPP(12, 1))
+  // random SNILS
+  val feederSNILS: Feeder[String] = RandomSNILSFeeder("randomSNILS")
 
-  // random INILA
-  val feederINILA: Feeder[String] = RandomINILAFeeder("randomINILA")
-
-  // random passport
-  val feederPassport: Feeder[String] = RandomPassportFeeder("feederPassport")
+  // random russian passport
+  val feederRusPassport: Feeder[String] = RandomRusPassportFeeder("feederRusPassport")
 
 }

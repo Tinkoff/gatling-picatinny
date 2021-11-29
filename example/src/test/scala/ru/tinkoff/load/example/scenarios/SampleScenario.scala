@@ -56,12 +56,13 @@ class SampleScenario {
     .feed(finiteRandomDigitsWithTransform)
     .feed(regexString)
     .feed(feederPAN)
-    .feed(feederPhysITN)
-    .feed(feederLegalEntityITN)
-    .feed(feederPSRN)
+    .feed(feederNatITN)
+    .feed(feederJurITN)
+    .feed(feederOGRN)
+    .feed(feederPSRNSP)
     .feed(feederKPP)
-    .feed(feederINILA)
-    .feed(feederPassport)
+    .feed(feederSNILS)
+    .feed(feederRusPassport)
     //redis commands
     .exec(redisPool.SADD("key", "values", "values")) //add the specified members to the set stored at key
     .exec(redisPool.DEL("key", "keys")) //removes the specified keys

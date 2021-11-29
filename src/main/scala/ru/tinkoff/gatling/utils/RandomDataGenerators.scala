@@ -62,9 +62,13 @@ object RandomDataGenerators {
 
   def getYear: String = LocalDateTime.now().getYear.toString
 
-  /** Метод для генерации PAN.
+  /** Random PAN generation method.
     *
-    *  Данный метод генерирует случайный PAN (Primary Account Number) - постоянный номер счёта.
+    * This method generates a random PAN (Primary Account Number).
+    *
+    * @param bin - Bank Identification Number (BIN) refers to the first six numbers on a payment card.
+    *             This set of numbers identifies the financial institution that issues the card.
+    * @return random string PAN
     */
   def randomPAN(bin: List[String] = List.empty[String]): String = {
     val r: Random = new Random()
@@ -84,15 +88,17 @@ object RandomDataGenerators {
     s"""${result.mkString("")}$control"""
   }
 
-  /** Метод для генерации PSRN (Primary State Registration Number).
+  /** Random OGRN generation method.
     *
-    *  Данный метод генерирует случайный ОГРН (PSRN) - основной государственный регистрационный номер.
+    * This method generates a random OGRN (Primary State Registration Number).
+    * OGRN is used only in the Russian Federation.
+    *
+    * @return random string OGRN
     */
-  def randomPSRN(): String = {
+  def randomOGRN(): String = {
     val r: Random = new Random()
-    val result: String = s"""${this.getRandomElement(List(1, 5), r)}${this.getYear.slice(2, 4)}${String.format("%02d", r.between(1, 90))}${this.digitString(getRandomElement(List(7, 9), r))}"""
-    val num: Int = if (result.length == 12) 11 else 13
-    val rem: Long = result.toLong % num
+    val result: String = s"""${this.getRandomElement(List(1, 5), r)}${this.getYear.slice(2, 4)}${String.format("%02d", r.between(1, 90))}${this.digitString(7)}"""
+    val rem: Long = result.toLong % 11
 
     if (rem == 10)
       result + "0"
@@ -101,14 +107,47 @@ object RandomDataGenerators {
     }
   }
 
-  /** Метод для генерации ITN (Individual Taxpayer Number) для физических лиц.
+  /** Random PSRNSP generation method.
     *
-    *  Данный метод генерирует случайный ИНН (ITN) - идентификационный номер налогоплательщика - для физических лиц.
+    * This method generates a random PSRNSP (Primary State Registration Number of the Sole Proprietor).
+    * PSRNSP is used only in the Russian Federation.
+    *
+    * @return random string PSRNSP
     */
-  def randomPhysITN(): String = {
+  def randomPSRNSP(): String = {
+    val r: Random = new Random()
+    val result: String = s"""${this.getRandomElement(List(1, 5), r)}${this.getYear.slice(2, 4)}${String.format("%02d", r.between(1, 90))}${this.digitString(9)}"""
+    val rem: Long = result.toLong % 13
+
+    if (rem == 10)
+      result + "0"
+    else {
+      result + rem.toString
+    }
+  }
+
+  /** Random KPP generation method.
+    *
+    * This method generates a random KPP (Tax Registration Reason Code).
+    * KPP is used only in the Russian Federation.
+    *
+    * @return random string KPP
+    */
+  def randomKPP(): String =
+    s"""${String.format("%04d", random.between(1, 10000))}${String.format("%02d", random.between(1, 100))}${String.format("%03d", random.between(1, 1000))}"""
+
+
+  /** Random ITN of the natural person generation method.
+    *
+    * This method generates a random ITN of the natural person (Individual Taxpayer Number).
+    * ITN is used only in the Russian Federation.
+    *
+    * @return random string ITN of the natural person
+    */
+  def randomNatITN(): String = {
 
     @tailrec
-    def itnPhysRecursion(n: Int, sum: Int, result: List[Int]): String = {
+    def itnNatRecursion(n: Int, sum: Int, result: List[Int]): String = {
       val r: Random = new Random()
       val rnd: Int = r.nextInt(10)
       val num: List[Int] = List(2, 4, 10, 3, 5, 9, 4, 6, 8)
@@ -117,21 +156,24 @@ object RandomDataGenerators {
 
       n match {
         case 1 => (result :+ rnd :+ checkSum % 11).mkString("")
-        case _ => itnPhysRecursion(n - 1, checkSum, result :+ rnd)
+        case _ => itnNatRecursion(n - 1, checkSum, result :+ rnd)
       }
     }
 
-    itnPhysRecursion(9, 0, List.empty[Int])
+    itnNatRecursion(9, 0, List.empty[Int])
   }
 
-  /** Метод для генерации ITN (Individual Taxpayer Number) для юридических лиц.
+  /** Random ITN of the juridical person generation method.
     *
-    *  Данный метод генерирует случайный ИНН (ITN) - идентификационный номер налогоплательщика - для юридических лиц.
+    * This method generates a random ITN of the juridical person (Individual Taxpayer Number).
+    * ITN is used only in the Russian Federation.
+    *
+    * @return random string ITN of the juridical person
     */
-  def randomLegalEntityITN(): String = {
+  def randomJurITN(): String = {
 
     @tailrec
-    def itnLegalEntityRecursion(n: Int, sum1: Int, sum2: Int, result: List[Int]): String = {
+    def itnJurRecursion(n: Int, sum1: Int, sum2: Int, result: List[Int]): String = {
       val r: Random = new Random()
       val rnd: Int = r.nextInt(10)
       val num1: List[Int] = List(7, 2, 4, 10, 3, 5, 9, 4, 6, 8)
@@ -143,23 +185,25 @@ object RandomDataGenerators {
 
       n match {
         case 1 => (result :+ (if ((sum2 + result.last * num2(11 - n)) % 11 == 10) 0 else (sum2 + result.last * num2(11 - n)) % 11)).mkString("")
-        case 2 => itnLegalEntityRecursion(n - 1, checkSum1, checkSum2, result :+ rnd :+ (if (checkSum1 % 11 == 10) 0 else checkSum1 % 11))
-        case _ => itnLegalEntityRecursion(n - 1, checkSum1, checkSum2, result :+ rnd)
+        case 2 => itnJurRecursion(n - 1, checkSum1, checkSum2, result :+ rnd :+ (if (checkSum1 % 11 == 10) 0 else checkSum1 % 11))
+        case _ => itnJurRecursion(n - 1, checkSum1, checkSum2, result :+ rnd)
       }
     }
 
-    itnLegalEntityRecursion(11, 0, 0, List.empty[Int])
+    itnJurRecursion(11, 0, 0, List.empty[Int])
   }
 
-  /** Метод для генерации INILA (Insurance Number of Individual Ledger Account).
+  /** Random SNILS generation method.
     *
-    *  Данный метод генерирует случайный СНИЛС (INILA) - страховой номер индивидуального лицевого счёта.
-    *  СНИЛС используется только в РФ.
+    * This method generates a random SNILS (Insurance Number of Individual Ledger Account).
+    * SNILS is used only in the Russian Federation.
+    *
+    * @return random string SNILS
     */
-  def randomINILA(): String = {
+  def randomSNILS(): String = {
 
     @tailrec
-    def inilaRecursion(n: Int, sum: Int, result: List[Int]): String = {
+    def snilsRecursion(n: Int, sum: Int, result: List[Int]): String = {
       val r: Random = new Random()
       val rnd: Int = r.nextInt(10)
 
@@ -167,18 +211,20 @@ object RandomDataGenerators {
 
       n match {
         case 1 => (result :+ rnd :+ checkSum % 101).mkString("")
-        case _ => inilaRecursion(n - 1, checkSum, result :+ rnd)
+        case _ => snilsRecursion(n - 1, checkSum, result :+ rnd)
       }
     }
 
-    inilaRecursion(9, 0, List.empty[Int])
+    snilsRecursion(9, 0, List.empty[Int])
   }
 
-  /** Метод для генерации серии/номера российского паспорта.
+  /** Random russian passport series and number generation method.
     *
-    *  Данный метод генерирует случайные серию и номер российского паспорта.
+    * This method generates a random russian passport series and number.
+    *
+    * @return random string russian passport series and number.
     */
-  def randomPassport(): String = {
+  def randomRusPassport(): String = {
     val r: Random = new Random()
     s"""${String.format("%02d", r.between(1, 90))}${getYear.slice(2, 4)}${digitString(6)}"""
   }

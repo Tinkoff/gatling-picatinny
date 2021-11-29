@@ -3,9 +3,9 @@ package ru.tinkoff.gatling.feeders
 import io.gatling.core.feeder.Feeder
 import ru.tinkoff.gatling.utils.RandomDataGenerators
 
-object RandomPassportFeeder {
+object RandomSNILSFeeder {
 
   def apply(paramName: String): Feeder[String] =
-    feeder[String](paramName)(RandomDataGenerators.randomPassport())
+    feeder[String](paramName)(RandomDataGenerators.randomSNILS())
 
 }
