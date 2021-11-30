@@ -156,7 +156,7 @@ object RandomDataGenerators {
       def checkSum: Int = sum + rnd * num(9 - n)
 
       n match {
-        case 1 => (result :+ rnd :+ checkSum % 11).mkString("")
+        case 1 => (result :+ rnd :+ (if (checkSum % 11 == 10) 0 else checkSum % 11)).mkString("")
         case _ => itnNatRecursion(n - 1, checkSum, result :+ rnd)
       }
     }
