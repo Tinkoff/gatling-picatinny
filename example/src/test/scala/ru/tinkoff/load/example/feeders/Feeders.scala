@@ -1,12 +1,12 @@
 package ru.tinkoff.load.example.feeders
 
-import io.gatling.core.Predef._
-import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
-import ru.tinkoff.gatling.feeders._
-import ru.tinkoff.gatling.utils.RandomDataGenerators
 import java.time.{LocalDateTime, ZoneId}
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
+import io.gatling.core.Predef._
+import ru.tinkoff.gatling.feeders._
+import ru.tinkoff.gatling.utils.RandomDataGenerators
 
 object Feeders {
 
