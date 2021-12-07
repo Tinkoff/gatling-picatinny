@@ -100,7 +100,7 @@ object Feeders {
 
   // random PAN
   val feederWithoutBinPAN: Feeder[String] = RandomPANFeeder("feederWithoutBinPAN")
-  val feederPAN: Feeder[String] = RandomPANFeeder("feederPAN", List("421345", "541673"))
+  val feederPAN: Feeder[String] = RandomPANFeeder("feederPAN", "421345", "541673")
 
   // random ITN
   val feederNatITN: Feeder[String] = RandomNatITNFeeder("feederNatITN")

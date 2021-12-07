@@ -13,7 +13,7 @@ object RandomPANFeeder {
     * @return random string PAN feeder
     */
   def apply(paramName: String,
-            bins: List[String] = List.empty[String]): Feeder[String] =
-    feeder[String](paramName)(RandomDataGenerators.randomPAN(bins))
+            bins: String*): Feeder[String] =
+    feeder[String](paramName)(RandomDataGenerators.randomPAN(bins: _*))
 
 }

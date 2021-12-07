@@ -29,6 +29,11 @@ object RandomDataGenerators {
     Random.alphanumeric.take(stringLength).mkString
   }
 
+  def randomOnlyLettersString(stringLength: Int): String = {
+    require(stringLength>0, s"randomString generator required string length input >0. Current value = $stringLength")
+    Random.alphanumeric.dropWhile(_.isDigit).take(stringLength).mkString
+  }
+
   def randomCyrillicString(n: Int): String =
     randomString("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя")(n)
 
@@ -52,29 +57,35 @@ object RandomDataGenerators {
 
   def randomUUID: String = FastUUID.toString(UUID.randomUUID)
 
-  def getRandomElement[T](items: List[T]): T = items(randomDigit(items.length))
+  def getRandomElement(items: List[Int], intLength: Int): Int = items match {
+    case Nil => randomDigit(intLength)
+    case _ => items(randomDigit(items.length))
+  }
 
-  def randomPAN(bins: List[String] = List.empty[String]): String = {
+  def getRandomElement(items: List[String], stringLength: Int): String = items match {
+    case Nil => randomOnlyLettersString(stringLength)
+    case _ => items(randomDigit(items.length))
+  }
 
-    def fifteenDigits(bins: List[String]): List[Char] = {
-      bins.isEmpty match {
-        case true => s"""${digitString(6)}${digitString(9)}""".toList
-        case false => s"""${getRandomElement(bins)}${digitString(9)}""".toList
-      }
+  def randomPAN(bins: String*): String = {
+
+    def fifteenDigits(bins: List[String]): List[Char] = bins match {
+      case Nil => s"""${digitString(6)}${digitString(9)}""".toList
+      case _ => s"""${getRandomElement(bins, 6)}${digitString(9)}""".toList
     }
 
-    val results: List[Int] = fifteenDigits(bins).flatMap(_.toString.toIntOption)
+    val results: List[Int] = fifteenDigits(bins.toList).flatMap(_.toString.toIntOption)
     val evenPosSum: Int = results.indices.collect{
       case i if i % 2 == 0 => results(i)
     }.fold(0)((x, y) => x + (if (y * 2 > 9) y * 2 - 9 else y * 2))
-    val oddPosSum: Int = results.indices.collect{ case i if i % 2 == 1 => results(i) }.sum
+    val oddPosSum: Int = results.indices.collect{ case i if i % 2 != 0 => results(i) }.sum
     val controlNum: Int = 10 - (oddPosSum + evenPosSum) % 10
 
     s"""${results.mkString("")}$controlNum"""
   }
 
   def randomOGRN(): String = {
-    val result: String = s"""${getRandomElement(List(1, 5))}${String.format("%02d", randomDigit(2, 21))}${String.format("%02d", randomDigit(1, 90))}${digitString(7)}"""
+    val result: String = s"""${getRandomElement(List(1, 5), 1)}${String.format("%02d", randomDigit(2, 21))}${String.format("%02d", randomDigit(1, 90))}${digitString(7)}"""
     val rem: Long = result.toLong % 11
 
     if (rem == 10)
@@ -84,7 +95,7 @@ object RandomDataGenerators {
   }
 
   def randomPSRNSP(): String = {
-    val result: String = s"""${getRandomElement(List(1, 5))}${String.format("%02d", randomDigit(2, 21))}${String.format("%02d", randomDigit(1, 90))}${digitString(9)}"""
+    val result: String = s"""${getRandomElement(List(1, 5), 1)}${String.format("%02d", randomDigit(2, 21))}${String.format("%02d", randomDigit(1, 90))}${digitString(9)}"""
     val rem: Long = result.toLong % 13 % 10
 
     if (rem == 10)
