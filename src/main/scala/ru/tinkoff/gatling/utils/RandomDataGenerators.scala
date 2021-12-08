@@ -1,6 +1,5 @@
 package ru.tinkoff.gatling.utils
 
-import cats.data.NonEmptyList
 import com.eatthepath.uuid.FastUUID
 import java.time.{Instant, LocalDateTime, ZoneId}
 import java.util.concurrent.ThreadLocalRandom
@@ -58,13 +57,13 @@ object RandomDataGenerators {
 
   def randomUUID: String = FastUUID.toString(UUID.randomUUID)
 
-  def getRandomElement(items: List[Int], intLength: Int): Int = items match {
-    case Nil => NonEmptyList.one(randomDigit(intLength)).head
+  private def getRandomElement(items: List[Int], intLength: Int): Int = items match {
+    case Nil => randomDigit(intLength)
     case _ => items(randomDigit(items.length))
   }
 
-  def getRandomElement(items: List[String], stringLength: Int): String = items match {
-    case Nil => NonEmptyList.one(randomOnlyLettersString(stringLength)).head
+  private def getRandomElement(items: List[String], stringLength: Int): String = items match {
+    case Nil => randomOnlyLettersString(stringLength)
     case _ => items(randomDigit(items.length))
   }
 
