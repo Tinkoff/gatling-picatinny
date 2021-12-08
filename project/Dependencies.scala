@@ -65,4 +65,8 @@ object Dependencies {
     ),
   )
 
+  lazy val cats: Seq[ModuleID] = Seq(
+    "org.typelevel" %% "cats-core" % "2.3.0",
+  )
+
 }
