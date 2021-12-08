@@ -68,10 +68,11 @@ object RandomDataGenerators {
   }
 
   def randomPAN(bins: String*): String = {
+    val idNum: String = digitString(9)
 
     def fifteenDigits(bins: List[String]): List[Char] = bins match {
-      case Nil => s"""${digitString(6)}${digitString(9)}""".toList
-      case _ => s"""${getRandomElement(bins, 6)}${digitString(9)}""".toList
+      case Nil => s"""${digitString(6)}$idNum""".toList
+      case _ => s"""${getRandomElement(bins, 6)}$idNum""".toList
     }
 
     val results: List[Int] = fifteenDigits(bins.toList).flatMap(_.toString.toIntOption)
@@ -85,7 +86,11 @@ object RandomDataGenerators {
   }
 
   def randomOGRN(): String = {
-    val result: String = s"""${getRandomElement(List(1, 5), 1)}${String.format("%02d", randomDigit(2, 21))}${String.format("%02d", randomDigit(1, 90))}${digitString(7)}"""
+    val indicatorOGRN: Int = getRandomElement(List(1, 5), 1)
+    val year: String = String.format("%02d", randomDigit(2, 21))
+    val ruSubjectNum: String = String.format("%02d", randomDigit(1, 90))
+    val idNum: String = digitString(7)
+    val result: String = s"""$indicatorOGRN$year$ruSubjectNum$idNum"""
     val rem: Long = result.toLong % 11
 
     if (rem == 10)
@@ -95,7 +100,11 @@ object RandomDataGenerators {
   }
 
   def randomPSRNSP(): String = {
-    val result: String = s"""${getRandomElement(List(1, 5), 1)}${String.format("%02d", randomDigit(2, 21))}${String.format("%02d", randomDigit(1, 90))}${digitString(9)}"""
+    val indicatorPSRNSP: Int = 3
+    val year: String = String.format("%02d", randomDigit(2, 21))
+    val ruSubjectNum: String = String.format("%02d", randomDigit(1, 90))
+    val idNum: String = digitString(9)
+    val result: String = s"""$indicatorPSRNSP$year$ruSubjectNum$idNum"""
     val rem: Long = result.toLong % 13 % 10
 
     if (rem == 10)
@@ -104,8 +113,13 @@ object RandomDataGenerators {
       s"""$result$rem"""
   }
 
-  def randomKPP(): String =
-    s"""${String.format("%04d", randomDigit(1, 10000))}${String.format("%02d", randomDigit(1, 100))}${String.format("%03d", randomDigit(1, 1000))}"""
+  def randomKPP(): String = {
+    val revenueServiceCode: String = String.format("%04d", randomDigit(1, 10000))
+    val reasonForReg: String = String.format("%02d", randomDigit(1, 100))
+    val idNum: String = String.format("%03d", randomDigit(1, 1000))
+
+    s"""$revenueServiceCode$reasonForReg$idNum"""
+  }
 
   def randomNatITN(): String = {
 
@@ -173,8 +187,13 @@ object RandomDataGenerators {
     snilsRecursion(9, 0, List.empty[Int])
   }
 
-  def randomRusPassport(): String =
-    s"""${String.format("%02d", randomDigit(1, 90))}${String.format("%02d", randomDigit(0, 21))}${digitString(6)}"""
+  def randomRusPassport(): String = {
+    val ruSubjectNum: String = String.format("%02d", randomDigit(1, 90))
+    val year: String = String.format("%02d", randomDigit(0, 21))
+    val idNum: String = digitString(6)
+
+    s"""$ruSubjectNum$year$idNum"""
+  }
 
   /** Pattern examples: yyyy.MM.dd G 'at' HH:mm:ss z 2001.07.04 AD at 12:08:56 PDT EEE, MMM d, ''yy Wed, Jul 4, '01 h:mm a 12:08
     * PM hh 'o''clock' a, zzzz 12 o'clock PM, Pacific Daylight Time K:mm a, z 0:08 PM, PDT yyyyy.MMMMM.dd GGG hh:mm aaa
