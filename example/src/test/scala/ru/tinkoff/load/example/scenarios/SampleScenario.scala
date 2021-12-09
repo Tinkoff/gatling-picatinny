@@ -1,14 +1,14 @@
 package ru.tinkoff.load.example.scenarios
 
+import com.redis.RedisClientPool
 import io.gatling.core.Predef._
 import io.gatling.core.structure.ScenarioBuilder
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
-import ru.tinkoff.load.example.feeders.Feeders._
-import ru.tinkoff.gatling.utils.jwt._
 import ru.tinkoff.gatling.config.SimulationConfig._
-import com.redis.RedisClientPool
 import ru.tinkoff.gatling.redis.RedisActionBuilder._
+import ru.tinkoff.gatling.utils.jwt._
+import ru.tinkoff.load.example.feeders.Feeders._
 
 object SampleScenario {
   def apply(): ScenarioBuilder = new SampleScenario().sampleScenario
@@ -55,6 +55,15 @@ class SampleScenario {
     .feed(list2feeder)
     .feed(finiteRandomDigitsWithTransform)
     .feed(regexString)
+    .feed(feederPAN)
+    .feed(feederWithoutBinPAN)
+    .feed(feederNatITN)
+    .feed(feederJurITN)
+    .feed(feederOGRN)
+    .feed(feederPSRNSP)
+    .feed(feederKPP)
+    .feed(feederSNILS)
+    .feed(feederRusPassport)
     //redis commands
     .exec(redisPool.SADD("key", "values", "values")) //add the specified members to the set stored at key
     .exec(redisPool.DEL("key", "keys")) //removes the specified keys

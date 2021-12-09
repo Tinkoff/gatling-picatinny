@@ -1,14 +1,12 @@
 package ru.tinkoff.load.example.feeders
 
-import io.gatling.core.Predef._
-import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
-import ru.tinkoff.gatling.feeders._
-import ru.tinkoff.gatling.utils.{RandomDataGenerators, RandomDigitMagnet}
-
-import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
+import java.time.{LocalDateTime, ZoneId}
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.util.TimeZone
+import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
+import io.gatling.core.Predef._
+import ru.tinkoff.gatling.feeders._
+import ru.tinkoff.gatling.utils.RandomDataGenerators
 
 object Feeders {
 
@@ -99,5 +97,28 @@ object Feeders {
 
   // string sequentially generated from the specified pattern
   val regexString: Feeder[String] = RegexFeeder("regex", "[a-zA-Z0-9]{8}")
+
+  // random PAN
+  val feederWithoutBinPAN: Feeder[String] = RandomPANFeeder("feederWithoutBinPAN")
+  val feederPAN: Feeder[String] = RandomPANFeeder("feederPAN", "421345", "541673")
+
+  // random ITN
+  val feederNatITN: Feeder[String] = RandomNatITNFeeder("feederNatITN")
+  val feederJurITN: Feeder[String] = RandomJurITNFeeder("feederJurITN")
+
+  // random OGRN
+  val feederOGRN: Feeder[String] = RandomOGRNFeeder("feederOGRN")
+
+  // random PSRNSP
+  val feederPSRNSP: Feeder[String] = RandomPSRNSPFeeder("feederPSRNSP")
+
+  // random KPP
+  val feederKPP: Feeder[String] = RandomKPPFeeder("feederKPP")
+
+  // random SNILS
+  val feederSNILS: Feeder[String] = RandomSNILSFeeder("randomSNILS")
+
+  // random russian passport
+  val feederRusPassport: Feeder[String] = RandomRusPassportFeeder("feederRusPassport")
 
 }
