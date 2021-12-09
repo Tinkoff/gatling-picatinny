@@ -9,8 +9,10 @@ object RandomKPPFeeder {
     *
     * KPP is used only in the Russian Federation (КПП in Russian)
     *
-    * @param paramName feeder's name
-    * @return random string KPP feeder
+    * @param paramName
+    *   feeder's name
+    * @return
+    *   random string KPP feeder
     */
   def apply(paramName: String): Feeder[String] =
     feeder[String](paramName)(RandomDataGenerators.randomKPP())

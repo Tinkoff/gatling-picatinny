@@ -9,8 +9,10 @@ object RandomOGRNFeeder {
     *
     * OGRN is used only in the Russian Federation (ОГРН in Russian)
     *
-    * @param paramName feeder's name
-    * @return random string OGRN feeder
+    * @param paramName
+    *   feeder's name
+    * @return
+    *   random string OGRN feeder
     */
   def apply(paramName: String): Feeder[String] =
     feeder[String](paramName)(RandomDataGenerators.randomOGRN())

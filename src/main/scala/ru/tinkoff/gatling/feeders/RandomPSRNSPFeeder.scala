@@ -9,8 +9,10 @@ object RandomPSRNSPFeeder {
     *
     * PSRNSP is used only in the Russian Federation (ОГРНИП in Russian)
     *
-    * @param paramName feeder's name
-    * @return random string PSRNSP feeder
+    * @param paramName
+    *   feeder's name
+    * @return
+    *   random string PSRNSP feeder
     */
   def apply(paramName: String): Feeder[String] =
     feeder[String](paramName)(RandomDataGenerators.randomPSRNSP())

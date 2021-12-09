@@ -30,7 +30,7 @@ object RandomDataGenerators {
   }
 
   def randomOnlyLettersString(stringLength: Int): String = {
-    require(stringLength>0, s"randomString generator required string length input >0. Current value = $stringLength")
+    require(stringLength > 0, s"randomString generator required string length input >0. Current value = $stringLength")
     Random.alphanumeric.dropWhile(_.isDigit).take(stringLength).mkString
   }
 
@@ -59,12 +59,12 @@ object RandomDataGenerators {
 
   private def getRandomElement(items: List[Int], intLength: Int): Int = items match {
     case Nil => randomDigit(intLength)
-    case _ => items(randomDigit(items.length))
+    case _   => items(randomDigit(items.length))
   }
 
   private def getRandomElement(items: List[String], stringLength: Int): String = items match {
     case Nil => randomOnlyLettersString(stringLength)
-    case _ => items(randomDigit(items.length))
+    case _   => items(randomDigit(items.length))
   }
 
   def randomPAN(bins: String*): String = {
@@ -72,26 +72,26 @@ object RandomDataGenerators {
 
     def fifteenDigits(bins: List[String]): List[Char] = bins match {
       case Nil => s"""${digitString(6)}$idNum""".toList
-      case _ => s"""${getRandomElement(bins, 6)}$idNum""".toList
+      case _   => s"""${getRandomElement(bins, 6)}$idNum""".toList
     }
 
     val results: List[Int] = fifteenDigits(bins.toList).flatMap(_.toString.toIntOption)
-    val evenPosSum: Int = results.indices.collect{
+    val evenPosSum: Int    = results.indices.collect {
       case i if i % 2 == 0 => results(i)
     }.fold(0)((x, y) => x + (if (y * 2 > 9) y * 2 - 9 else y * 2))
-    val oddPosSum: Int = results.indices.collect{ case i if i % 2 != 0 => results(i) }.sum
-    val controlNum: Int = 10 - (oddPosSum + evenPosSum) % 10
+    val oddPosSum: Int     = results.indices.collect { case i if i % 2 != 0 => results(i) }.sum
+    val controlNum: Int    = 10 - (oddPosSum + evenPosSum) % 10
 
     s"""${results.mkString("")}$controlNum"""
   }
 
   def randomOGRN(): String = {
-    val indicatorOGRN: Int = getRandomElement(List(1, 5), 1)
-    val year: String = String.format("%02d", randomDigit(2, 21))
+    val indicatorOGRN: Int   = getRandomElement(List(1, 5), 1)
+    val year: String         = String.format("%02d", randomDigit(2, 21))
     val ruSubjectNum: String = String.format("%02d", randomDigit(1, 90))
-    val idNum: String = digitString(7)
-    val result: String = s"""$indicatorOGRN$year$ruSubjectNum$idNum"""
-    val rem: Long = result.toLong % 11
+    val idNum: String        = digitString(7)
+    val result: String       = s"""$indicatorOGRN$year$ruSubjectNum$idNum"""
+    val rem: Long            = result.toLong % 11
 
     if (rem == 10)
       s"""${result}0"""
@@ -101,11 +101,11 @@ object RandomDataGenerators {
 
   def randomPSRNSP(): String = {
     val indicatorPSRNSP: Int = 3
-    val year: String = String.format("%02d", randomDigit(2, 21))
+    val year: String         = String.format("%02d", randomDigit(2, 21))
     val ruSubjectNum: String = String.format("%02d", randomDigit(1, 90))
-    val idNum: String = digitString(9)
-    val result: String = s"""$indicatorPSRNSP$year$ruSubjectNum$idNum"""
-    val rem: Long = result.toLong % 13 % 10
+    val idNum: String        = digitString(9)
+    val result: String       = s"""$indicatorPSRNSP$year$ruSubjectNum$idNum"""
+    val rem: Long            = result.toLong % 13 % 10
 
     if (rem == 10)
       s"""${result}0"""
@@ -115,8 +115,8 @@ object RandomDataGenerators {
 
   def randomKPP(): String = {
     val revenueServiceCode: String = String.format("%04d", randomDigit(1, 10000))
-    val reasonForReg: String = String.format("%02d", randomDigit(1, 100))
-    val idNum: String = String.format("%03d", randomDigit(1, 1000))
+    val reasonForReg: String       = String.format("%02d", randomDigit(1, 100))
+    val idNum: String              = String.format("%03d", randomDigit(1, 1000))
 
     s"""$revenueServiceCode$reasonForReg$idNum"""
   }
@@ -125,7 +125,7 @@ object RandomDataGenerators {
 
     @tailrec
     def itnNatRecursion(n: Int, sum: Int, results: List[Int]): String = {
-      val rnd: Int = randomDigit(0, 10)
+      val rnd: Int           = randomDigit(0, 10)
       val factors: List[Int] = List(2, 4, 10, 3, 5, 9, 4, 6, 8)
 
       def checkSum: Int = sum + rnd * factors(9 - n)
@@ -143,8 +143,8 @@ object RandomDataGenerators {
 
     @tailrec
     def itnJurRecursion(n: Int, sum1: Int, sum2: Int, results: List[Int]): String = {
-      val rnd: Int = randomDigit(0, 10)
-      val firstFactors: List[Int] = List(7, 2, 4, 10, 3, 5, 9, 4, 6, 8)
+      val rnd: Int                 = randomDigit(0, 10)
+      val firstFactors: List[Int]  = List(7, 2, 4, 10, 3, 5, 9, 4, 6, 8)
       val secondFactors: List[Int] = List(3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8)
 
       def checkSum1: Int = sum1 + rnd * firstFactors(11 - n)
@@ -152,10 +152,19 @@ object RandomDataGenerators {
       def checkSum2: Int = sum2 + rnd * secondFactors(11 - n)
 
       n match {
-        case 1 => (results :+ (if ((sum2 + results.last * secondFactors(11 - n)) % 11 == 10) 0 else
-          (sum2 + results.last * secondFactors(11 - n)) % 11)).mkString("")
-        case 2 => itnJurRecursion(n - 1, checkSum1, checkSum2, results :+ rnd :+ (if (checkSum1 % 11 == 10) 0 else
-          checkSum1 % 11))
+        case 1 =>
+          (results :+ (if ((sum2 + results.last * secondFactors(11 - n)) % 11 == 10) 0
+                       else
+                         (sum2 + results.last * secondFactors(11 - n))   % 11)).mkString("")
+        case 2 =>
+          itnJurRecursion(
+            n - 1,
+            checkSum1,
+            checkSum2,
+            results :+ rnd :+ (if (checkSum1 % 11 == 10) 0
+                               else
+                                 checkSum1   % 11),
+          )
         case _ => itnJurRecursion(n - 1, checkSum1, checkSum2, results :+ rnd)
       }
     }
@@ -174,8 +183,8 @@ object RandomDataGenerators {
       @tailrec
       def defineCheckSum(checkSum: Int): String = checkSum match {
         case x if x < 101 => checkSum.toString
-        case 100 | 101 => "00"
-        case _ => defineCheckSum(checkSum % 101)
+        case 100 | 101    => "00"
+        case _            => defineCheckSum(checkSum % 101)
       }
 
       n match {
@@ -189,8 +198,8 @@ object RandomDataGenerators {
 
   def randomRusPassport(): String = {
     val ruSubjectNum: String = String.format("%02d", randomDigit(1, 90))
-    val year: String = String.format("%02d", randomDigit(0, 21))
-    val idNum: String = digitString(6)
+    val year: String         = String.format("%02d", randomDigit(0, 21))
+    val idNum: String        = digitString(6)
 
     s"""$ruSubjectNum$year$idNum"""
   }

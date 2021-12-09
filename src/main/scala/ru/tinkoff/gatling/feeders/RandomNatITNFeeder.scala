@@ -9,8 +9,10 @@ object RandomNatITNFeeder {
     *
     * ITN is used only in the Russian Federation (ИНН in Russian)
     *
-    * @param paramName feeder's name
-    * @return random string ITN of the natural person feeder
+    * @param paramName
+    *   feeder's name
+    * @return
+    *   random string ITN of the natural person feeder
     */
   def apply(paramName: String): Feeder[String] =
     feeder[String](paramName)(RandomDataGenerators.randomNatITN())
