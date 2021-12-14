@@ -76,15 +76,15 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
         .forall(r => r(paramName).isInstanceOf[Int])
     }.check()
   }
-
-  it should "create RandomPhoneFeeder with specified parameters" in {
-    forAll(rndString, rndNumStr(1), rndNumStr(3), rndDelimiter, rndBrackets) {
-      (paramName, countryCode, regionCode, delimiter, rndBrackets) =>
-        RandomPhoneFeeder(paramName, countryCode, regionCode, delimiter, rndBrackets)
-          .take(50)
-          .forall(r => r(paramName).matches(phonePattern))
-    }.check()
-  }
+//
+//  it should "create RandomPhoneFeeder with specified parameters" in {
+//    forAll(rndString, rndNumStr(1), rndNumStr(3), rndDelimiter, rndBrackets) {
+//      (paramName, countryCode, regionCode, delimiter, rndBrackets) =>
+//        RandomPhoneFeeder(paramName, countryCode, regionCode, delimiter, rndBrackets)
+//          .take(50)
+//          .forall(r => r(paramName).matches(phonePattern))
+//    }.check()
+//  }
 
   it should "create RandomStringFeeder with specified param length interval" in {
     forAll(rndString, positiveInt) { (paramName, length) =>

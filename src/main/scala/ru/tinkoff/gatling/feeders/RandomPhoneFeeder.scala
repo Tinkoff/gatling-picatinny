@@ -1,19 +1,14 @@
 package ru.tinkoff.gatling.feeders
 
 import io.gatling.core.feeder.Feeder
-import ru.tinkoff.gatling.utils.{Brackets, RandomPhoneGenerator}
+import ru.tinkoff.gatling.utils.TypePhone.TypePhone
+import ru.tinkoff.gatling.utils.{RandomPhoneGenerator, TypePhone}
 
 object RandomPhoneFeeder {
 
-  def apply(
-      paramName: String,
-      countryCode: String = "+7",
-      regionCode: String = "",
-      delimiter: String = "",
-      brackets: Brackets = Brackets.None,
-  ): Feeder[String] =
+  def apply(paramName: String, fileFormats: String, typePhone: TypePhone = TypePhone.PhoneNumber): Feeder[String] =
     feeder[String](paramName)(
-      RandomPhoneGenerator.randomPhone(countryCode, Option.when(regionCode.nonEmpty)(regionCode), delimiter, brackets),
+      RandomPhoneGenerator.randomPhone(fileFormats, typePhone),
     )
 
 }

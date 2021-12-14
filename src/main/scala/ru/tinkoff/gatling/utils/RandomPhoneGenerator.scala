@@ -1,25 +1,16 @@
 package ru.tinkoff.gatling.utils
 
-import ru.tinkoff.gatling.utils.RandomDataGenerators.digitString
+import ru.tinkoff.gatling.utils.TypePhone._
+import ru.tinkoff.gatling.utils.scalaFaker.Phone
 
 object RandomPhoneGenerator {
 
-  // Default value for genRegionCode if digitString() generates "000"
-  final val DEFAULT_REGION_CODE = "123"
-
-  def randomPhone(
-      countryCode: String,
-      regionCode: Option[String],
-      delimiter: String,
-      brackets: Brackets,
-  ): String = {
-
-    def genRegionCode: String = {
-      val rc = regionCode.getOrElse(digitString(3))
-      if (rc != "000") rc else DEFAULT_REGION_CODE
+  def randomPhone(fileFormats: String, typePhone: TypePhone): String = {
+    typePhone match {
+      case PhoneNumber         => Phone(fileFormats).phoneNumber()
+      case TollFreePhoneNumber => Phone(fileFormats).tollFreePhoneNumber
+      case E164PhoneNumber     => Phone(fileFormats).e164PhoneNumber()
     }
-
-    s"""$countryCode${brackets.left}${genRegionCode}${brackets.right}${digitString(3)}$delimiter${digitString(2)}$delimiter${digitString(2)}"""
   }
 
 }
