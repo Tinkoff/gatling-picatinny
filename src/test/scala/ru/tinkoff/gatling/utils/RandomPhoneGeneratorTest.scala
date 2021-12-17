@@ -7,7 +7,7 @@ import org.scalatest.matchers.should.Matchers
 class RandomPhoneGeneratorTest extends AnyFlatSpec with Matchers {
 
   val rndNumStr    = (n: Int) => Gen.listOfN(n, Gen.numChar).map(_.mkString)
-  val rndBrackets  = Gen.oneOf(Brackets.Round, Brackets.Square, Brackets.Curly, Brackets.None)
+//  val rndBrackets  = Gen.oneOf(Brackets.Round, Brackets.Square, Brackets.Curly, Brackets.None)
   val rndDelimiter = Gen.oneOf("", "-", " ")
   val phonePattern = """(\+?\d{1,3}[\(\[\{]?(?!0{3})\d{3}[\)\]\}]?\d{3}-?\s?\d{2}-?\s?\d{2})"""
 

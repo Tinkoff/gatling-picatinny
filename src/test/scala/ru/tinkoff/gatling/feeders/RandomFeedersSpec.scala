@@ -4,7 +4,6 @@ import org.scalacheck.Prop.{forAll, propBoolean}
 import org.scalacheck._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import ru.tinkoff.gatling.utils.Brackets
 
 import java.time.temporal.{ChronoUnit, TemporalUnit}
 import java.time.{LocalDateTime, ZoneId}
@@ -26,7 +25,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
 
   // phone generators
   val rndNumStr    = (n: Int) => Gen.listOfN(n, Gen.numChar).map(_.mkString)
-  val rndBrackets  = Gen.oneOf(Brackets.Round, Brackets.Square, Brackets.Curly, Brackets.None)
+//  val rndBrackets  = Gen.oneOf(Brackets.Round, Brackets.Square, Brackets.Curly, Brackets.None)
   val rndDelimiter = Gen.oneOf("", "-", " ")
   val phonePattern = """(\+?\d{1,3}[\(\[\{]?(?!0{3})\d{3}[\)\]\}]?\d{3}-?\s?\d{2}-?\s?\d{2})"""
 

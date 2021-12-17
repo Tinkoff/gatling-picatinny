@@ -14,8 +14,7 @@ trait Faker {
     throw new Exception(s"Error loading invalid resource $file")
   }
 
-  def getRandomElement[T](xs: Seq[T]): Option[T] =
-    if (xs.isEmpty) None else Some(xs(Random.nextInt(xs.size)))
+  def getRandomElement[T](seq: Seq[T]): T = seq(Random.nextInt(seq.length))
 
   def objectFrom[T](s: String)(implicit decoder: Decoder[T]): T = {
     decode[T](s) match {
