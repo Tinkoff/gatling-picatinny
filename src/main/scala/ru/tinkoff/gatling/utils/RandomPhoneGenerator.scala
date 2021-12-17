@@ -19,8 +19,8 @@ object RandomPhoneGenerator {
     typePhone match {
       case PhoneNumber         =>
         fileFormats match {
-          case Some(format) => val k = Phone(format).phoneNumber(keyCountryCode); println(k); k
-          case None         => val k = new Phone(DEFAULT_FORMAT).phoneNumber(keyCountryCode); println(k); k
+          case Some(format) => Phone(format).phoneNumber(keyCountryCode)
+          case None         => new Phone(DEFAULT_FORMAT).phoneNumber(keyCountryCode)
         }
       case TollFreePhoneNumber =>
         fileFormats match {
