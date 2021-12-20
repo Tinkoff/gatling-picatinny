@@ -1,12 +1,14 @@
 package ru.tinkoff.load.example.feeders
 
-import java.time.{LocalDateTime, ZoneId}
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
-import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
 import io.gatling.core.Predef._
+import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
 import ru.tinkoff.gatling.feeders._
 import ru.tinkoff.gatling.utils.RandomDataGenerators
+import ru.tinkoff.gatling.utils.phone.{PhoneFormat, TypePhone}
+
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.time.{LocalDateTime, ZoneId}
 
 object Feeders {
 
@@ -39,15 +41,45 @@ object Feeders {
     RandomDateRangeFeeder("startOfVacation", "endOfVacation", 14, "yyyy-MM-dd", LocalDateTime.now(), ChronoUnit.DAYS)
 
   // random Int
-  val randomDigit: Feeder[Int]        = RandomDigitFeeder("randomDigit")
-  val randomRangeInt: Feeder[Int]     = CustomFeeder[Int]("randomRangeInt", RandomDataGenerators.randomDigit(1, 50))
+  val randomDigit: Feeder[Int]      = RandomDigitFeeder("randomDigit")
+  val randomRangeInt: Feeder[Int]   = CustomFeeder[Int]("randomRangeInt", RandomDataGenerators.randomDigit(1, 50))
   val randomRangeFloat: Feeder[Any] =
     CustomFeeder("randomRangeFloat", RandomDataGenerators.randomDigit { (1.toFloat, 10.toFloat) })
 
   // random phone
   // +7 country code is default
-  val randomPhone: Feeder[String]    = RandomPhoneFeeder("randomPhone")
-  val randomUsaPhone: Feeder[String] = RandomPhoneFeeder("randomUsaPhone", "+1")
+//  val randomPhone: Feeder[String]    = RandomPhoneFeeder("randomPhone")
+//  val randomUsaPhone: Feeder[String] = RandomPhoneFeeder("randomUsaPhone", "+1")
+
+  val phoneFormatJson: String = "/phoneTemplates/ru.json"
+  val phoneFormatMap          = Map(
+    "7" -> PhoneFormat(
+      countryCode = "7",
+      length = 10,
+      prefixes = Seq("81", "82", "83"),
+      format = "+X XXX XXX-XX-XX",
+    ),
+    "8" -> PhoneFormat(
+      countryCode = "8",
+      length = 7,
+      areaCodes = Option(Seq("495", "495")),
+      prefixes = Seq(""),
+      format = "X(XXX)XXX-XX-XX",
+    ),
+  )
+
+  val randomPhoneNumberFromJson: Feeder[String]         =
+    RandomPhoneJsonFeeder("randomPhoneNumberFromJson", phoneFormatJson, TypePhone.PhoneNumber, "7")
+  val randomPhoneNumberFromMap: Feeder[String]          =
+    RandomPhoneMapFeeder("randomPhoneNumberFromMap", phoneFormatMap, TypePhone.PhoneNumber, "7")
+  val randomE164PhoneNumberFromJson: Feeder[String]     =
+    RandomPhoneJsonFeeder("randomE164PhoneNumberFromJson", phoneFormatJson, TypePhone.E164PhoneNumber, "7")
+  val randomE164PhoneNumberFromMap: Feeder[String]      =
+    RandomPhoneMapFeeder("randomE164PhoneNumberFromMap", phoneFormatMap, TypePhone.E164PhoneNumber, "7")
+  val randomTollFreePhoneNumberFromJson: Feeder[String] =
+    RandomPhoneJsonFeeder("randomTollFreePhoneNumberFromJson", phoneFormatJson, TypePhone.TollFreePhoneNumber, "7")
+  val randomTollFreePhoneNumberFromMap: Feeder[String]  =
+    RandomPhoneMapFeeder("randomTollFreePhoneNumberFromMap", phoneFormatMap, TypePhone.TollFreePhoneNumber, "7")
 
   // random alphanumeric String with specified length
   val randomString: Feeder[String] = RandomStringFeeder("randomString", 16)
@@ -100,7 +132,7 @@ object Feeders {
 
   // random PAN
   val feederWithoutBinPAN: Feeder[String] = RandomPANFeeder("feederWithoutBinPAN")
-  val feederPAN: Feeder[String] = RandomPANFeeder("feederPAN", "421345", "541673")
+  val feederPAN: Feeder[String]           = RandomPANFeeder("feederPAN", "421345", "541673")
 
   // random ITN
   val feederNatITN: Feeder[String] = RandomNatITNFeeder("feederNatITN")
