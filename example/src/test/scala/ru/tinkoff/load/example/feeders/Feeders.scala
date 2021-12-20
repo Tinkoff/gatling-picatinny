@@ -82,16 +82,8 @@ object Feeders {
   private val keys                = List("k1", "k2", "k3")
   val vaultFeeder: Feeder[String] = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 
-  // Let's say vaultFeeder returned the following iterator
-  // Iterator(
-  //    Map(
-  //      "k1" -> "my-server.xyz,test.mail.com,somesever.com,localhost",
-  //      "k2" -> "Sergey;Petr;Gulchachak",
-  //      "k3" -> "somerand-omto-ken1-2345-678910111213",
-  //    ),
-  //  )
-  // To get separated values for the k2 key use SeparatedValuesFeeder
-  val feederSeparatedValues: FeederBuilderBase[String] =
+  // get separated values feeder from the source map
+  val separatedValuesFeeder: FeederBuilderBase[String] =
     SeparatedValuesFeeder.fromCsv("userNames", "k2", vaultFeeder.next()).random
 
   // how to combine together 2 or more feeders
