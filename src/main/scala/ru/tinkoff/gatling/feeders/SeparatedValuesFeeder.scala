@@ -34,20 +34,19 @@ object SeparatedValuesFeeder {
       .toList
       .toFeeder(paramName)
   }
-  def fromCsv(paramName: String, key: String, source: Map[String, String])                                             =
+
+  def fromCsv(paramName: String, key: String, source: Map[String, String]): FeederBuilderBase[String] =
     apply(paramName, key, source, ",")
-
-  def fromSsv(paramName: String, key: String, source: Map[String, String]) =
+  def fromSsv(paramName: String, key: String, source: Map[String, String]): FeederBuilderBase[String] =
     apply(paramName, key, source, ";")
-
-  def fromTsv(paramName: String, key: String, source: Map[String, String]) =
+  def fromTsv(paramName: String, key: String, source: Map[String, String]): FeederBuilderBase[String] =
     apply(paramName, key, source, "\t")
 
   /** Creates a feeder with separated values from the source string
     * @param paramName
     *   feeder name
     * @param source
-    *   source string
+    *   source String or List
     * @param separator
     *   ",", ";", "\t" or other delimiter which separates values <br>you also can use following methods for the most common
     *   separators: .fromCsv(...), .fromSsv(...), .fromTsv(...)
@@ -60,51 +59,23 @@ object SeparatedValuesFeeder {
     *     SeparatedValuesFeeder("someValues", sourceString, ";").random
     * }}}
     */
-  def apply(paramName: String, source: String, separator: String): FeederBuilderBase[String] = {
-    source
-      .split(separator)
-      .toList
-      .toFeeder(paramName)
+  def apply[T](paramName: String, source: T, separator: String): FeederBuilderBase[String] = source match {
+    case _: String         =>
+      s"$source"
+        .split(separator)
+        .toList
+        .toFeeder(paramName)
+    case source @ List(_*) =>
+      source
+        .mkString(separator)
+        .split(separator)
+        .toList
+        .toFeeder(paramName)
+    case _                 => throw new Exception(s"Source has to be String, List(Any) or Map(String -> String)")
   }
-  def fromCsv(paramName: String, source: String)                                             =
-    apply(paramName, source, ",")
 
-  def fromSsv(paramName: String, source: String) =
-    apply(paramName, source, ";")
+  def fromCsv[T](paramName: String, source: T): FeederBuilderBase[String] = apply(paramName, source, ",")
+  def fromSsv[T](paramName: String, source: T): FeederBuilderBase[String] = apply(paramName, source, ";")
+  def fromTsv[T](paramName: String, source: T): FeederBuilderBase[String] = apply(paramName, source, "\t")
 
-  def fromTsv(paramName: String, source: String) =
-    apply(paramName, source, "\t")
-
-  /** Creates a feeder with separated values from the source List
-    * @param paramName
-    *   feeder name
-    * @param source
-    *   source list
-    * @param separator
-    *   ",", ";", "\t" or other delimiter which separates values <br>you also can use following methods for the most common
-    *   separators: .fromCsv(...), .fromSsv(...), .fromTsv(...)
-    * @return
-    *   a new feeder
-    * @example
-    * {{{
-    *   val sourceList  = List("v11;v12", "v21;v22;v23", "")
-    *   val separatedValuesFeeder: FeederBuilderBase[String] =
-    *     SeparatedValuesFeeder("someValues", sourceString, ";").random
-    * }}}
-    */
-  def apply(paramName: String, source: List[String], separator: String): FeederBuilderBase[String] = {
-    source
-      .mkString(separator)
-      .split(separator)
-      .toList
-      .toFeeder(paramName)
-  }
-  def fromCsv(paramName: String, source: List[String])                                             =
-    apply(paramName, source, ",")
-
-  def fromSsv(paramName: String, source: List[String]) =
-    apply(paramName, source, ";")
-
-  def fromTsv(paramName: String, source: List[String]) =
-    apply(paramName, source, "\t")
 }
