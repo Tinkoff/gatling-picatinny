@@ -110,6 +110,35 @@ Creates feeder capable of retrieving secret data from HC Vault
 ```scala
   val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
+#### SeparatedValuesFeeder
+Creates a feeder with separated values from a source Map(k -> v), String or List.
+- params:
+  - paramName - feeder name
+  - key - the key to get one single element from the source Map. The parameter is only required if data source is a Map
+  - source - data source
+  - separator - ",", ";", "\t" or other delimiter which separates values. You can also use following methods for the most common
+    separators: .fromCsv(...), .fromSsv(...), .fromTsv(...)
+
+Get separated values from a source Map(k -> v) for the specified key
+```scala
+val someFeeder = Iterator( Map( "k1" -> "v11,v12", "k2" -> "v21;v22;v23", "k3" -> "token" ) )
+val sourceMap  = someFeeder.next()
+val separatedValuesFeeder: FeederBuilderBase[String] =
+      SeparatedValuesFeeder("someValues", "k2", sourceMap, ";").random
+```
+Get separated values from a source String
+```scala
+val someFeeder = Iterator( Map( "k1" -> "v11,v12", "k2" -> "v21;v22;v23", "k3" -> "token" ) )
+val sourceString  = someFeeder.next().apply("k2") // sourceString = "v21;v22;v23"
+val separatedValuesFeeder: FeederBuilderBase[String] =
+      SeparatedValuesFeeder.fromSsv("someValues", sourceString).random
+```
+Get separated values from a source List
+```scala
+val sourceList  = List("v11;v12", "v21;v22;v23", "v31;v32")
+val separatedValuesFeeder: FeederBuilderBase[String] =
+      SeparatedValuesFeeder.fromSsv("someValues", sourceList).random
+```
 ### influxdb 
 
 This module allows you to write custom points to InfluxDB.
