@@ -7,6 +7,8 @@
 * [Usage](#usage)
   * [config](#config)
   * [feeders](#feeders)
+    * [HC Vault feeder](#hc-vault-feeder)
+    * [SeparatedValuesFeeder](#separatedvaluesfeeder)
   * [influxdb](#influxdb)
   * [profile](#profile)
   * [redis](#redis)
