@@ -1,5 +1,6 @@
 package ru.tinkoff.gatling.feeders
 
+import io.gatling.core.config.GatlingConfiguration
 import io.gatling.core.feeder._
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Prop._
@@ -38,18 +39,18 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
   it should "prepare feeder with finite size" in {
     forAll { (n: String, v: Char) =>
       val fdr    = RandomDigitFeeder(n)
-      val result = fdr.toFiniteLength(v)
+      val result = fdr.toFiniteLength(v)(GatlingConfiguration.loadForTest())
 
-      result.size == v
+      result.readRecords.size == v
     }.check()
   }
 
   it should "transform Collection to Feeder" in {
     forAll { (n: String, v: AnyVal) =>
       val collection = List.fill(100)(v)
-      val result     = collection.toFeeder(n)
+      val result     = collection.toFeeder(n)(GatlingConfiguration.loadForTest())
 
-      result.forall(r => r.equals(Map(n -> v)))
+      result.readRecords.forall(r => r.equals(Map(n -> v)))
     }.check()
   }
 
