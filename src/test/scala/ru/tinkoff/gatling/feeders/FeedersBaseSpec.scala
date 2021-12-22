@@ -47,15 +47,6 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
 
   it should "transform Collection to Feeder" in {
     forAll { (n: String, v: AnyVal) =>
-      val collection = Seq.fill(100)(v)
-      val result     = collection.toFeeder(n)(GatlingConfiguration.loadForTest())
-
-      result.readRecords.forall(r => r.equals(Map(n -> v)))
-    }.check()
-  }
-
-  it should "transform Collection to Feeder" in {
-    forAll { (n: String, v: AnyVal) =>
       val collection = List.fill(100)(v)
       val result     = collection.toFeeder(n)(GatlingConfiguration.loadForTest())
 
