@@ -124,9 +124,10 @@ Creates a feeder with separated values from a source Map(k -> v), String or List
 Get separated values from a source Map(k -> v) for the specified key
 ```scala
 val someFeeder = Iterator( Map( "k1" -> "v11,v12", "k2" -> "v21;v22;v23", "k3" -> "token" ) )
-val sourceMap  = someFeeder.next()
+val sourceMap  = someFeeder.next()  // sourceMap = Map(k1 -> v11,v12, k2 -> v21;v22;v23, k3 -> token)
 val separatedValuesFeeder: FeederBuilderBase[String] =
-      SeparatedValuesFeeder("someValues", "k2", sourceMap, ";").random
+      SeparatedValuesFeeder("someValues", "k2", sourceMap, ";")  // Vector(Map(paramName -> v21), Map(paramName -> v22), Map(paramName -> v23))
+separatedValuesFeeder.random // return random value: v21, v22 or v23
 ```
 Get separated values from a source String
 ```scala
@@ -137,9 +138,10 @@ val separatedValuesFeeder: FeederBuilderBase[String] =
 ```
 Get separated values from a source List
 ```scala
-val sourceList  = List("v11;v12", "v21;v22;v23", "v31;v32")
+val sourceList  = List("v11;v12", "v21;v22")
 val separatedValuesFeeder: FeederBuilderBase[String] =
-      SeparatedValuesFeeder.fromSsv("someValues", sourceList).random
+      SeparatedValuesFeeder.fromSsv("someValues", sourceList) // Vector(Map(paramName -> v11), Map(paramName -> v12), Map(paramName -> v21), Map(paramName -> v22))
+separatedValuesFeeder.random // return random value: v11, v12, v21 or v22
 ```
 ### influxdb 
 
