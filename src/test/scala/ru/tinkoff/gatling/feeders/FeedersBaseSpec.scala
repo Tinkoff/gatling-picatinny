@@ -31,14 +31,14 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
     forAll { (n1: String, n2: String, v1: AnyVal, v2: AnyVal) =>
       val feeder1: Feeder[AnyVal] = Iterator.continually(Map(n1 -> v1))
       val feeder2: Feeder[AnyVal] = Iterator.continually(Map(n2 -> v2))
-      val result: Feeder[Any] = feeder1 ** feeder2
+      val result: Feeder[Any]     = feeder1 ** feeder2
       result.next().equals(Map(n1 -> v1, n2 -> v2))
     }.check()
   }
 
   it should "prepare feeder with finite size" in {
     forAll { (n: String, v: Char) =>
-      val fdr = RandomDigitFeeder(n)
+      val fdr    = RandomDigitFeeder(n)
       val result = fdr.toFiniteLength(v)(GatlingConfiguration.loadForTest())
 
       result.readRecords.size == v
@@ -48,7 +48,7 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
   it should "transform Collection to Feeder" in {
     forAll { (n: String, v: AnyVal) =>
       val collection = Seq.fill(100)(v)
-      val result = collection.toFeeder(n)(GatlingConfiguration.loadForTest())
+      val result     = collection.toFeeder(n)(GatlingConfiguration.loadForTest())
 
       result.readRecords.forall(r => r.equals(Map(n -> v)))
     }.check()
@@ -57,7 +57,7 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
   it should "transform Collection to Feeder" in {
     forAll { (n: String, v: AnyVal) =>
       val collection = List.fill(100)(v)
-      val result = collection.toFeeder(n)(GatlingConfiguration.loadForTest())
+      val result     = collection.toFeeder(n)(GatlingConfiguration.loadForTest())
 
       result.readRecords.forall(r => r.equals(Map(n -> v)))
     }.check()
