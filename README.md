@@ -113,35 +113,39 @@ Creates feeder capable of retrieving secret data from HC Vault
   val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
 #### SeparatedValuesFeeder
-Creates a feeder with separated values from a source Map(k -> v), String or List.
+Creates a feeder with separated values from a source String, Seq[String] or Seq[Map[String, Any]].
 - params:
   - paramName - feeder name
-  - key - the key to get one single element from the source Map. The parameter is only required if data source is a Map
   - source - data source
   - separator - ",", ";", "\t" or other delimiter which separates values. You can also use following methods for the most common
-    separators: .fromCsv(...), .fromSsv(...), .fromTsv(...)
-
-Get separated values from a source Map(k -> v) for the specified key
+    separators: .csv(...), .ssv(...), .tsv(...)
+  
+Get separated values from a source: String
 ```scala
-val someFeeder = Iterator( Map( "k1" -> "v11,v12", "k2" -> "v21;v22;v23", "k3" -> "token" ) )
-val sourceMap  = someFeeder.next()  // sourceMap = Map(k1 -> v11,v12, k2 -> v21;v22;v23, k3 -> token)
+val sourceString = "v21;v22;v23"
 val separatedValuesFeeder: FeederBuilderBase[String] =
-      SeparatedValuesFeeder("someValues", "k2", sourceMap, ";")  // Vector(Map(paramName -> v21), Map(paramName -> v22), Map(paramName -> v23))
-separatedValuesFeeder.random // return random value: v21, v22 or v23
+  SeparatedValuesFeeder("someValues", sourceString, ';') // Vector(Map(someValues -> v21), Map(someValues -> v22), Map(someValues -> v23))
 ```
-Get separated values from a source String
+Get separated values from a source: Seq[String]
 ```scala
-val someFeeder = Iterator( Map( "k1" -> "v11,v12", "k2" -> "v21;v22;v23", "k3" -> "token" ) )
-val sourceString  = someFeeder.next().apply("k2") // sourceString = "v21;v22;v23"
+val sourceSeq = Seq("1,two", "3,4")
 val separatedValuesFeeder: FeederBuilderBase[String] =
-      SeparatedValuesFeeder.fromSsv("someValues", sourceString).random
+  SeparatedValuesFeeder.csv("someValues", sourceSeq) // Vector(Map(someValues -> 1), Map(someValues -> two), Map(someValues -> 3), Map(someValues -> 4))
 ```
-Get separated values from a source List
+Get separated values from a source: Seq[Map[String, Any]]
 ```scala
-val sourceList  = List("v11;v12", "v21;v22")
+val vaultFeeder: FeederBuilderBase[String] = Vector(
+      Map(
+        "HOSTS" -> "host11,host12", 
+        "USERS" -> "user11",
+        ), 
+      Map(
+        "HOSTS" -> "host21,host22", 
+        "USERS" -> "user21,user22,user23",
+      ),
+    )
 val separatedValuesFeeder: FeederBuilderBase[String] =
-      SeparatedValuesFeeder.fromSsv("someValues", sourceList) // Vector(Map(paramName -> v11), Map(paramName -> v12), Map(paramName -> v21), Map(paramName -> v22))
-separatedValuesFeeder.random // return random value: v11, v12, v21 or v22
+      SeparatedValuesFeeder(None, vaultFeeder.readRecords, ',') // Vector(Map(HOSTS -> host11), Map(HOSTS -> host12), Map(USERS -> user11), Map(HOSTS -> host21), Map(HOSTS -> host22), Map(USERS -> user21), Map(USERS -> user22), Map(USERS -> user23))
 ```
 ### influxdb 
 
