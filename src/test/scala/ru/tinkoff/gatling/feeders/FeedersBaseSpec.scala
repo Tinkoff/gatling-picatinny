@@ -54,13 +54,4 @@ class FeedersBaseSpec extends AnyFlatSpec with Matchers {
     }.check()
   }
 
-  it should "generate phone feeder" in {
-    forAll { (n: String, v: AnyVal) =>
-      val collection = List.fill(100)(v)
-      val result     = collection.toFeeder(n)(GatlingConfiguration.loadForTest())
-
-      result.readRecords.forall(r => r.equals(Map(n -> v)))
-    }.check()
-  }
-
 }
