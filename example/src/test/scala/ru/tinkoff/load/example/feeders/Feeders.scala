@@ -114,6 +114,21 @@ object Feeders {
   private val keys                = List("k1", "k2", "k3")
   val vaultFeeder: Feeder[String] = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 
+  // Get separated values feeder from the source
+  // SeparatedValuesFeeder will return Vector(Map(HOSTS -> host11), Map(HOSTS -> host12), Map(USERS -> user11), Map(HOSTS -> host21), Map(HOSTS -> host22), Map(USERS -> user21), Map(USERS -> user22), Map(USERS -> user23))
+  val vaultData: FeederBuilderBase[String]             = Vector(
+    Map(
+      "HOSTS" -> "host11,host12",
+      "USERS" -> "user11",
+    ),
+    Map(
+      "HOSTS" -> "host21,host22",
+      "USERS" -> "user21,user22,user23",
+    ),
+  )
+  val separatedValuesFeeder: FeederBuilderBase[String] =
+    SeparatedValuesFeeder(None, vaultData.readRecords, ',')
+
   // how to combine together 2 or more feeders
   // as result we get feeder with 3 params: digit, string, phone
   val gluedTogetherFeeder: Feeder[Any] = digitFeeder ** stringFeeder ** phoneFeeder
