@@ -1,13 +1,14 @@
 package ru.tinkoff.gatling.utils.phone
 
-import ru.tinkoff.gatling.utils.{getRandomElement, getResource, objectFrom}
+import io.circe.generic.auto._
+import io.circe.parser
+import ru.tinkoff.gatling.utils.{getRandomElement, getResource}
 
 import scala.annotation.tailrec
 import scala.io.Source
 import scala.util.Random
 
-class Phone(models: Map[String, PhoneFormat]) {
-  import Phone._
+class Phone(models: Seq[PhoneFormat]) {
 
   /** Gets formatted phone number
     *
@@ -18,10 +19,10 @@ class Phone(models: Map[String, PhoneFormat]) {
     * @return
     *   formatted string phone number
     */
-  private[this] def format(template: String, numbers: Seq[String]): String = {
+  private[this] def format(template: String, numbers: Seq[Char]): String = {
     @tailrec
-    def loop(xs: Seq[String], acc: String): String = xs match {
-      case head +: tail => loop(tail, acc.replaceFirst("X", head))
+    def loop(xs: Seq[Char], acc: String): String = xs match {
+      case head :: tail => loop(tail, acc.replaceFirst("X", head.toString))
       case _            => acc
     }
     loop(numbers, template)
@@ -36,10 +37,10 @@ class Phone(models: Map[String, PhoneFormat]) {
     */
   private[this] def getPhoneNumber(format: PhoneFormat): String = {
     val cc     = format.countryCode
-    val ac     = areaCodeOption(Some(cc)).getOrElse("")
+    val ac     = areaCode(Some(cc))
     val prefix = getRandomElement[String](format.prefixes)
     val tail   = (1 to format.length - prefix.length).map(_ => Random.nextInt(10)).mkString
-    s"${cc}${ac}${prefix}${tail}"
+    s"$cc$ac$prefix$tail"
   }
 
   /** Selects random phone format from PhoneFormat file
@@ -47,7 +48,7 @@ class Phone(models: Map[String, PhoneFormat]) {
     * @return
     *   random phone format
     */
-  private[this] def randomPhoneFormat = getRandomElement[PhoneFormat](models.map(_._2).toSeq)
+  private[this] def randomPhoneFormat = getRandomElement[PhoneFormat](models)
 
   /** Generates area code using PhoneFormat
     *
@@ -56,14 +57,12 @@ class Phone(models: Map[String, PhoneFormat]) {
     * @return
     *   string area code
     */
-  def areaCodeOption(keyCountryCode: Option[String] = None): Option[String] = keyCountryCode match {
-    case Some(cc) =>
-      for {
-        pf <- models.get(cc)
-        ac <- pf.areaCodes
-      } yield getRandomElement[String](ac)
-    case None     => randomPhoneFormat.areaCodes.map(ac => getRandomElement[String](ac))
-  }
+  def areaCode(keyCountryCode: Option[String] = None): String =
+    getRandomElement[String](
+      keyCountryCode
+        .map(cc => models.filter(_.countryCode == cc).flatMap(_.areaCodes))
+        .getOrElse(randomPhoneFormat.areaCodes),
+    )
 
   /** Generates phone number using PhoneFormat
     *
@@ -72,18 +71,12 @@ class Phone(models: Map[String, PhoneFormat]) {
     * @return
     *   random string phone number
     */
-  def phoneNumber(keyCountryCode: Option[String] = None): String = keyCountryCode match {
-    case Some(cc) =>
-      models
-        .get(cc)
-        .map { phoneFormat =>
-          format(phoneFormat.format, getPhoneNumber(phoneFormat).map(_.toString))
-        }
-        .getOrElse(throw new Exception(s"Unsupported key country code: $cc"))
-    case None     =>
-      val phoneFormat = randomPhoneFormat
-      format(phoneFormat.format, getPhoneNumber(phoneFormat).map(_.toString))
-  }
+  def phoneNumber(keyCountryCode: Option[String] = None): String = keyCountryCode
+    .flatMap(cc => models.find(_.countryCode == cc).map { f => format(f.format, getPhoneNumber(f)) })
+    .getOrElse {
+      val pf = randomPhoneFormat
+      format(pf.format, getPhoneNumber(pf))
+    }
 
   /** Generates Toll-free phone number without using PhoneFormat
     *
@@ -103,32 +96,29 @@ class Phone(models: Map[String, PhoneFormat]) {
     * @return
     *   random string E.164 phone number format +XXXXXXXXXXX
     */
-  def e164PhoneNumber(keyCountryCode: Option[String] = None): String = keyCountryCode match {
-    case Some(cc) =>
-      models
-        .get(cc)
-        .map { f =>
-          s"+${getPhoneNumber(f)}"
-        }
-        .getOrElse(throw new Exception(s"Unsupported key country code: $cc"))
-    case None     => s"+${getPhoneNumber(randomPhoneFormat)}"
-  }
+  def e164PhoneNumber(keyCountryCode: Option[String] = None): String = keyCountryCode
+    .flatMap(cc => models.find(_.countryCode == cc).map { f => getPhoneNumber(f) })
+    .getOrElse(getPhoneNumber(randomPhoneFormat))
+
 }
 
 object Phone {
-  private def model(resourcePath: String): PhoneModel = {
-    import io.circe.Decoder
-    import io.circe.generic.semiauto.deriveDecoder
 
-    implicit val phoneFormatDecoder: Decoder[PhoneFormat] = deriveDecoder
-    implicit val phoneModelDecoder: Decoder[PhoneModel]   = deriveDecoder
+  final val DEFAULT_FORMAT_RU_MOBILE = List(
+    PhoneFormat(
+      countryCode = "+7",
+      length = 7,
+      areaCodes = (900 to 999).map(_.toString),
+      prefixes = Seq(""),
+      format = "+XXXXXXXXXXX",
+    ),
+  )
 
-    val s = Source.fromInputStream(getResource(resourcePath)).mkString
-
-    objectFrom[PhoneModel](s)
-  }
-
-  def models(resourcePath: String): Map[String, PhoneFormat] = model(resourcePath).formats.map(pf => pf.countryCode -> pf).toMap
+  private def models(resourcePath: String): Seq[PhoneFormat] = parser
+    .decode[Seq[PhoneFormat]](Source.fromInputStream(getResource(resourcePath)).mkString)
+    .getOrElse(DEFAULT_FORMAT_RU_MOBILE)
 
   def apply(resourcePath: String): Phone = new Phone(models(resourcePath))
+
+  def apply(formats: Seq[PhoneFormat]): Phone = new Phone(formats)
 }

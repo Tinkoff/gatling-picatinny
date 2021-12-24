@@ -48,38 +48,38 @@ object Feeders {
 
   // random phone
   // +7 country code is default
-//  val randomPhone: Feeder[String]    = RandomPhoneFeeder("randomPhone")
-//  val randomUsaPhone: Feeder[String] = RandomPhoneFeeder("randomUsaPhone", "+1")
+  val randomPhone: Feeder[String]    = RandomPhoneFeeder("randomPhone")
+  val randomUsaPhone: Feeder[String] = RandomPhoneFeeder("randomUsaPhone", "+1")
 
-  val phoneFormatJson: String = "/phoneTemplates/ru.json"
-  val phoneFormatMap          = Map(
-    "7" -> PhoneFormat(
-      countryCode = "7",
+  val phoneFormatFromFile: String = "/phoneTemplates/ru.json"
+  val phoneFormat                 = List(
+    PhoneFormat(
+      countryCode = "+7",
       length = 10,
-      prefixes = Seq("81", "82", "83"),
+      areaCodes = Seq("903", "906", "908"),
+      prefixes = Seq("55", "81", "111"),
       format = "+X XXX XXX-XX-XX",
     ),
-    "8" -> PhoneFormat(
+    PhoneFormat(
       countryCode = "8",
       length = 7,
-      areaCodes = Option(Seq("495", "495")),
-      prefixes = Seq(""),
+      areaCodes = Seq("495", "495"),
       format = "X(XXX)XXX-XX-XX",
     ),
   )
 
   val randomPhoneNumberFromJson: Feeder[String]         =
-    RandomPhoneJsonFeeder("randomPhoneNumberFromJson", phoneFormatJson, TypePhone.PhoneNumber, "7")
+    RandomPhoneFeeder("randomPhoneNumberFile", phoneFormatFromFile, TypePhone.PhoneNumber, "+7")
   val randomPhoneNumberFromMap: Feeder[String]          =
-    RandomPhoneMapFeeder("randomPhoneNumberFromMap", phoneFormatMap, TypePhone.PhoneNumber, "7")
+    RandomPhoneFeeder("randomPhoneNumber", phoneFormat, TypePhone.PhoneNumber, "+7")
   val randomE164PhoneNumberFromJson: Feeder[String]     =
-    RandomPhoneJsonFeeder("randomE164PhoneNumberFromJson", phoneFormatJson, TypePhone.E164PhoneNumber, "7")
+    RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatFromFile, TypePhone.E164PhoneNumber, "+7")
   val randomE164PhoneNumberFromMap: Feeder[String]      =
-    RandomPhoneMapFeeder("randomE164PhoneNumberFromMap", phoneFormatMap, TypePhone.E164PhoneNumber, "7")
+    RandomPhoneFeeder("randomE164PhoneNumber", phoneFormat, TypePhone.E164PhoneNumber, "+7")
   val randomTollFreePhoneNumberFromJson: Feeder[String] =
-    RandomPhoneJsonFeeder("randomTollFreePhoneNumberFromJson", phoneFormatJson, TypePhone.TollFreePhoneNumber, "7")
+    RandomPhoneFeeder("randomTollFreePhoneNumberFile", phoneFormatFromFile, TypePhone.TollFreePhoneNumber, "+7")
   val randomTollFreePhoneNumberFromMap: Feeder[String]  =
-    RandomPhoneMapFeeder("randomTollFreePhoneNumberFromMap", phoneFormatMap, TypePhone.TollFreePhoneNumber, "7")
+    RandomPhoneFeeder("randomTollFreePhoneNumber", phoneFormat, TypePhone.TollFreePhoneNumber, "+7")
 
   // random alphanumeric String with specified length
   val randomString: Feeder[String] = RandomStringFeeder("randomString", 16)
