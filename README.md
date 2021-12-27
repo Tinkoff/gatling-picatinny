@@ -200,7 +200,7 @@ Phone feeder with custom formats
 
 Phone feeder with custom formats with file
 
-Creat file with formats, for example RESOURCES/phoneTemplates/ru.json
+Creates file with formats, for example RESOURCES/phoneTemplates/ru.json
 ```json
 {
   "formats": [
