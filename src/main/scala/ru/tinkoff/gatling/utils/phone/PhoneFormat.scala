@@ -5,5 +5,5 @@ final case class PhoneFormat(
     length: Int,
     areaCodes: Seq[String],
     format: String,
-    prefixes: Seq[String] = Seq.empty[String],
+    prefixes: Seq[String] = (0 to 999).map(_.toString),
 )

@@ -62,7 +62,7 @@ object Feeders {
 
   val randomUsaPhone: Feeder[String] = RandomPhoneFeeder("randomUsaPhone", usaPhoneFormats)
 
-  val phoneFormatsFromFile: String   = "/phoneTemplates/ru.json"
+  val phoneFormatsFromFile: String   = "phoneTemplates/ru.json"
   val ruMobileFormat: PhoneFormat    = PhoneFormat(
     countryCode = "+7",
     length = 10,

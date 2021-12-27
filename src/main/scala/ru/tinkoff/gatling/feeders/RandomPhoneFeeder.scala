@@ -11,7 +11,7 @@ object RandomPhoneFeeder {
       paramName: String,
   ): Feeder[String] =
     feeder[String](paramName)(
-      RandomPhoneGenerator.randomPhone(Seq.empty[PhoneFormat], TypePhone.PhoneNumber),
+      RandomPhoneGenerator.randomPhone(Seq.empty[PhoneFormat], TypePhone.E164PhoneNumber),
     )
 
   def apply(

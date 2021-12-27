@@ -1,7 +1,7 @@
 package ru.tinkoff.gatling.utils.phone
 
 import io.circe.generic.auto._
-import io.circe.parser
+import io.circe.{Decoder, parser}
 import ru.tinkoff.gatling.utils.getRandomElement
 
 import scala.annotation.tailrec
@@ -22,24 +22,25 @@ class Phone(models: Seq[PhoneFormat]) {
   private[this] def format(template: String, numbers: Seq[Char]): String = {
     @tailrec
     def loop(xs: Seq[Char], acc: String): String = xs match {
-      case head :: tail => loop(tail, acc.replaceFirst("X", head.toString))
-      case _            => acc
+      case Seq(head, tail @ _*) if head != '+' => loop(tail, acc.replaceFirst("X", head.toString))
+      case Seq(head, tail @ _*) if head == '+' => loop(tail, acc)
+      case _                                   => acc
     }
     loop(numbers, template)
   }
 
   /** Gets phone number based on parameters from PhoneFormat
     *
-    * @param format
+    * @param phoneFormat
     *   phone number parameters
     * @return
     *   random string phone number
     */
-  private[this] def getPhoneNumber(format: PhoneFormat): String = {
-    val cc     = format.countryCode
+  private[this] def getPhoneNumber(phoneFormat: PhoneFormat): String = {
+    val cc     = phoneFormat.countryCode
     val ac     = areaCode(Some(cc))
-    val prefix = getRandomElement[String](format.prefixes)
-    val tail   = (1 to format.length - prefix.length).map(_ => Random.nextInt(10)).mkString
+    val prefix = getRandomElement[String](phoneFormat.prefixes)
+    val tail   = (1 to phoneFormat.length - prefix.length - ac.length).map(_ => Random.nextInt(10)).mkString
     s"$cc$ac$prefix$tail"
   }
 
@@ -82,7 +83,7 @@ class Phone(models: Seq[PhoneFormat]) {
     *   random string Toll-free phone number format (XXX) XXX-XXXX
     */
   def tollFreePhoneNumber: String = {
-    val starts = 1 to 999
+    val starts = List("800", "833", "844", "855", "866", "877", "888")
     val xs     = (1 to 7).map(_ => Random.nextInt(10))
     s"(${getRandomElement(starts)}) ${xs.slice(0, 3).mkString}-${xs.slice(3, 7).mkString}"
   }
@@ -100,22 +101,28 @@ class Phone(models: Seq[PhoneFormat]) {
 
 object Phone {
 
-  final val DEFAULT_FORMAT_RU_MOBILE = List(
+  final val DEFAULT_FORMAT_RU_MOBILE = Seq(
     PhoneFormat(
       countryCode = "+7",
-      length = 7,
+      length = 10,
       areaCodes = (900 to 999).map(_.toString),
-      prefixes = Seq(""),
       format = "+XXXXXXXXXXX",
     ),
   )
 
-  private def models(resourcePath: String): Seq[PhoneFormat] =
+  private def models(resourcePath: String): Seq[PhoneFormat] = {
+
+    val decodeFormats = Decoder[Seq[PhoneFormat]].prepare(
+      _.downField("formats"),
+    )
+
     parser
-      .decode[Seq[PhoneFormat]](Source.fromResource(resourcePath).mkString)
+      .decode[Seq[PhoneFormat]](Source.fromResource(resourcePath).mkString)(decodeFormats)
       .getOrElse(DEFAULT_FORMAT_RU_MOBILE)
+  }
 
   def apply(resourcePath: String): Phone = new Phone(models(resourcePath))
 
-  def apply(formats: Seq[PhoneFormat]): Phone = new Phone(formats)
+  def apply(formats: Seq[PhoneFormat]): Phone = if (formats.nonEmpty) new Phone(formats)
+  else new Phone(DEFAULT_FORMAT_RU_MOBILE)
 }
