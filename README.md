@@ -11,7 +11,7 @@
     * [feeders](#feeders)
         * [HC Vault feeder](#hc-vault-feeder)
         * [SeparatedValuesFeeder](#separatedvaluesfeeder)
-        * [Phone Feeders](#phone-feeder)
+        * [Phone Feeders](#phone-feeders)
     * [influxdb](#influxdb)
     * [profile](#profile)
     * [redis](#redis)
