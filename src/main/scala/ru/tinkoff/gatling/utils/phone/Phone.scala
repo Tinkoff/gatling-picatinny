@@ -2,7 +2,7 @@ package ru.tinkoff.gatling.utils.phone
 
 import io.circe.generic.auto._
 import io.circe.parser
-import ru.tinkoff.gatling.utils.{getRandomElement, getResource}
+import ru.tinkoff.gatling.utils.getRandomElement
 
 import scala.annotation.tailrec
 import scala.io.Source
@@ -66,17 +66,15 @@ class Phone(models: Seq[PhoneFormat]) {
 
   /** Generates phone number using PhoneFormat
     *
-    * @param keyCountryCode
+    * @param countryCode
     *   country code from PhoneFormat
     * @return
     *   random string phone number
     */
-  def phoneNumber(keyCountryCode: Option[String] = None): String = keyCountryCode
-    .flatMap(cc => models.find(_.countryCode == cc).map { f => format(f.format, getPhoneNumber(f)) })
-    .getOrElse {
-      val pf = randomPhoneFormat
-      format(pf.format, getPhoneNumber(pf))
-    }
+  def phoneNumber: String = {
+    val pf = randomPhoneFormat
+    format(pf.format, getPhoneNumber(pf))
+  }
 
   /** Generates Toll-free phone number without using PhoneFormat
     *
@@ -84,21 +82,19 @@ class Phone(models: Seq[PhoneFormat]) {
     *   random string Toll-free phone number format (XXX) XXX-XXXX
     */
   def tollFreePhoneNumber: String = {
-    val starts = List("800", "888", "877", "866", "855", "844", "833")
+    val starts = 1 to 999
     val xs     = (1 to 7).map(_ => Random.nextInt(10))
     s"(${getRandomElement(starts)}) ${xs.slice(0, 3).mkString}-${xs.slice(3, 7).mkString}"
   }
 
   /** Generates E.164 phone number using PhoneFormat without field "format"
     *
-    * @param keyCountryCode
+    * @param countryCode
     *   country code from PhoneFormat
     * @return
     *   random string E.164 phone number format +XXXXXXXXXXX
     */
-  def e164PhoneNumber(keyCountryCode: Option[String] = None): String = keyCountryCode
-    .flatMap(cc => models.find(_.countryCode == cc).map { f => getPhoneNumber(f) })
-    .getOrElse(getPhoneNumber(randomPhoneFormat))
+  def e164PhoneNumber: String = getPhoneNumber(randomPhoneFormat)
 
 }
 
@@ -114,9 +110,10 @@ object Phone {
     ),
   )
 
-  private def models(resourcePath: String): Seq[PhoneFormat] = parser
-    .decode[Seq[PhoneFormat]](Source.fromInputStream(getResource(resourcePath)).mkString)
-    .getOrElse(DEFAULT_FORMAT_RU_MOBILE)
+  private def models(resourcePath: String): Seq[PhoneFormat] =
+    parser
+      .decode[Seq[PhoneFormat]](Source.fromResource(resourcePath).mkString)
+      .getOrElse(DEFAULT_FORMAT_RU_MOBILE)
 
   def apply(resourcePath: String): Phone = new Phone(models(resourcePath))
 

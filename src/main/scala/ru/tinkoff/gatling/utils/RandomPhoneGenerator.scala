@@ -1,28 +1,26 @@
 package ru.tinkoff.gatling.utils
 
 import ru.tinkoff.gatling.utils.phone.TypePhone._
-import ru.tinkoff.gatling.utils.phone.{Phone, PhoneFormat, TypePhone}
+import ru.tinkoff.gatling.utils.phone.{Phone, PhoneFormat}
 
 object RandomPhoneGenerator {
 
   def randomPhone(
-      formats: Seq[PhoneFormat] = Seq.empty[PhoneFormat],
-      typePhone: TypePhone = TypePhone.PhoneNumber,
-      countryCode: Option[String] = None,
+      formats: Seq[PhoneFormat],
+      typePhone: TypePhone,
   ): String = typePhone match {
-    case PhoneNumber         => Phone(formats).phoneNumber(countryCode)
+    case PhoneNumber         => Phone(formats).phoneNumber
     case TollFreePhoneNumber => Phone(formats).tollFreePhoneNumber
-    case E164PhoneNumber     => Phone(formats).e164PhoneNumber(countryCode)
+    case E164PhoneNumber     => Phone(formats).e164PhoneNumber
   }
 
   def randomPhone(
       pathToFormats: String,
-      typePhone: TypePhone = TypePhone.PhoneNumber,
-      countryCode: Option[String] = None,
+      typePhone: TypePhone,
   ): String = typePhone match {
-    case PhoneNumber         => Phone(pathToFormats).phoneNumber(countryCode)
+    case PhoneNumber         => Phone(pathToFormats).phoneNumber
     case TollFreePhoneNumber => Phone(pathToFormats).tollFreePhoneNumber
-    case E164PhoneNumber     => Phone(pathToFormats).e164PhoneNumber(countryCode)
+    case E164PhoneNumber     => Phone(pathToFormats).e164PhoneNumber
   }
 
 }
