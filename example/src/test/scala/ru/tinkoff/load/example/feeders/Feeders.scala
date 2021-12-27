@@ -78,17 +78,18 @@ object Feeders {
   )
   val ruPhoneFormats                 = List(ruMobileFormat, ruCityPhoneFormat)
 
+  val simplePhoneNumber: Feeder[String]                 = RandomPhoneFeeder("simplePhoneFeeder")
   val randomPhoneNumberFromJson: Feeder[String]         =
     RandomPhoneFeeder("randomPhoneNumberFile", phoneFormatsFromFile)
-  val randomPhoneNumberFromMap: Feeder[String]          =
+  val randomPhoneNumber: Feeder[String]                 =
     RandomPhoneFeeder("randomPhoneNumber", ruPhoneFormats: _*)
   val randomE164PhoneNumberFromJson: Feeder[String]     =
     RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatsFromFile, TypePhone.E164PhoneNumber)
-  val randomE164PhoneNumberFromMap: Feeder[String]      =
+  val randomE164PhoneNumber: Feeder[String]             =
     RandomPhoneFeeder("randomE164PhoneNumber", TypePhone.E164PhoneNumber, ruMobileFormat, ruCityPhoneFormat)
   val randomTollFreePhoneNumberFromJson: Feeder[String] =
     RandomPhoneFeeder("randomTollFreePhoneNumberFile", phoneFormatsFromFile, TypePhone.TollFreePhoneNumber)
-  val randomTollFreePhoneNumberFromMap: Feeder[String]  =
+  val randomTollFreePhoneNumber: Feeder[String]         =
     RandomPhoneFeeder("randomTollFreePhoneNumber", TypePhone.TollFreePhoneNumber, ruMobileFormat)
 
   // random alphanumeric String with specified length
