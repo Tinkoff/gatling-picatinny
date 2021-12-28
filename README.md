@@ -42,7 +42,7 @@ it. [Gatling Template Project](https://github.com/TinkoffCreditSystems/gatling-t
 Add dependency with version that you need
 
 ```scala
-libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.8."
+libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.8.0
 ```
 
 ## Usage
