@@ -68,8 +68,6 @@ class Phone(models: Seq[PhoneFormat]) {
 
   /** Generates phone number using PhoneFormat
     *
-    * @param countryCode
-    *   country code from PhoneFormat
     * @return
     *   random string phone number
     */
@@ -91,8 +89,6 @@ class Phone(models: Seq[PhoneFormat]) {
 
   /** Generates E.164 phone number using PhoneFormat without field "format"
     *
-    * @param countryCode
-    *   country code from PhoneFormat
     * @return
     *   random string E.164 phone number format +XXXXXXXXXXX
     */
