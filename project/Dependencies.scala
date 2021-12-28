@@ -46,6 +46,12 @@ object Dependencies {
     "com.pauldijou" %% "jwt-core" % "5.0.0",
   )
 
+  lazy val circeDeps: Seq[ModuleID] = Seq(
+    "io.circe" %% "circe-core",
+    "io.circe" %% "circe-generic",
+    "io.circe" %% "circe-parser",
+  ).map(_ % "0.14.1")
+
   lazy val scalaTesting: Seq[ModuleID] = scalaCheck ++ scalaTest ++ scalaMock
 
   // Add excludeAll netty to solve conflict run GatlinRunner with using Gatling 3.6.1 and io.netty:4.1.42.Final. Problem java.lang.NoSuchFieldError: DNT

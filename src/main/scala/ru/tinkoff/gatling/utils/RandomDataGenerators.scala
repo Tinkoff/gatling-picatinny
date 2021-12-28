@@ -1,12 +1,13 @@
 package ru.tinkoff.gatling.utils
 
 import com.eatthepath.uuid.FastUUID
-import java.time.{Instant, LocalDateTime, ZoneId}
-import java.util.concurrent.ThreadLocalRandom
+import ru.tinkoff.gatling.utils.RandomDigitMagnet.DigitMagnet
+
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalUnit
+import java.time.{Instant, LocalDateTime, ZoneId}
 import java.util.UUID
-import ru.tinkoff.gatling.utils.RandomDigitMagnet.DigitMagnet
+import java.util.concurrent.ThreadLocalRandom
 import scala.annotation.tailrec
 import scala.util.Random
 
@@ -14,7 +15,7 @@ object RandomDataGenerators {
 
   def randomString(alphabet: String)(n: Int): String = {
     require(alphabet.nonEmpty, "randomString generator required non empty alphabet input")
-    require(n > 0, s"randomString generator required string length input >0. Current value = $n")
+    require(n > 0, s"randomString generator required string length input > 0. Current value = $n")
     Iterator.continually(Random.nextInt(alphabet.length)).map(alphabet).take(n).mkString
   }
 
@@ -25,7 +26,7 @@ object RandomDataGenerators {
     randomString("0123456789abcdef")(n)
 
   def alphanumericString(stringLength: Int): String = {
-    require(stringLength > 0, s"randomString generator required string length input >0. Current value = $stringLength")
+    require(stringLength > 0, s"randomString generator required string length input > 0. Current value = $stringLength")
     Random.alphanumeric.take(stringLength).mkString
   }
 
@@ -37,7 +38,8 @@ object RandomDataGenerators {
   def randomCyrillicString(n: Int): String =
     randomString("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя")(n)
 
-  def randomPhone(countryCode: String = "+7"): String = s"""$countryCode${this.digitString(10)}"""
+  @deprecated
+  def randomPhone(countryCode: String = "+7"): String = s"""$countryCode${digitString(10)}"""
 
   def randomDigit(): Int = ThreadLocalRandom.current().nextInt()
 

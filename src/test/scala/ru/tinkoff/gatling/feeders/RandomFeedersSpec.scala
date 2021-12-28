@@ -1,17 +1,19 @@
 package ru.tinkoff.gatling.feeders
 
-import java.time.temporal.{ChronoUnit, TemporalUnit}
-import java.time.{LocalDate, LocalDateTime, ZoneId}
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
 import org.scalacheck.Prop.{forAll, propBoolean}
 import org.scalacheck._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+import ru.tinkoff.gatling.utils.phone.{PhoneFormat, TypePhone}
+
+import java.time.temporal.{ChronoUnit, TemporalUnit}
+import java.time.{LocalDateTime, ZoneId}
 
 class RandomFeedersSpec extends AnyFlatSpec with Matchers {
 
-  val positiveInt = Gen.posNum[Int]
+  val positiveInt: Gen[Int] = Gen.posNum[Int]
 
-  val rndString = Gen.alphaNumStr
+  val rndString: Gen[String] = Gen.alphaNumStr
 
   val datePattern: String      = "yyyy-MM-dd"
   val datePatternRegex: String = """\d{4}-\d{2}-\d{2}"""
@@ -25,6 +27,29 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
   val uuidPattern = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})"
 
   val regexPattern = "[a-z0-9]{9}"
+
+  val regexPhonePattern                   = """^\+?(?:[0-9]?){6,14}[0-9]$"""
+  val regexFilePhonePattern               = """^\+?\d(\(\d\d\d\)\d\d\d-?\d\d-?\d\d)$"""
+  val regexRuMobilePhonePattern           = """^\+\d \d\d\d \d\d\d-\d\d-\d\d"""
+  val regexRuMobilePhonePatternWithBraces = """^\+\d \(\d\d\d\) \d\d\d-\d\d-\d\d"""
+  val regexTollFreePhonePattern           = """^\(8(00|33|44|55|66|77|88)\) \d{3}-\d{4}$"""
+
+  val phoneFormatsFromFile: String = "phoneTemplates/ru.json"
+
+  val ruMobileFormat: PhoneFormat = PhoneFormat(
+    countryCode = "+7",
+    length = 10,
+    areaCodes = Seq("903", "906", "908"),
+    prefixes = Seq("55", "81", "111"),
+    format = "+X XXX XXX-XX-XX",
+  )
+
+  val ruMobileFormat2: PhoneFormat = PhoneFormat(
+    countryCode = "+7",
+    length = 10,
+    areaCodes = Seq("903", "906", "908"),
+    format = "+X (XXX) XXX-XX-XX",
+  )
 
   it should "create RandomDateFeeder with specified date pattern" in {
     forAll(rndString, positiveInt, positiveInt) { (paramName, positive, negative) =>
@@ -62,18 +87,10 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
   }
 
   it should "create RandomDigitFeeder" in {
-    forAll(rndString) { (paramName) =>
+    forAll(rndString) { paramName =>
       RandomDigitFeeder(paramName)
         .take(50)
         .forall(r => r(paramName).isInstanceOf[Int])
-    }.check()
-  }
-
-  it should "create RandomPhoneFeeder with specified country code" in {
-    forAll(rndString, rndString) { (paramName, countryCode) =>
-      RandomPhoneFeeder(paramName, countryCode)
-        .take(50)
-        .forall(r => r(paramName).startsWith(countryCode))
     }.check()
   }
 
@@ -107,7 +124,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
   }
 
   it should "create RandomUUIDFeeder" in {
-    forAll(rndString) { (paramName) =>
+    forAll(rndString) { paramName =>
       RandomUUIDFeeder(paramName)
         .take(50)
         .forall(r => r(paramName).matches(uuidPattern))
@@ -115,7 +132,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
   }
 
   it should "create RegexFeeder with specified regex pattern" in {
-    forAll(rndString) { (paramName) =>
+    forAll(rndString) { paramName =>
       RegexFeeder(paramName, regexPattern)
         .take(50)
         .forall(r => r(paramName).matches(regexPattern))
@@ -126,6 +143,84 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
     forAll(rndString, positiveInt, positiveInt) { (paramName, start, step) =>
       val list = SequentialFeeder(paramName, start, step).take(50).toList.flatten
       list.equals(list.sorted)
+    }.check()
+  }
+
+  it should "create phoneFeeder with default PhoneNumber format" in {
+    forAll(rndString) { paramName =>
+      RandomPhoneFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).matches(regexPhonePattern) }
+    }.check()
+  }
+
+  it should "create phoneFeeder with custom PhoneNumber format" in {
+    forAll(rndString) { paramName =>
+      RandomPhoneFeeder(paramName, ruMobileFormat)
+        .take(50)
+        .forall { r => r(paramName).matches(regexRuMobilePhonePattern) }
+    }.check()
+  }
+
+  it should "create phoneFeeder with braces custom PhoneNumber format" in {
+    forAll(rndString) { paramName =>
+      RandomPhoneFeeder(paramName, ruMobileFormat2)
+        .take(50)
+        .forall { r => r(paramName).matches(regexRuMobilePhonePatternWithBraces) }
+    }.check()
+  }
+
+  it should "create simple Toll Free format ignoring ruMobileFormat" in {
+    forAll(rndString) { paramName =>
+      RandomPhoneFeeder(paramName, TypePhone.TollFreePhoneNumber, ruMobileFormat)
+        .take(50)
+        .forall { r => r(paramName).matches(regexTollFreePhonePattern) }
+    }.check()
+  }
+
+  it should "create phoneFeeder with E164 PhoneNumber format ignoring ruMobileFormat" in {
+    forAll(rndString) { paramName =>
+      RandomPhoneFeeder(paramName, TypePhone.E164PhoneNumber, ruMobileFormat)
+        .take(50)
+        .forall { r => r(paramName).matches(regexPhonePattern) }
+    }.check()
+  }
+
+  it should "create phoneFeeder with E164 PhoneNumber format" in {
+    forAll(rndString) { paramName =>
+      RandomPhoneFeeder(paramName, TypePhone.E164PhoneNumber).take(50).forall { r => r(paramName).matches(regexPhonePattern) }
+    }.check()
+  }
+
+  it should "create phoneFeeder with Toll Free Phone Number format" in {
+    forAll(rndString) { paramName =>
+      RandomPhoneFeeder(paramName, TypePhone.TollFreePhoneNumber)
+        .take(50)
+        .forall { r => r(paramName).matches(regexTollFreePhonePattern) }
+    }.check()
+  }
+
+  it should "create phoneFeeder with PhoneNumber format fromFile" in {
+    forAll(rndString) { paramName =>
+      RandomPhoneFeeder(paramName, phoneFormatsFromFile)
+        .take(50)
+        .forall { r => r(paramName).matches(regexFilePhonePattern) }
+    }.check()
+  }
+
+  it should "create phoneFeeder with Toll Free Phone Number format fromFile" in {
+    forAll(rndString) { paramName =>
+      RandomPhoneFeeder(paramName, phoneFormatsFromFile, TypePhone.TollFreePhoneNumber)
+        .take(50)
+        .forall { r => r(paramName).matches(regexTollFreePhonePattern) }
+    }.check()
+  }
+
+  it should "create phoneFeeder with E164 PhoneNumber format fromFile" in {
+    forAll(rndString) { paramName =>
+      RandomPhoneFeeder(paramName, phoneFormatsFromFile, TypePhone.E164PhoneNumber)
+        .take(50)
+        .forall { r => r(paramName).matches(regexPhonePattern) }
     }.check()
   }
 

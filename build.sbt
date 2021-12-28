@@ -15,6 +15,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= generex,
     libraryDependencies ++= jwt,
     libraryDependencies ++= influxClientScala,
+    libraryDependencies ++= circeDeps,
     scalacOptions := Seq(
       "-encoding",
       "UTF-8",

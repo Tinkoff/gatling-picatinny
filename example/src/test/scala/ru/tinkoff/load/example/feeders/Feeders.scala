@@ -1,12 +1,14 @@
 package ru.tinkoff.load.example.feeders
 
-import java.time.{LocalDateTime, ZoneId}
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
-import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
 import io.gatling.core.Predef._
+import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
 import ru.tinkoff.gatling.feeders._
 import ru.tinkoff.gatling.utils.RandomDataGenerators
+import ru.tinkoff.gatling.utils.phone._
+
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.time.{LocalDateTime, ZoneId}
 
 object Feeders {
 
@@ -46,8 +48,49 @@ object Feeders {
 
   // random phone
   // +7 country code is default
-  val randomPhone: Feeder[String]    = RandomPhoneFeeder("randomPhone")
-  val randomUsaPhone: Feeder[String] = RandomPhoneFeeder("randomUsaPhone", "+1")
+  val randomPhone: Feeder[String] = RandomPhoneFeeder("randomPhone")
+
+  // random USA phone
+  val usaPhoneFormats: PhoneFormat =
+    PhoneFormat(
+      countryCode = "+1",
+      length = 10,
+      areaCodes = Seq("484", "585", "610"),
+      prefixes = Seq("55", "81", "111"),
+      format = "+X XXX XXX-XX-XX",
+    )
+
+  val randomUsaPhone: Feeder[String] = RandomPhoneFeeder("randomUsaPhone", usaPhoneFormats)
+
+  val phoneFormatsFromFile: String   = "phoneTemplates/ru.json"
+  val ruMobileFormat: PhoneFormat    = PhoneFormat(
+    countryCode = "+7",
+    length = 10,
+    areaCodes = Seq("903", "906", "908"),
+    prefixes = Seq("55", "81", "111"),
+    format = "+X XXX XXX-XX-XX",
+  )
+  val ruCityPhoneFormat: PhoneFormat = PhoneFormat(
+    countryCode = "8",
+    length = 7,
+    areaCodes = Seq("495", "495"),
+    format = "X(XXX)XXX-XX-XX",
+  )
+  val ruPhoneFormats                 = List(ruMobileFormat, ruCityPhoneFormat)
+
+  val simplePhoneNumber: Feeder[String]                 = RandomPhoneFeeder("simplePhoneFeeder")
+  val randomPhoneNumberFromJson: Feeder[String]         =
+    RandomPhoneFeeder("randomPhoneNumberFile", phoneFormatsFromFile)
+  val randomPhoneNumber: Feeder[String]                 =
+    RandomPhoneFeeder("randomPhoneNumber", ruPhoneFormats: _*)
+  val randomE164PhoneNumberFromJson: Feeder[String]     =
+    RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatsFromFile, TypePhone.E164PhoneNumber)
+  val randomE164PhoneNumber: Feeder[String]             =
+    RandomPhoneFeeder("randomE164PhoneNumber", TypePhone.E164PhoneNumber, ruMobileFormat, ruCityPhoneFormat)
+  val randomTollFreePhoneNumberFromJson: Feeder[String] =
+    RandomPhoneFeeder("randomTollFreePhoneNumberFile", phoneFormatsFromFile, TypePhone.TollFreePhoneNumber)
+  val randomTollFreePhoneNumber: Feeder[String]         =
+    RandomPhoneFeeder("randomTollFreePhoneNumber", TypePhone.TollFreePhoneNumber, ruMobileFormat)
 
   // random alphanumeric String with specified length
   val randomString: Feeder[String] = RandomStringFeeder("randomString", 16)
@@ -75,12 +118,12 @@ object Feeders {
   private val phoneFeeder  = RandomStringFeeder("phone")
 
   // Vault HC feeder
-  private val vaultUrl            = System.getenv("vaultUrl")
-  private val secretPath          = System.getenv("secretPath")
-  private val roleId              = System.getenv("roleId")
-  private val secretId            = System.getenv("secretId")
-  private val keys                = List("k1", "k2", "k3")
-  val vaultFeeder: Feeder[String] = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
+  private val vaultUrl                       = System.getenv("vaultUrl")
+  private val secretPath                     = System.getenv("secretPath")
+  private val roleId                         = System.getenv("roleId")
+  private val secretId                       = System.getenv("secretId")
+  private val keys                           = List("k1", "k2", "k3")
+  val vaultFeeder: FeederBuilderBase[String] = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 
   // Get separated values feeder from the source
   // SeparatedValuesFeeder will return Vector(Map(HOSTS -> host11), Map(HOSTS -> host12), Map(USERS -> user11), Map(HOSTS -> host21), Map(HOSTS -> host22), Map(USERS -> user21), Map(USERS -> user22), Map(USERS -> user23))

@@ -1,7 +1,7 @@
 package ru.tinkoff.gatling.utils
 
 import org.scalacheck.Arbitrary._
-import org.scalacheck.Prop.{forAll, propBoolean}
+import org.scalacheck.Prop._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -25,12 +25,13 @@ class IntensityConverterTest extends AnyFlatSpec with Matchers {
   }
   it should "convert rps correctly" in {
     forAll { i: Double =>
-      (i rps) equals (i)
+      (i rps) equals i
     }.check()
   }
   it should "display correctly intensity value from string" in {
-    getIntensityFromString(intensityString) shouldBe (intensityValue)
+    getIntensityFromString(intensityString) shouldBe intensityValue
   }
+
   it should "display correctly intensity value from incorrect string throw exception" in {
     assertThrows[IllegalArgumentException] { getIntensityFromString(intensityIncorrectString) }
   }

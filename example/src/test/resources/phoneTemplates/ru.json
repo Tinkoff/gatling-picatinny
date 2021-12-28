@@ -1,0 +1,18 @@
+{
+  "formats": [
+    {
+      "countryCode": "+7",
+      "length": 10,
+      "areaCodes": ["903", "906"],
+      "prefixes": ["123", "321", "132", "231"],
+      "format": "+X(XXX)XXXXXXX"
+    },
+    {
+      "countryCode": "8",
+      "length": 10,
+      "areaCodes": ["495", "499"],
+      "prefixes": ["81", "82", "83"],
+      "format": "X(XXX)XXX-XX-XX"
+    }
+  ]
+}
