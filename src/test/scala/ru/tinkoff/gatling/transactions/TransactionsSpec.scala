@@ -1,19 +1,15 @@
 package ru.tinkoff.gatling.transactions
 
-import akka.japi.Option.Some
 import io.gatling.core.Predef._
-import io.gatling.core.action.ChainableAction
 import io.gatling.core.session.Expression
 import io.gatling.core.structure.ScenarioBuilder
 import org.scalatest.BeforeAndAfter
+import org.scalatest.OptionValues._
 import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.{MatchResult, Matcher}
 import org.scalatest.matchers.should.Matchers
 import ru.tinkoff.gatling.transactions.Predef._
-import ru.tinkoff.gatling.transactions.actions.StartTransactionAction
 import ru.tinkoff.gatling.transactions.actions.builders._
 import ru.tinkoff.gatling.transactions.fixtures.Evt
-import org.scalatest.OptionValues._
 
 object TransactionsSpec {
   private val now                          = System.currentTimeMillis()

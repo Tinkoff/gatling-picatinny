@@ -15,7 +15,7 @@ object RandomDataGenerators {
 
   def randomString(alphabet: String)(n: Int): String = {
     require(alphabet.nonEmpty, "randomString generator required non empty alphabet input")
-    require(n > 0, s"randomString generator required string length input >0. Current value = $n")
+    require(n > 0, s"randomString generator required string length input > 0. Current value = $n")
     Iterator.continually(Random.nextInt(alphabet.length)).map(alphabet).take(n).mkString
   }
 
@@ -26,7 +26,7 @@ object RandomDataGenerators {
     randomString("0123456789abcdef")(n)
 
   def alphanumericString(stringLength: Int): String = {
-    require(stringLength > 0, s"randomString generator required string length input >0. Current value = $stringLength")
+    require(stringLength > 0, s"randomString generator required string length input > 0. Current value = $stringLength")
     Random.alphanumeric.take(stringLength).mkString
   }
 
