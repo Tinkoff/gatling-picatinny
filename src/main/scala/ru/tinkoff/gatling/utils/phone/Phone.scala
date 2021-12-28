@@ -1,12 +1,13 @@
 package ru.tinkoff.gatling.utils.phone
 
+import com.typesafe.scalalogging.StrictLogging
 import io.circe.generic.auto._
 import io.circe.{Decoder, parser}
 import ru.tinkoff.gatling.utils.getRandomElement
 
 import scala.annotation.tailrec
 import scala.io.Source
-import scala.util.Random
+import scala.util.{Random, Using}
 
 class Phone(models: Seq[PhoneFormat]) {
 
@@ -99,7 +100,7 @@ class Phone(models: Seq[PhoneFormat]) {
 
 }
 
-object Phone {
+object Phone extends StrictLogging {
 
   final val DEFAULT_FORMAT_RU_MOBILE = Seq(
     PhoneFormat(
@@ -116,9 +117,11 @@ object Phone {
       _.downField("formats"),
     )
 
-    parser
-      .decode[Seq[PhoneFormat]](Source.fromResource(resourcePath).mkString)(decodeFormats)
-      .getOrElse(DEFAULT_FORMAT_RU_MOBILE)
+    (for {
+      json <- Using(Source.fromResource(resourcePath))(_.mkString).toEither
+      res  <- parser.decode[Seq[PhoneFormat]](json)(decodeFormats)
+    } yield res).fold(ex => throw ex, identity)
+
   }
 
   def apply(resourcePath: String): Phone = new Phone(models(resourcePath))
