@@ -42,7 +42,7 @@ it. [Gatling Template Project](https://github.com/TinkoffCreditSystems/gatling-t
 Add dependency with version that you need
 
 ```scala
-libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.7.2"
+libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.8.0"
 ```
 
 ## Usage
@@ -181,11 +181,13 @@ val separatedValuesFeeder: FeederBuilderBase[String] =
 Creates a feeder with phone numbers with formats from json file or `case class PhoneFormat`
 
 Simple phone feeder
+
 ```scala
 val simplePhoneNumber: Feeder[String] = RandomPhoneFeeder("simplePhoneFeeder")
 ```
 
 Phone feeder with custom formats
+
 ```scala
  val ruMobileFormat: PhoneFormat = PhoneFormat(
   countryCode = "+7",
@@ -201,6 +203,7 @@ Phone feeder with custom formats
 Phone feeder with custom formats with file
 
 Creates file with formats, for example RESOURCES/phoneTemplates/ru.json
+
 ```json
 {
   "formats": [
@@ -221,6 +224,7 @@ Creates file with formats, for example RESOURCES/phoneTemplates/ru.json
   ]
 }
 ```
+
 ```scala
 val phoneFormatsFromFile: String   = "phoneTemplates/ru.json"
 val randomE164PhoneNumberFromJson: Feeder[String]     =
