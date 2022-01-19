@@ -1,10 +1,9 @@
 import Dependencies._
 
-enablePlugins(GatlingPlugin, GitVersioning)
-
 def UtilsModule(id: String) = Project(id, file(id))
 
 lazy val root = (project in file("."))
+  .enablePlugins(GitVersioning)
   .settings(
     name          := "gatling-picatinny",
     scalaVersion  := "2.13.8",
