@@ -1,6 +1,7 @@
 package ru.tinkoff.gatling.feeders
 
 import io.gatling.core.Predef._
+import io.gatling.core.config.GatlingConfiguration
 import io.gatling.core.feeder._
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Prop
@@ -8,6 +9,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class FeedersBaseSpec extends AnyFlatSpec with Matchers {
+
+  private implicit val configuration: GatlingConfiguration = GatlingConfiguration.loadForTest()
 
   it should "create Feeder object with expected types" in {
     Prop.forAll { (n: String, v: AnyVal) =>

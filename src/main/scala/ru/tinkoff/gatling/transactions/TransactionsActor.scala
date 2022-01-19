@@ -1,13 +1,12 @@
 package ru.tinkoff.gatling.transactions
 
-import akka.actor.{Actor, ActorSystem, Props, Scheduler, Terminated}
+import akka.actor.{Actor, Props, Terminated}
 import com.typesafe.scalalogging.LazyLogging
 import io.gatling.commons.stats.{KO, OK}
 import io.gatling.core.action.Action
 import io.gatling.core.session.Session
 import io.gatling.core.stats.StatsEngine
 
-import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.Duration
 
 object TransactionsActor {
@@ -19,10 +18,6 @@ object TransactionsActor {
 }
 
 class TransactionsActor(statsEngine: StatsEngine) extends Actor with LazyLogging {
-
-  implicit def system: ActorSystem          = context.system
-  def scheduler: Scheduler                  = system.scheduler
-  implicit def dispatcher: ExecutionContext = system.dispatcher
 
   override def preStart(): Unit = context.setReceiveTimeout(Duration.Undefined)
 
