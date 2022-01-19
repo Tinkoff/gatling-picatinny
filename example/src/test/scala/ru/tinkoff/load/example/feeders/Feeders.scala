@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDateTime, ZoneId}
 
-object Feeders extends FeederSupport {
+object Feeders {
 
   private val newYearDate                       = LocalDateTime.of(2020, 1, 1, 0, 0)
   private val goToWorkDate                      = LocalDateTime.of(2020, 1, 9, 9, 0)
