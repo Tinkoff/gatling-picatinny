@@ -1,7 +1,7 @@
 package ru.tinkoff.load.example.feeders
 
 import io.gatling.core.Predef._
-import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
+import io.gatling.core.feeder._
 import ru.tinkoff.gatling.feeders._
 import ru.tinkoff.gatling.utils.RandomDataGenerators
 import ru.tinkoff.gatling.utils.phone._
@@ -10,11 +10,13 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDateTime, ZoneId}
 
-object Feeders {
+object Feeders extends FeederSupport {
 
   private val newYearDate                       = LocalDateTime.of(2020, 1, 1, 0, 0)
   private val goToWorkDate                      = LocalDateTime.of(2020, 1, 9, 9, 0)
   private val formatterShort: DateTimeFormatter = DateTimeFormatter.ofPattern("MM:dd")
+
+//  override implicit def configuration: GatlingConfiguration = GatlingConfiguration.loadForTest()
 
   // date2pattern
   val timeShort: Feeder[String] = CurrentDateFeeder("timeShort", formatterShort)
