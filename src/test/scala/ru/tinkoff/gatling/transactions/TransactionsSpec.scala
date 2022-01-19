@@ -2,15 +2,15 @@ package ru.tinkoff.gatling.transactions
 
 import io.gatling.core.Predef._
 import io.gatling.core.session.Expression
-import io.gatling.core.structure.ScenarioBuilder
-import io.gatling.transactions.fixtures
-import io.gatling.transactions.fixtures.Evt
-import org.scalatest.BeforeAndAfter
+import io.gatling.core.stats.StatsEngine
+import io.gatling.core.structure.{ScenarioBuilder, ScenarioContext}
 import org.scalatest.OptionValues._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import ru.tinkoff.gatling.transactions.Predef._
 import ru.tinkoff.gatling.transactions.actions.builders._
+
+import java.util.concurrent.ConcurrentLinkedQueue
 
 object TransactionsSpec {
   private val now                          = System.currentTimeMillis()
@@ -43,7 +43,7 @@ object TransactionsSpec {
       .endTransaction("t2")
 }
 
-class TransactionsSpec extends AnyFlatSpec with Matchers with Mocks with BeforeAndAfter {
+class TransactionsSpec extends AnyFlatSpec with Matchers with Mocks {
   import TransactionsSpec._
 
   val tName: Symbol          = Symbol("tName")
@@ -57,10 +57,8 @@ class TransactionsSpec extends AnyFlatSpec with Matchers with Mocks with BeforeA
     transactionScenario.actionBuilders should contain(endBuilder)
   }
 
-  before(fixtures.statsEngine.stop(testContext.coreComponents.controller, None))
-
-  private val session                         = fixtures.emptySession(transactionScenario.name)
-  private def runScenario(s: ScenarioBuilder) = {
+  private val session                                                       = fixtures.emptySession(transactionScenario.name)
+  private def runScenario(s: ScenarioBuilder, testContext: ScenarioContext) = {
     val actions = s.actionBuilders.foldLeft(fixtures.noAction)((next, builder) => builder.build(testContext, next))
     actions ! session
     Thread.sleep(200)
@@ -71,21 +69,33 @@ class TransactionsSpec extends AnyFlatSpec with Matchers with Mocks with BeforeA
   private val status   = Symbol("status")
   private val errorMsg = Symbol("errorMsg")
 
-  "Scenario with transactions after run" should "write request with correct start/stop timestamps and name" in {
-    runScenario(transactionScenarioWithDefaultEndTime)
+  "Scenario with transactions after run" should "write request with correct start/stop timestamps and name" in new MockedGatlingCtx {
+    (statsEngine.logResponse _)
+      .when(*, *, *, *, *, *, *, *)
+      .onCall { (_, _, c, d, e, f, _, h) => events.add(Evt("REQUEST", c, d, e, f.name, h)) }
+      .once()
 
-    val requestRecord: Option[Evt] = fixtures.statsEngine.getEvents.find(_.evtType == "REQUEST")
+    runScenario(transactionScenarioWithDefaultEndTime, testContext)
+
+    val requestRecord: Option[Evt] = getEvents.find(_.evtType == "REQUEST")
 
     requestRecord shouldBe defined
     requestRecord.value should have(name("t1"), status("OK"), errorMsg(None))
     assert(requestRecord.value.startTimestamp <= requestRecord.value.endTimestamp)
   }
 
-  "Scenario with not opened transactions after run" should "fail with transaction close error" in {
-    runScenario(notOpenedTransactionScenario)
+  "Scenario with not opened transactions after run" should "fail with transaction close error" in new MockedGatlingCtx {
+    (statsEngine.logCrash _)
+      .when(*, *, *, *)
+      .onCall { (_, _, c, d) =>
+        events.add(Evt("ERROR", c, System.currentTimeMillis(), System.currentTimeMillis(), "KO", Some(d)))
+      }
+      .once()
 
-    val errorRecord: Option[Evt]   = fixtures.statsEngine.getEvents.find(_.evtType == "ERROR")
-    val requestRecord: Option[Evt] = fixtures.statsEngine.getEvents.find(_.evtType == "REQUEST")
+    runScenario(notOpenedTransactionScenario, testContext)
+
+    val errorRecord: Option[Evt]   = getEvents.find(_.evtType == "ERROR")
+    val requestRecord: Option[Evt] = getEvents.find(_.evtType == "REQUEST")
 
     requestRecord should not be defined
     errorRecord shouldBe defined
@@ -97,11 +107,18 @@ class TransactionsSpec extends AnyFlatSpec with Matchers with Mocks with BeforeA
 
   }
 
-  "Scenario with a transaction that ended before it started after run" should "fail with illegal state error" in {
-    runScenario(incorrectEndTimeTransactionScenario)
+  "Scenario with a transaction that ended before it started after run" should "fail with illegal state error" in new MockedGatlingCtx {
+    (statsEngine.logCrash _)
+      .when(*, *, *, *)
+      .onCall { (_, _, c, d) =>
+        events.add(Evt("ERROR", c, System.currentTimeMillis(), System.currentTimeMillis(), "KO", Some(d)))
+      }
+      .once()
 
-    val errorRecord: Option[Evt]   = fixtures.statsEngine.getEvents.find(_.evtType == "ERROR")
-    val requestRecord: Option[Evt] = fixtures.statsEngine.getEvents.find(_.evtType == "REQUEST")
+    runScenario(incorrectEndTimeTransactionScenario, testContext)
+
+    val errorRecord: Option[Evt]   = getEvents.find(_.evtType == "ERROR")
+    val requestRecord: Option[Evt] = getEvents.find(_.evtType == "REQUEST")
 
     requestRecord should not be defined
     errorRecord shouldBe defined
@@ -113,11 +130,17 @@ class TransactionsSpec extends AnyFlatSpec with Matchers with Mocks with BeforeA
 
   }
 
-  "Scenario with incorrect transaction sequence after run" should "fail with transaction close error" in {
-    runScenario(incorrectTransactionSequenceScenario)
+  "Scenario with incorrect transaction sequence after run" should "fail with transaction close error" in new MockedGatlingCtx {
+    (statsEngine.logCrash _)
+      .when(*, *, *, *)
+      .onCall { (_, _, c, d) =>
+        events.add(Evt("ERROR", c, System.currentTimeMillis(), System.currentTimeMillis(), "KO", Some(d)))
+      }
+      .once()
+    runScenario(incorrectTransactionSequenceScenario, testContext)
 
-    val errorRecord: Option[Evt]   = fixtures.statsEngine.getEvents.find(_.evtType == "ERROR")
-    val requestRecord: Option[Evt] = fixtures.statsEngine.getEvents.find(_.evtType == "REQUEST")
+    val errorRecord: Option[Evt]   = getEvents.find(_.evtType == "ERROR")
+    val requestRecord: Option[Evt] = getEvents.find(_.evtType == "REQUEST")
 
     requestRecord should not be defined
     errorRecord shouldBe defined
@@ -126,7 +149,6 @@ class TransactionsSpec extends AnyFlatSpec with Matchers with Mocks with BeforeA
       status("KO"),
     )
     errorRecord.get.errorMsg.value shouldBe "has unclosed transaction t2"
-
   }
 
 }
