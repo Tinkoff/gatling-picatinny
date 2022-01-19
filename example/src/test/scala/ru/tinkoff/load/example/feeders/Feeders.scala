@@ -145,9 +145,9 @@ object Feeders {
   val gluedTogetherFeeder: Feeder[Any] = digitFeeder ** stringFeeder ** phoneFeeder
 
   // transform values of this Feeder
-  val finiteRandomDigitsWithTransform: FeederBuilderBase[Int] = RandomDigitFeeder("randomDigit")
+  val finiteRandomDigitsWithTransform: FeederBuilderBase[Any] = RandomDigitFeeder("randomDigit")
     .toFiniteLength(20)
-    .convert { case (k, v) => k -> v.toString }
+    .transform { case (k, v) => k -> v.toString }
     .circular
 
   // transform List to Feeder

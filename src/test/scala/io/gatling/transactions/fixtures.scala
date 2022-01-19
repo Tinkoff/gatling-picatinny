@@ -1,4 +1,5 @@
-package ru.tinkoff.gatling.transactions
+package io.gatling.transactions
+//package ru.tinkoff.gatling.transactions
 
 import akka.actor.ActorRef
 import io.gatling.commons.stats.Status
@@ -6,6 +7,7 @@ import io.gatling.core.action.{Action, ChainableAction}
 import io.gatling.core.session.{GroupBlock, Session}
 import io.gatling.core.stats.StatsEngine
 import io.gatling.core.stats.writer.UserEndMessage
+import ru.tinkoff.gatling.transactions.FakeEventLoop
 
 import java.util.concurrent.ConcurrentLinkedQueue
 import scala.jdk.CollectionConverters._

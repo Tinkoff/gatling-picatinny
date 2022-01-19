@@ -3,13 +3,14 @@ package ru.tinkoff.gatling.transactions
 import io.gatling.core.Predef._
 import io.gatling.core.session.Expression
 import io.gatling.core.structure.ScenarioBuilder
+import io.gatling.transactions.fixtures
+import io.gatling.transactions.fixtures.Evt
 import org.scalatest.BeforeAndAfter
 import org.scalatest.OptionValues._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import ru.tinkoff.gatling.transactions.Predef._
 import ru.tinkoff.gatling.transactions.actions.builders._
-import ru.tinkoff.gatling.transactions.fixtures.Evt
 
 object TransactionsSpec {
   private val now                          = System.currentTimeMillis()

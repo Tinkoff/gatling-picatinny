@@ -5,6 +5,7 @@ import io.gatling.core.CoreComponents
 import io.gatling.core.pause.Disabled
 import io.gatling.core.protocol.{ProtocolComponentsRegistry, ProtocolKey}
 import io.gatling.core.structure.ScenarioContext
+import io.gatling.transactions.fixtures
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterAll
 
