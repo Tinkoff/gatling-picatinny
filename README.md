@@ -42,7 +42,7 @@ it. [Gatling Template Project](https://github.com/TinkoffCreditSystems/gatling-t
 Add dependency with version that you need
 
 ```scala
-libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.8.0"
+libraryDependencies += "ru.tinkoff" %% "gatling-picatinny" % "0.9.0"
 ```
 
 ## Usage
@@ -755,17 +755,16 @@ To test your changes use `sbt test`.
 
 ## Built with
 
-* Scala version: 2.13.6
-* SBT version: 1.5.5
-* Gatling version: 3.6.1
-* SBT Gatling plugin version: 3.2.2
-* SBT CI release plugin version: 1.5.5
-* json4s version: 3.6.11
-* requests version: 0.2.0
-* pureconfig version: 0.14.1
-* scalatest version: 3.2.5
-* scalacheck version: 1.15.2
-* scalamock version: 5.1.0
+* Scala version: 2.13.8
+* SBT version: 1.6.1
+* Gatling version: 3.7.4
+* SBT Gatling plugin version: 4.1.2
+* SBT CI release plugin version: 1.5.10
+* json4s version: 4.0.2
+* pureconfig version: 0.17.1
+* scalatest version: 3.2.10
+* scalacheck version: 1.15.4
+* scalamock version: 5.2.0
 * generex version: 1.0.2
 * jwt-core version: 5.0.0
 * scala influxdb client 0.6.3
