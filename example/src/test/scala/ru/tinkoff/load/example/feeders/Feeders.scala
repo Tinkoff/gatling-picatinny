@@ -1,7 +1,7 @@
 package ru.tinkoff.load.example.feeders
 
 import io.gatling.core.Predef._
-import io.gatling.core.feeder.{Feeder, FeederBuilderBase}
+import io.gatling.core.feeder._
 import ru.tinkoff.gatling.feeders._
 import ru.tinkoff.gatling.utils.RandomDataGenerators
 import ru.tinkoff.gatling.utils.phone._
@@ -15,6 +15,8 @@ object Feeders {
   private val newYearDate                       = LocalDateTime.of(2020, 1, 1, 0, 0)
   private val goToWorkDate                      = LocalDateTime.of(2020, 1, 9, 9, 0)
   private val formatterShort: DateTimeFormatter = DateTimeFormatter.ofPattern("MM:dd")
+
+//  override implicit def configuration: GatlingConfiguration = GatlingConfiguration.loadForTest()
 
   // date2pattern
   val timeShort: Feeder[String] = CurrentDateFeeder("timeShort", formatterShort)
@@ -145,9 +147,9 @@ object Feeders {
   val gluedTogetherFeeder: Feeder[Any] = digitFeeder ** stringFeeder ** phoneFeeder
 
   // transform values of this Feeder
-  val finiteRandomDigitsWithTransform: FeederBuilderBase[Int] = RandomDigitFeeder("randomDigit")
+  val finiteRandomDigitsWithTransform: FeederBuilderBase[Any] = RandomDigitFeeder("randomDigit")
     .toFiniteLength(20)
-    .convert { case (k, v) => k -> v.toString }
+    .transform { case (k, v) => k -> v.toString }
     .circular
 
   // transform List to Feeder

@@ -1,9 +1,8 @@
 package ru.tinkoff.gatling.feeders
 
 import io.gatling.core.Predef._
-import io.gatling.core.feeder._
-import io.gatling.core.feeder.FeederBuilderBase
 import io.gatling.core.config.GatlingConfiguration
+import io.gatling.core.feeder.{FeederBuilderBase, _}
 
 object SeparatedValuesFeeder {
 
@@ -31,14 +30,12 @@ object SeparatedValuesFeeder {
     *     SeparatedValuesFeeder("someValues", sourceString, ';') // this will return Vector(Map(someValues -> v21), Map(someValues -> v22), Map(someValues -> v23))
     * }}}
     */
-  def apply(paramName: String, source: String, separator: Char)(implicit
-      configuration: GatlingConfiguration,
-  ): FeederBuilderBase[String] = {
+  def apply(paramName: String, source: String, separator: Char): IndexedSeq[Record[String]] = {
 
     val records = splitter(source, separator).map(s => Map(paramName -> s.trim))
     require(records.nonEmpty, "Feeder source is empty")
 
-    SourceFeederBuilder(InMemoryFeederSource(records), configuration)
+    records
   }
 
   /** Creates a feeder with separated values from the source Sequence
@@ -61,12 +58,12 @@ object SeparatedValuesFeeder {
     */
   def apply(paramName: String, source: Seq[String], separator: Char)(implicit
       configuration: GatlingConfiguration,
-  ): FeederBuilderBase[String] = {
+  ): IndexedSeq[Record[String]] = {
 
     val records = source.flatMap(s => splitter(s, separator)).map(s => Map(paramName -> s.trim)).toIndexedSeq
     require(records.nonEmpty, "Feeder source is empty")
 
-    SourceFeederBuilder(InMemoryFeederSource(records), configuration)
+    records
   }
 
   /** Creates a feeder with separated values from the source Seq[Map[String, String] ]
@@ -99,7 +96,7 @@ object SeparatedValuesFeeder {
     */
   def apply(paramPrefix: Option[String], source: Seq[Map[String, Any]], separator: Char)(implicit
       configuration: GatlingConfiguration,
-  ): FeederBuilderBase[String] = {
+  ): IndexedSeq[Record[String]] = {
 
     val records = source
       .flatMap(m =>
@@ -116,7 +113,7 @@ object SeparatedValuesFeeder {
       .toIndexedSeq
     require(records.nonEmpty, "Feeder source is empty")
 
-    SourceFeederBuilder(InMemoryFeederSource(records), configuration)
+    records
   }
 
   def csv(paramName: String, source: String): FeederBuilderBase[String] = apply(paramName, source, CommaSeparator)

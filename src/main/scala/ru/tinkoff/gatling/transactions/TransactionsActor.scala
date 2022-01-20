@@ -1,11 +1,13 @@
 package ru.tinkoff.gatling.transactions
 
-import akka.actor.Props
+import akka.actor.{Actor, Props, Terminated}
+import com.typesafe.scalalogging.LazyLogging
 import io.gatling.commons.stats.{KO, OK}
 import io.gatling.core.action.Action
-import io.gatling.core.akka.BaseActor
 import io.gatling.core.session.Session
 import io.gatling.core.stats.StatsEngine
+
+import scala.concurrent.duration.Duration
 
 object TransactionsActor {
   def props(statsEngine: StatsEngine): Props =
@@ -15,7 +17,18 @@ object TransactionsActor {
   case class TransactionEnded(name: String, timestamp: Long, session: Session, next: Action)
 }
 
-class TransactionsActor(statsEngine: StatsEngine) extends BaseActor {
+class TransactionsActor(statsEngine: StatsEngine) extends Actor with LazyLogging {
+
+  override def preStart(): Unit = context.setReceiveTimeout(Duration.Undefined)
+
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit =
+    logger.error(s"Actor $this crashed on message $message", reason)
+
+  override def unhandled(message: Any): Unit =
+    message match {
+      case _: Terminated => super.unhandled(message)
+      case unknown       => throw new IllegalArgumentException(s"Actor $this doesn't support message $unknown")
+    }
 
   private def crash(prefix: String, errorMsg: String, session: Session, next: Action): Unit = {
     statsEngine.logCrash(session.scenario, session.groups, prefix, errorMsg)

@@ -1,6 +1,5 @@
 package ru.tinkoff.gatling.feeders
 
-import io.gatling.core.config.GatlingConfiguration
 import io.gatling.core.feeder._
 import org.json4s.native.JsonMethods
 import org.json4s.{DefaultFormats, JValue}
@@ -10,9 +9,13 @@ import java.util.Objects.requireNonNull
 
 object VaultFeeder {
 
-  def apply(vaultUrl: String, secretPath: String, roleId: String, secretId: String, keys: List[String])(implicit
-      configuration: GatlingConfiguration,
-  ): FeederBuilderBase[String] = {
+  def apply(
+      vaultUrl: String,
+      secretPath: String,
+      roleId: String,
+      secretId: String,
+      keys: List[String],
+  ): IndexedSeq[Record[String]] = {
     requireNonNull(keys, "Keys list must not be null")
 
     implicit val formats: DefaultFormats = org.json4s.DefaultFormats
@@ -35,7 +38,8 @@ object VaultFeeder {
     val vaultDataJson: JValue = JsonMethods.parse(vaultDataResponse)
     val data: Record[String]  = (vaultDataJson \ "data").extract[Map[String, String]]
 
-    SourceFeederBuilder(InMemoryFeederSource(IndexedSeq(data.view.filterKeys(keys.contains).toMap)), configuration)
+    IndexedSeq(data.view.filterKeys(keys.contains).toMap)
+
   }
 
 }

@@ -5,37 +5,37 @@ object Dependencies {
     "io.gatling" % "gatling-core",
     "io.gatling" % "gatling-http",
     "io.gatling" % "gatling-redis",
-  ).map(_ % "3.6.1" % Provided)
+  ).map(_ % "3.7.4" % Provided)
 
   lazy val fastUUID = Seq(
-    "com.eatthepath" % "fast-uuid" % "0.1" % Provided,
+    "com.eatthepath" % "fast-uuid" % "0.2.0" % Provided,
   )
 
   lazy val gatling: Seq[ModuleID] = Seq(
     "io.gatling.highcharts" % "gatling-charts-highcharts",
     "io.gatling"            % "gatling-test-framework",
-  ).map(_ % "3.6.1" % Test)
+  ).map(_ % "3.7.4" % Test)
 
   lazy val json4s: Seq[ModuleID] = Seq(
-    "org.json4s" %% "json4s-native"  % "3.6.11",
-    "org.json4s" %% "json4s-jackson" % "3.6.11",
+    "org.json4s" %% "json4s-native"  % "4.0.2",
+    "org.json4s" %% "json4s-jackson" % "4.0.2",
   )
 
   lazy val pureConfig: Seq[ModuleID] = Seq(
-    "com.github.pureconfig" %% "pureconfig"      % "0.14.1",
-    "com.github.pureconfig" %% "pureconfig-yaml" % "0.14.1",
+    "com.github.pureconfig" %% "pureconfig"      % "0.17.1",
+    "com.github.pureconfig" %% "pureconfig-yaml" % "0.17.1",
   )
 
   lazy val scalaTest: Seq[ModuleID] = Seq(
-    "org.scalatest" %% "scalatest" % "3.2.5" % "test",
+    "org.scalatest" %% "scalatest" % "3.2.10" % "test",
   )
 
   lazy val scalaCheck: Seq[ModuleID] = Seq(
-    "org.scalacheck" %% "scalacheck" % "1.15.2" % "test",
+    "org.scalacheck" %% "scalacheck" % "1.15.4" % "test",
   )
 
   lazy val scalaMock: Seq[ModuleID] = Seq(
-    "org.scalamock" %% "scalamock" % "5.1.0" % "test",
+    "org.scalamock" %% "scalamock" % "5.2.0" % "test",
   )
 
   lazy val generex: Seq[ModuleID] = Seq(
