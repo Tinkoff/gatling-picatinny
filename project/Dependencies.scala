@@ -5,7 +5,7 @@ object Dependencies {
     "io.gatling" % "gatling-core",
     "io.gatling" % "gatling-http",
     "io.gatling" % "gatling-redis",
-  ).map(_ % "3.7.4" % Provided)
+  ).map(_ % "3.7.5" % Provided)
 
   lazy val fastUUID = Seq(
     "com.eatthepath" % "fast-uuid" % "0.2.0" % Provided,
@@ -17,8 +17,8 @@ object Dependencies {
   ).map(_ % "3.7.4" % Test)
 
   lazy val json4s: Seq[ModuleID] = Seq(
-    "org.json4s" %% "json4s-native"  % "4.0.2",
-    "org.json4s" %% "json4s-jackson" % "4.0.2",
+    "org.json4s" %% "json4s-native"  % "4.0.4",
+    "org.json4s" %% "json4s-jackson" % "4.0.4",
   )
 
   lazy val pureConfig: Seq[ModuleID] = Seq(

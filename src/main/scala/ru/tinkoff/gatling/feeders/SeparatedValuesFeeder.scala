@@ -24,11 +24,11 @@ object SeparatedValuesFeeder {
     * @return
     *   a new feeder
     * @example
-    * {{{
+    *   {{{
     *   val sourceString = "v21;v22;v23"
     *   val separatedValuesFeeder: FeederBuilderBase[String] =
     *     SeparatedValuesFeeder("someValues", sourceString, ';') // this will return Vector(Map(someValues -> v21), Map(someValues -> v22), Map(someValues -> v23))
-    * }}}
+    *   }}}
     */
   def apply(paramName: String, source: String, separator: Char): IndexedSeq[Record[String]] = {
 
@@ -50,11 +50,11 @@ object SeparatedValuesFeeder {
     * @return
     *   a new feeder
     * @example
-    * {{{
+    *   {{{
     *   val sourceSeq = Seq("1,two", "3,4")
     *   val separatedValuesFeeder: FeederBuilderBase[String] =
     *     SeparatedValuesFeeder.csv("someValues", sourceSeq) // this will return Vector(Map(someValues -> 1), Map(someValues -> two), Map(someValues -> 3), Map(someValues -> 4))
-    * }}}
+    *   }}}
     */
   def apply(paramName: String, source: Seq[String], separator: Char)(implicit
       configuration: GatlingConfiguration,
@@ -78,7 +78,7 @@ object SeparatedValuesFeeder {
     * @return
     *   a new feeder
     * @example
-    * {{{
+    *   {{{
     *   val vaultFeeder: FeederBuilderBase[String] = Vector(
     *     Map(
     *       "HOSTS" -> "host11,host12",
@@ -92,7 +92,7 @@ object SeparatedValuesFeeder {
     *   val mapFee: FeederBuilderBase[String] = SeparatedValuesFeeder(None, vaultFeeder.readRecords, ',')
     *   val separatedValuesFeeder: FeederBuilderBase[String] =
     *     SeparatedValuesFeeder("prefix", sourceSeq, ',') // this will return Vector(Map(HOSTS -> host11), Map(HOSTS -> host12), Map(USERS -> user11), Map(HOSTS -> host21), Map(HOSTS -> host22), Map(USERS -> user21), Map(USERS -> user22), Map(USERS -> user23))
-    * }}}
+    *   }}}
     */
   def apply(paramPrefix: Option[String], source: Seq[Map[String, Any]], separator: Char)(implicit
       configuration: GatlingConfiguration,
