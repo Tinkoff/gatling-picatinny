@@ -2,6 +2,10 @@ package ru.tinkoff.gatling.feeders.generators
 
 import cats.Eval
 import cats.data.ReaderT
+import com.eatthepath.uuid.FastUUID
+
+import java.time.LocalDate
+import java.util.UUID
 
 trait GeneratorInstances {
   final type Generator[T] = ReaderT[Eval, GeneratorContext, T]
@@ -26,14 +30,24 @@ trait GeneratorInstances {
     res
   }
 
-  final def intBounded(bound: Int): Generator[Int]    = Generator(_.gen.nextInt(bound))
-  final def longBounded(bound: Long): Generator[Long] = Generator(_.gen.nextLong(bound))
+  final def double(min: Double, max: Double): Generator[Double] = Generator(_.gen.between(min, max))
+  final def float(min: Float, max: Float): Generator[Float]     = Generator(_.gen.between(min, max))
+
+  final def intBounded(bound: Int): Generator[Int]         = Generator(_.gen.nextInt(bound))
+  final def longBounded(bound: Long): Generator[Long]      = Generator(_.gen.nextLong(bound))
+  final def doubleBounded(bond: Double): Generator[Double] = double(0, bond)
+  final def floatBounded(bond: Float): Generator[Float]    = float(0, bond)
 
   private val stringSize: Generator[Int]     = Generator(ctx => ctx.gen.nextInt(ctx.sizeBounds.string))
   private val collectionSize: Generator[Int] = Generator(ctx => ctx.gen.nextInt(ctx.sizeBounds.collection))
 
-  final val positiveInt: Generator[Int]   = intBounded(Int.MaxValue)
-  final val positiveLong: Generator[Long] = longBounded(Long.MaxValue)
+  final val positiveInt: Generator[Int]       = intBounded(Int.MaxValue)
+  final val positiveLong: Generator[Long]     = longBounded(Long.MaxValue)
+  final val gaussianDouble: Generator[Double] = Generator(_.gen.nextGaussian())
+  final val uniformDouble: Generator[Double]  = Generator(_.gen.nextDouble())
+  final val positiveDouble: Generator[Double] = doubleBounded(Double.MaxValue)
+  final val uniformFloat: Generator[Float]    = Generator(_.gen.nextFloat())
+  final val positiveFloat: Generator[Float]   = floatBounded(Float.MaxValue)
 
   final val bool: Generator[Boolean] = Generator(_.gen.nextBoolean())
 
@@ -77,6 +91,19 @@ trait GeneratorInstances {
   final val printableString: Generator[String]    = stringSize.flatMap(printableStringN)
 
   final def numberStringF(format: String, min: Int, max: Int): Generator[String] = int(min, max).map(format.format(_))
+
+  final val uuid: Generator[UUID]         = Generator(_ => UUID.randomUUID())
+  final val uuidString: Generator[String] = uuid.map(FastUUID.toString)
+
+  final val date: Generator[LocalDate] = Generator { ctx =>
+    val now        = LocalDate.now()
+    val daysOffset = ctx.gen.nextInt(ctx.daysOffset)
+    if (ctx.gen.nextBoolean())
+      now.plusDays(daysOffset)
+    else
+      now.minusDays(daysOffset)
+
+  }
 
   final val KPP: Generator[String] = numberStringN(4) ~ numberStringN(2) ~ numberStringN(3)
 
