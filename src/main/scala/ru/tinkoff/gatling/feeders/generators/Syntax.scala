@@ -14,8 +14,8 @@ trait Syntax {
 }
 
 object Syntax {
-  private class StringOrChar[T]
-  private[this] object StringOrChar {
+  class StringOrChar[T]
+  object StringOrChar {
     implicit object CharWitness   extends StringOrChar[Char]
     implicit object StringWitness extends StringOrChar[String]
   }
@@ -37,7 +37,7 @@ object Syntax {
       (gStr, g2).mapN((s1, s2) => s1 + s2.toString)
 
     @inline
-    def ~(s2: String): Generator[String] = gStr.map(s1 => s1 + s2)
+    def ~(s2: String): Generator[String] = gStr.map(s1 => s"$s1$s2")
 
     @inline
     def ~(char: Char): Generator[String] = gStr.map(s1 => s1.appended(char))
@@ -53,11 +53,11 @@ object Syntax {
 
   final class StrToGeneratorOps(val s1: String) extends AnyVal {
     @inline
-    def ~[T: StringOrChar](g2: Generator[T]): Generator[String] = g2.map(s2 => s1 + s2)
+    def ~[T: StringOrChar](g2: Generator[T]): Generator[String] = g2.map(s2 => s"$s1$s2")
   }
 
   final class CharToGeneratorOps(val c1: Char) extends AnyVal {
     @inline
-    def ~[T: StringOrChar](g2: Generator[T]): Generator[String] = g2.map(s2 => c1 + s2.toString)
+    def ~[T: StringOrChar](g2: Generator[T]): Generator[String] = g2.map(s2 => s"$c1$s2")
   }
 }
