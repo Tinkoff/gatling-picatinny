@@ -43,7 +43,7 @@ object Dependencies {
   )
 
   lazy val jwt: Seq[ModuleID] = Seq(
-    "com.pauldijou" %% "jwt-core" % "5.0.0",
+    "com.github.jwt-scala" %% "jwt-core" % "9.0.4",
   )
 
   lazy val circeDeps: Seq[ModuleID] = Seq(
