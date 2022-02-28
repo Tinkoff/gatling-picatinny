@@ -1,11 +1,11 @@
-name: Build
+name: Continuous Integration
 
 on:
+  pull_request:
+    branches: ['**']
   push:
-    branches:
-      - master
-    tags:
-      - 'v*'
+    branches: ['**']
+    tags: [v*]
 
 jobs:
   test:
@@ -23,7 +23,7 @@ jobs:
           java-version: openjdk@1.17
 
       - name: Test Release
-        run: sbt clean compile test
+        run: sbt clean scalafmtCheckAll scalafmtSbtCheck compile test
 
   publish:
     name: Publish Release
