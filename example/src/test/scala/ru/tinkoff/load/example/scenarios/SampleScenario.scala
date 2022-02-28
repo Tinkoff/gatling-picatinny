@@ -15,28 +15,28 @@ object SampleScenario {
 }
 
 class SampleScenario {
-  //prepare RedisClientPool
+  // prepare RedisClientPool
   val redisPool = new RedisClientPool("localhost", 6379)
 
-  //get sensitive data from ENV
+  // get sensitive data from ENV
   val jwtSecretToken = getStringParam("jwtSecret")
 
-  //prepare jwt generator
-  val jwtGenerator = jwt("HS256", jwtSecretToken) //pass here jwt algorithm and jwt secret key
-    .defaultHeader //use default jwt header: {"alg": "HS256","typ": "JWT"}
-    .payloadFromResource("jwtTemplates/payload.json") //use payload template from json file
+  // prepare jwt generator
+  val jwtGenerator = jwt("HS256", jwtSecretToken) // pass here jwt algorithm and jwt secret key
+    .defaultHeader                                    // use default jwt header: {"alg": "HS256","typ": "JWT"}
+    .payloadFromResource("jwtTemplates/payload.json") // use payload template from json file
 
-  //get some configuration param from simulation.conf/ENV/JAVA_OPTS
+  // get some configuration param from simulation.conf/ENV/JAVA_OPTS
   val jwtCookieDomain = getStringParam("domain")
 
-  //single request
+  // single request
   val getMainPage: HttpRequestBuilder = http("GET /")
     .get("/")
     .check(status is 200)
 
-  //compose all in scenario
+  // compose all in scenario
   val sampleScenario: ScenarioBuilder = scenario("Sample scenario")
-  //include feeders in scenario as usual
+    // include feeders in scenario as usual
     .feed(timeShort)
     .feed(timezoneRandom)
     .feed(firstWorkDayHours)
@@ -64,15 +64,15 @@ class SampleScenario {
     .feed(feederKPP)
     .feed(feederSNILS)
     .feed(feederRusPassport)
-    //redis commands
-    .exec(redisPool.SADD("key", "values", "values")) //add the specified members to the set stored at key
-    .exec(redisPool.DEL("key", "keys")) //removes the specified keys
-    .exec(redisPool.SREM("key", "values", "values")) //remove the specified members from the set stored at key
-    //generate JWT using values from feeders
+    // redis commands
+    .exec(redisPool.SADD("key", "values", "values")) // add the specified members to the set stored at key
+    .exec(redisPool.DEL("key", "keys"))              // removes the specified keys
+    .exec(redisPool.SREM("key", "values", "values")) // remove the specified members from the set stored at key
+    // generate JWT using values from feeders
     .exec(_.setJwt(jwtGenerator, "jwtToken"))
-    //set JWT cookie
+    // set JWT cookie
     .exec(addCookie(Cookie("JWT_TOKEN", "${jwtToken}").withDomain(jwtCookieDomain).withPath("/")))
-    //execute request signed with JWT_TOKEN cookie
+    // execute request signed with JWT_TOKEN cookie
     .exec(getMainPage)
 
 }

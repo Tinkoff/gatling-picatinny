@@ -7,7 +7,9 @@ import ru.tinkoff.gatling.config.SimulationConfig._
 package object example {
 
   val httpProtocol = http
-    .baseUrl(baseUrl) // Here is the root for all relative URLs, located in simulation.conf file, or -DbaseUrl="" passed to test param
+    .baseUrl(
+      baseUrl,
+    ) // Here is the root for all relative URLs, located in simulation.conf file, or -DbaseUrl="" passed to test param
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
     .acceptEncodingHeader("gzip, deflate")
     .acceptLanguageHeader("en-US,en;q=0.5")
