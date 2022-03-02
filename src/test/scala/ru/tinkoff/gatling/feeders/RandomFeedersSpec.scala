@@ -1,5 +1,6 @@
 package ru.tinkoff.gatling.feeders
 
+import io.gatling.core.config.GatlingConfiguration
 import org.scalacheck.Prop.{forAll, propBoolean}
 import org.scalacheck._
 import org.scalatest.flatspec.AnyFlatSpec
@@ -220,7 +221,27 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
     forAll(rndString) { paramName =>
       RandomPhoneFeeder(paramName, phoneFormatsFromFile, TypePhone.E164PhoneNumber)
         .take(50)
-        .forall { r => r(paramName).matches(regexPhonePattern) }
+        .forall { r =>
+          {
+            r(paramName).matches(regexPhonePattern)
+          }
+        }
+    }.check()
+  }
+
+  it should "create random snilsFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomSNILSFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).matches("\\d{11}")}
+    }.check()
+  }
+
+  it should "create random panFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomPANFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).matches("\\d{16,18}") }
     }.check()
   }
 

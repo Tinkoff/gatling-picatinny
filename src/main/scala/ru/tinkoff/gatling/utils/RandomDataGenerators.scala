@@ -184,11 +184,11 @@ object RandomDataGenerators {
 
       @tailrec
       def defineCheckSum(checkSum: Int): String = checkSum match {
-        case x if x < 101 => checkSum.toString
-        case 100 | 101    => "00"
-        case _            => defineCheckSum(checkSum % 101)
+        case x if x >= 10 && x < 100 => checkSum.toString
+        case x if x < 10             => s"0$checkSum"
+        case 100 | 101               => "00"
+        case _                       => defineCheckSum(checkSum % 101)
       }
-
       n match {
         case 1 => (results :+ rnd :+ defineCheckSum(checkSum)).mkString("")
         case _ => snilsRecursion(n - 1, checkSum, results :+ rnd)
