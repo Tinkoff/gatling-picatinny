@@ -233,7 +233,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
     forAll(rndString) { paramName =>
       RandomSNILSFeeder(paramName)
         .take(50)
-        .forall { r => r(paramName).matches("\\d{11}")}
+        .forall { r => r(paramName).matches("\\d{11}") }
     }.check()
   }
 

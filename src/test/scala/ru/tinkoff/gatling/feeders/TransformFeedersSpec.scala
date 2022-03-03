@@ -5,9 +5,9 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class TransformFeedersSpec extends AnyFlatSpec with Matchers {
-  
+
   private implicit val configuration: GatlingConfiguration = GatlingConfiguration.loadForTest()
-  
+
   val stringForSeparatedValuesFeeder = "host11,host12"
 
   val seqStringForSeparatedValuesFeeder: Seq[String] = Seq("1\ttwo", "3\t4")
@@ -22,7 +22,7 @@ class TransformFeedersSpec extends AnyFlatSpec with Matchers {
       "USERS" -> "user21;user22;user23",
     ),
   )
-  
+
   it should "SeparatedValuesFeeder extract from Seq[Map[String, String]]" in {
     SeparatedValuesFeeder(None, seqMapForSeparatedValuesFeeder, ';') shouldBe Vector(
       Map("HOSTS" -> "host11"),
@@ -35,7 +35,7 @@ class TransformFeedersSpec extends AnyFlatSpec with Matchers {
       Map("USERS" -> "user23"),
     )
   }
-  
+
   it should "SeparatedValuesFeeder extract from Seq[String]" in {
     SeparatedValuesFeeder("rndString", seqStringForSeparatedValuesFeeder, '\t') shouldBe Vector(
       Map("rndString" -> "1"),
@@ -44,7 +44,7 @@ class TransformFeedersSpec extends AnyFlatSpec with Matchers {
       Map("rndString" -> "4"),
     )
   }
-  
+
   it should "SeparatedValuesFeeder extract from String" in {
     SeparatedValuesFeeder("rndString", stringForSeparatedValuesFeeder, ',') shouldBe Array(
       Map("rndString" -> "host11"),
