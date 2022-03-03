@@ -82,7 +82,7 @@ object RandomDataGenerators {
       case i if i % 2 == 0 => results(i)
     }.fold(0)((x, y) => x + (if (y * 2 > 9) y * 2 - 9 else y * 2))
     val oddPosSum: Int     = results.indices.collect { case i if i % 2 != 0 => results(i) }.sum
-    val controlNum: Int    = 10 - (oddPosSum + evenPosSum) % 10
+    val controlNum: Int    = 10 - (if ((oddPosSum + evenPosSum) % 10 == 0) 10 else (oddPosSum + evenPosSum) % 10)
 
     s"""${results.mkString("")}$controlNum"""
   }

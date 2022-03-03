@@ -237,11 +237,54 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
     }.check()
   }
 
-  it should "create random panFeeder" in {
+  it should "create random panFeeder without BINs" in {
     forAll(rndString) { paramName =>
       RandomPANFeeder(paramName)
         .take(50)
-        .forall { r => r(paramName).matches("\\d{16,18}") }
+        .forall { r => LuhnValidator.validate(r(paramName)) }
+    }.check()
+  }
+
+  it should "create random panFeeder with BINs 6 numbers" in {
+    forAll(rndString) { paramName =>
+      RandomPANFeeder(paramName, "192837", "293847", "394857", "495867", "596871", "697881", "798192", "891726", "918273")
+        .take(50)
+        .forall { r => LuhnValidator.validate(r(paramName)) }
+    }.check()
+  }
+
+  it should "create random panFeeder with BINs 8 numbers" in {
+    forAll(rndString) { paramName =>
+      RandomPANFeeder(
+        paramName,
+        "19292837",
+        "29392847",
+        "39492857",
+        "49592867",
+        "59692871",
+        "69792881",
+        "79892192",
+        "89192726",
+        "91892273",
+      )
+        .take(50)
+        .forall { r => LuhnValidator.validate(r(paramName)) }
+    }.check()
+  }
+
+  it should "create random rusPassportFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomRusPassportFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).matches("\\d{10}") }
+    }.check()
+  }
+
+  it should "create random PSRNSPFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomPSRNSPFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).substring(0, 14).toLong % 13 % 10 == r(paramName).substring(14, 15).toInt }
     }.check()
   }
 
