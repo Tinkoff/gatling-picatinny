@@ -221,11 +221,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
     forAll(rndString) { paramName =>
       RandomPhoneFeeder(paramName, phoneFormatsFromFile, TypePhone.E164PhoneNumber)
         .take(50)
-        .forall { r =>
-          {
-            r(paramName).matches(regexPhonePattern)
-          }
-        }
+        .forall { r => r(paramName).matches(regexPhonePattern) }
     }.check()
   }
 
@@ -285,6 +281,38 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
       RandomPSRNSPFeeder(paramName)
         .take(50)
         .forall { r => r(paramName).substring(0, 14).toLong % 13 % 10 == r(paramName).substring(14, 15).toInt }
+    }.check()
+  }
+
+  it should "create random OGRNFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomOGRNFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).substring(0, 12).toLong % 11 % 10 == r(paramName).substring(12, 13).toInt }
+    }.check()
+  }
+
+  it should "create random NatITNFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomNatITNFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).matches("\\d{10}") }
+    }.check()
+  }
+
+  it should "create random JurITNFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomJurITNFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).matches("\\d{12}") }
+    }.check()
+  }
+
+  it should "create random KPPFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomKPPFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).matches("\\d{9}") }
     }.check()
   }
 
