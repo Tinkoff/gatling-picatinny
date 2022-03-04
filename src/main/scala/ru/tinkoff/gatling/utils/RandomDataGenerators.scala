@@ -82,7 +82,7 @@ object RandomDataGenerators {
       case i if i % 2 == 0 => results(i)
     }.fold(0)((x, y) => x + (if (y * 2 > 9) y * 2 - 9 else y * 2))
     val oddPosSum: Int     = results.indices.collect { case i if i % 2 != 0 => results(i) }.sum
-    val controlNum: Int    = 10 - (oddPosSum + evenPosSum) % 10
+    val controlNum: Int    = 10 - (if ((oddPosSum + evenPosSum) % 10 == 0) 10 else (oddPosSum + evenPosSum) % 10)
 
     s"""${results.mkString("")}$controlNum"""
   }
@@ -184,11 +184,11 @@ object RandomDataGenerators {
 
       @tailrec
       def defineCheckSum(checkSum: Int): String = checkSum match {
-        case x if x < 101 => checkSum.toString
-        case 100 | 101    => "00"
-        case _            => defineCheckSum(checkSum % 101)
+        case x if x >= 10 && x < 100 => checkSum.toString
+        case x if x < 10             => s"0$checkSum"
+        case 100 | 101               => "00"
+        case _                       => defineCheckSum(checkSum % 101)
       }
-
       n match {
         case 1 => (results :+ rnd :+ defineCheckSum(checkSum)).mkString("")
         case _ => snilsRecursion(n - 1, checkSum, results :+ rnd)

@@ -1,5 +1,6 @@
 package ru.tinkoff.gatling.feeders
 
+import io.gatling.core.config.GatlingConfiguration
 import org.scalacheck.Prop.{forAll, propBoolean}
 import org.scalacheck._
 import org.scalatest.flatspec.AnyFlatSpec
@@ -221,6 +222,97 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers {
       RandomPhoneFeeder(paramName, phoneFormatsFromFile, TypePhone.E164PhoneNumber)
         .take(50)
         .forall { r => r(paramName).matches(regexPhonePattern) }
+    }.check()
+  }
+
+  it should "create random snilsFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomSNILSFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).matches("\\d{11}") }
+    }.check()
+  }
+
+  it should "create random panFeeder without BINs" in {
+    forAll(rndString) { paramName =>
+      RandomPANFeeder(paramName)
+        .take(50)
+        .forall { r => LuhnValidator.validate(r(paramName)) }
+    }.check()
+  }
+
+  it should "create random panFeeder with BINs 6 numbers" in {
+    forAll(rndString) { paramName =>
+      RandomPANFeeder(paramName, "192837", "293847", "394857", "495867", "596871", "697881", "798192", "891726", "918273")
+        .take(50)
+        .forall { r => LuhnValidator.validate(r(paramName)) }
+    }.check()
+  }
+
+  it should "create random panFeeder with BINs 8 numbers" in {
+    forAll(rndString) { paramName =>
+      RandomPANFeeder(
+        paramName,
+        "19292837",
+        "29392847",
+        "39492857",
+        "49592867",
+        "59692871",
+        "69792881",
+        "79892192",
+        "89192726",
+        "91892273",
+      )
+        .take(50)
+        .forall { r => LuhnValidator.validate(r(paramName)) }
+    }.check()
+  }
+
+  it should "create random rusPassportFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomRusPassportFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).matches("\\d{10}") }
+    }.check()
+  }
+
+  it should "create random PSRNSPFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomPSRNSPFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).substring(0, 14).toLong % 13 % 10 == r(paramName).substring(14, 15).toInt }
+    }.check()
+  }
+
+  it should "create random OGRNFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomOGRNFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).substring(0, 12).toLong % 11 % 10 == r(paramName).substring(12, 13).toInt }
+    }.check()
+  }
+
+  it should "create random NatITNFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomNatITNFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).matches("\\d{10}") }
+    }.check()
+  }
+
+  it should "create random JurITNFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomJurITNFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).matches("\\d{12}") }
+    }.check()
+  }
+
+  it should "create random KPPFeeder" in {
+    forAll(rndString) { paramName =>
+      RandomKPPFeeder(paramName)
+        .take(50)
+        .forall { r => r(paramName).matches("\\d{9}") }
     }.check()
   }
 
