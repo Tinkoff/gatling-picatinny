@@ -1,11 +1,11 @@
 package ru.tinkoff.gatling.utils
 
 import org.scalacheck.Arbitrary._
-import org.scalacheck.Prop._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
-class IntensityConverterTest extends AnyFlatSpec with Matchers {
+class IntensityConverterTest extends AnyFlatSpec with Matchers with ScalaCheckDrivenPropertyChecks {
 
   import ru.tinkoff.gatling.utils.IntensityConverter._
 
@@ -15,18 +15,18 @@ class IntensityConverterTest extends AnyFlatSpec with Matchers {
 
   it should "convert rph correctly" in {
     forAll { i: Double =>
-      (i rph) equals (i / 3600.0)
-    }.check()
+      (i rph) shouldBe (i / 3600.0)
+    }
   }
   it should "convert rpm correctly" in {
     forAll { i: Double =>
-      (i rpm) equals (i / 60.0)
-    }.check()
+      (i rpm) shouldBe (i / 60.0)
+    }
   }
   it should "convert rps correctly" in {
     forAll { i: Double =>
-      (i rps) equals i
-    }.check()
+      (i rps) shouldBe i
+    }
   }
   it should "display correctly intensity value from string" in {
     getIntensityFromString(intensityString) shouldBe intensityValue
