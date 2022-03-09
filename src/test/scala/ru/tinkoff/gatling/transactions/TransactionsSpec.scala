@@ -2,15 +2,12 @@ package ru.tinkoff.gatling.transactions
 
 import io.gatling.core.Predef._
 import io.gatling.core.session.Expression
-import io.gatling.core.stats.StatsEngine
 import io.gatling.core.structure.{ScenarioBuilder, ScenarioContext}
 import org.scalatest.OptionValues._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import ru.tinkoff.gatling.transactions.Predef._
 import ru.tinkoff.gatling.transactions.actions.builders._
-
-import java.util.concurrent.ConcurrentLinkedQueue
 
 object TransactionsSpec {
   private val now                          = System.currentTimeMillis()

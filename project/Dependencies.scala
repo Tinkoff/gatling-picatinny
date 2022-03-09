@@ -34,6 +34,10 @@ object Dependencies {
     "org.scalacheck" %% "scalacheck" % "1.15.4" % "test",
   )
 
+  lazy val scalaTestPlus: Seq[ModuleID] = Seq(
+    "org.scalatestplus" %% "scalacheck-1-15" % "3.2.9.0" % Test,
+  )
+
   lazy val scalaMock: Seq[ModuleID] = Seq(
     "org.scalamock" %% "scalamock" % "5.2.0" % "test",
   )
@@ -52,7 +56,7 @@ object Dependencies {
     "io.circe" %% "circe-parser",
   ).map(_ % "0.14.1")
 
-  lazy val scalaTesting: Seq[ModuleID] = scalaCheck ++ scalaTest ++ scalaMock
+  lazy val scalaTesting: Seq[ModuleID] = scalaCheck ++ scalaTest ++ scalaMock ++ scalaTestPlus
 
   // Add excludeAll netty to solve conflict run GatlinRunner with using Gatling 3.6.1 and io.netty:4.1.42.Final. Problem java.lang.NoSuchFieldError: DNT
   lazy val influxClientScala: Seq[ModuleID] = Seq(

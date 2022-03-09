@@ -1,13 +1,13 @@
 package ru.tinkoff.gatling.utils
 
 import org.scalacheck.Gen
-import org.scalacheck.Prop.{forAll, propBoolean}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDateTime, ZoneId}
-class RandomDataGeneratorsTest extends AnyFlatSpec with Matchers {
+class RandomDataGeneratorsTest extends AnyFlatSpec with Matchers with ScalaCheckDrivenPropertyChecks {
 
 //  //uuid generator
   val uuidPattern = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})"
@@ -22,19 +22,25 @@ class RandomDataGeneratorsTest extends AnyFlatSpec with Matchers {
   it should "generate a string of the specified length" in {
     forAll(Gen.alphaNumStr.filter(_.nonEmpty), Gen.choose(1, 50)) { case (alphabet, len) =>
       val x = RandomDataGenerators.randomString(alphabet)(len)
-      x.forall(c => alphabet.contains(c)) && len.equals(x.length)
-    }.check()
+      x.foreach(c => assert(alphabet.contains(c) && len.equals(x.length)))
+    }
   }
 
   it should "generate correct random UUID pattern" in {
-    RandomDataGenerators.randomUUID.matches(uuidPattern)
-  }.check()
+    RandomDataGenerators.randomUUID should fullyMatch regex uuidPattern
+  }
 
   it should "generate correct random date pattern" in {
     forAll(Gen.choose(1, 100), Gen.choose(1, 100)) { (positiveOffset: Int, negativeOffset: Int) =>
       RandomDataGenerators
-        .randomDate(positiveOffset, negativeOffset, dateFormat, dateFrom, dateUnit, dateTimezone)
-        .matches(datePattern)
-    }.check()
+        .randomDate(
+          positiveOffset,
+          negativeOffset,
+          dateFormat,
+          dateFrom,
+          dateUnit,
+          dateTimezone,
+        ) should fullyMatch regex datePattern
+    }
   }
 }
