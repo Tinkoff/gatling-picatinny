@@ -17,8 +17,8 @@ object Dependencies {
   ).map(_ % "3.7.6" % Test)
 
   lazy val json4s: Seq[ModuleID] = Seq(
-    "org.json4s" %% "json4s-native"  % "4.0.4",
-    "org.json4s" %% "json4s-jackson" % "4.0.4",
+    "org.json4s" %% "json4s-native"  % "4.0.5",
+    "org.json4s" %% "json4s-jackson" % "4.0.5",
   )
 
   lazy val pureConfig: Seq[ModuleID] = Seq(
