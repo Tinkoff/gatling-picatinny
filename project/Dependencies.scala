@@ -1,6 +1,45 @@
 import sbt._
 
 object Dependencies {
+  //  new ---------------------
+  private object Versions {
+    val circe         = "0.14.1"
+    val http4s        = "0.23.11"
+    val zio           = "1.0.13"
+    val zioLogging    = "0.5.14"
+    val zioInterop    = "3.2.9.1"
+    // При обновлении версии, так же обновить в ru/tinkoff/load/stargazer/processors/generators/ActionsConfig.scala
+    val scalafmt      = "3.5.1"
+    val scalate       = "1.9.8"
+    val swaggerParser = "2.0.32"
+    val json4s        = "4.0.5"
+  }
+  // ---------------------------^
+  //  new ---------------------
+  object ZIO {
+
+    val zio          = "dev.zio" %% "zio"               % Versions.zio
+    val streams      = "dev.zio" %% "zio-streams"       % Versions.zio
+    val catsInterop  = "dev.zio" %% "zio-interop-cats"  % Versions.zioInterop
+    val logging      = "dev.zio" %% "zio-logging"       % Versions.zioLogging
+    val loggingSlf4j = "dev.zio" %% "zio-logging-slf4j" % Versions.zioLogging
+    val zioTest      = "dev.zio" %% "zio-test"          % Versions.zio
+    val zioTestSbt   = "dev.zio" %% "zio-test-sbt"      % Versions.zio
+
+    val all: Seq[ModuleID] = Seq(zio, streams, catsInterop, logging, loggingSlf4j, zioTest, zioTestSbt)
+  }
+
+  object Circe {
+    val core             = "io.circe" %% "circe-core"           % Versions.circe
+    val generic          = "io.circe" %% "circe-generic"        % Versions.circe
+    val `generic-extras` = "io.circe" %% "circe-generic-extras" % Versions.circe
+    val yaml             = "io.circe" %% "circe-yaml"           % Versions.circe
+    val literal          = "io.circe" %% "circe-literal"        % Versions.circe
+    val parser           = "io.circe" %% "circe-parser"         % Versions.circe
+
+    val all: Seq[ModuleID] = Seq(core, generic, `generic-extras`, yaml, parser)
+  }
+  // ---------------------------^
   lazy val gatlingCore: Seq[ModuleID] = Seq(
     "io.gatling" % "gatling-core",
     "io.gatling" % "gatling-http",
@@ -50,11 +89,11 @@ object Dependencies {
     "com.github.jwt-scala" %% "jwt-core" % "9.1.0",
   )
 
-  lazy val circeDeps: Seq[ModuleID] = Seq(
-    "io.circe" %% "circe-core",
-    "io.circe" %% "circe-generic",
-    "io.circe" %% "circe-parser",
-  ).map(_ % "0.14.1")
+//  lazy val circeDeps: Seq[ModuleID] = Seq(
+//    "io.circe" %% "circe-core",
+//    "io.circe" %% "circe-generic",
+//    "io.circe" %% "circe-parser",
+//  ).map(_ % "0.14.1")
 
   lazy val scalaTesting: Seq[ModuleID] = scalaCheck ++ scalaTest ++ scalaMock ++ scalaTestPlus
 
