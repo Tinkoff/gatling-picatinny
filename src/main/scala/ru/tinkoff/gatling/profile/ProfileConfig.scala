@@ -9,5 +9,4 @@ trait ProfileConfig {
 
   def toRandomScenario: ScenarioBuilder = scenario(name)
     .randomSwitch(profile.map(requestConfig => requestConfig.toTuple): _*)
-
 }

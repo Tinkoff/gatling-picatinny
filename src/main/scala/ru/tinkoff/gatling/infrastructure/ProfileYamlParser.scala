@@ -69,13 +69,21 @@ object ProfileYamlParser {
   }
 
   private def getRequests(yaml: Yaml): List[FullRequest] = {
-    val spec = yaml.spec.getOrElse(List.empty)
+    val spec     = yaml.spec.getOrElse(List.empty)
     val metadata = yaml.metadata.getOrElse(Metadata(Option("sampleName"), Option("sampleDescription")))
-    val paths = for {
+    val paths    = for {
       profile <- spec
       request <- profile.profile.getOrElse(List.empty)
-      params <- request.params
-    } yield FullRequest(params.method, request.request, request.intensity, metadata.name, params.headers, params.body, request.groups)
+      params  <- request.params
+    } yield FullRequest(
+      params.method,
+      request.request,
+      request.intensity,
+      metadata.name,
+      params.headers,
+      params.body,
+      request.groups,
+    )
     paths
   }
 
