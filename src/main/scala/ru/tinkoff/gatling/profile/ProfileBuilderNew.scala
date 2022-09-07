@@ -6,13 +6,15 @@ import io.gatling.core.Predef._
 import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
+import ru.tinkoff.gatling.utils.IntensityConverter.getIntensityFromString
 
 import scala.io.Source
 
 case class Params(method: Option[String], path: Option[String], headers: Option[List[String]], body: Option[String])
+
 case class Request(request: Option[String], intensity: Option[String], groups: Option[List[String]], params: Option[Params]) {
 
-  val requestIntensity: Double = intensity.getOrElse("0 rps").split(" ")(0).toDouble
+  val requestIntensity: Double = getIntensityFromString(intensity.getOrElse("0 rps"))
 
   def toRequest: HttpRequestBuilder = {
     val uri: String                               = params
@@ -54,6 +56,7 @@ case class OneProfile(name: Option[String], period: Option[String], protocol: Op
 }
 
 case class Metadata(name: Option[String], description: Option[String])
+
 case class Yaml(apiVersion: Option[String], kind: Option[String], metadata: Option[Metadata], spec: Option[List[OneProfile]]) {
 
   def selectProfile(profileName: String): OneProfile = {
