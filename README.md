@@ -408,6 +408,63 @@ profile:
 }
 ```
 
+#### New style profile:
+
+New profile YAML configuration example:
+
+```yaml
+apiVersion: link.ru/v1alpha1
+kind: PerformanceTestProfiles
+metadata:
+  name: performance-test-profile
+  description: performance test profile
+spec:
+  - name: maxPerf
+    period: 10.05.2022 - 20.05.2022
+    protocol: http
+    profile:
+      - request: request-1
+        intensity: 100 rph
+        groups: ["Group1"]
+        params:
+          method: POST
+          path: /test/a
+          headers:
+            - 'Content-Type: application/json'
+            - 'Connection: keep-alive'
+          body: '{"a": "b"}'
+      - request: request-2
+        intensity: 200 rph
+        groups: ["Group1", "Group2"]
+        params:
+          method: GET
+          path: /test/b
+          body: '{"c": "d"}'
+      - request: request-3
+        intensity: 200 rph
+        groups: [ "Group1", "Group2" ]
+        params:
+          method: GET
+          path: /test/c
+          body: '{"e": "f"}'
+```
+
+*Simulation setUp*
+
+```scala
+class Debug extends Simulation {
+  val profileConfigName = "profile.yml"
+  val scn = ProfileBuilderNew.buildFromYaml(profileConfigName).selectProfile("maxPerf").toRandomScenario
+
+  setUp(
+    scn.inject(
+      atOnceUsers(10)
+    ).protocols(httpProtocol)
+  )
+          .maxDuration(10)
+}
+```
+
 ### redis
 
 This module allows you to use Redis commands.

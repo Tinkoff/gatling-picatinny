@@ -15,26 +15,29 @@ case class Request(request: Option[String], intensity: Option[String], groups: O
   val requestIntensity: Double = intensity.getOrElse("0 rps").split(" ")(0).toDouble
 
   def toRequest: HttpRequestBuilder = {
-    val uri: String                          = params
+    val uri: String                               = params
       .getOrElse(throw new NoSuchElementException("No params in request"))
       .path
       .getOrElse(throw new NoSuchElementException("No path in params"))
-    val requestName                          = request.getOrElse(uri)
-    val requestMethod: String                =
+    val requestName                               = request.getOrElse(uri)
+    val requestMethod: String                     =
       params.getOrElse(throw new NoSuchElementException("No params in request")).method.getOrElse("GET")
-    val requestBody: Option[String]          = params.getOrElse(throw new NoSuchElementException("No params in request")).body
-    val requestHeaders: Option[List[String]] =
-      params.getOrElse(throw new NoSuchElementException("No params in request")).headers
+    val requestBody: Option[String]               = params.getOrElse(throw new NoSuchElementException("No params in request")).body
+    val requestHeaders: List[String]              =
+      params.getOrElse(throw new NoSuchElementException("No params in request")).headers.getOrElse(List[String]())
+    val regexHeader                               = """(\S+): (\S+)""".r
+    val requestParsedHeaders: Map[String, String] = requestHeaders.map { case regexHeader(a, b) => (a, b) }.toMap
     requestMethod match {
-      case "GET"    => http(requestName).get(uri)
-      case "POST"   => http(requestName).post(uri).body(StringBody(requestBody.getOrElse("")))
-      case "PUT"    => http(requestName).put(uri).body(StringBody(requestBody.getOrElse("")))
-      case "DELETE" => http(requestName).delete(uri)
+      case "GET"    => http(requestName).get(uri).headers(requestParsedHeaders)
+      case "POST"   => http(requestName).post(uri).body(StringBody(requestBody.getOrElse(""))).headers(requestParsedHeaders)
+      case "PUT"    => http(requestName).put(uri).body(StringBody(requestBody.getOrElse(""))).headers(requestParsedHeaders)
+      case "DELETE" => http(requestName).delete(uri).headers(requestParsedHeaders)
     }
   }
 
   def toExec: ChainBuilder            = exec(toRequest)
   def toTuple: (Double, ChainBuilder) = (requestIntensity, toExec)
+
 }
 
 case class OneProfile(name: Option[String], period: Option[String], protocol: Option[String], profile: Option[List[Request]]) {
