@@ -64,7 +64,7 @@ case class Yaml(apiVersion: Option[String], kind: Option[String], metadata: Opti
 object ProfileBuilderNew {
 
   def buildFromYaml(path: String): Yaml = {
-    val bufferedSource = Source.fromFile(s"""${System.getProperty("user.dir")}/$path""")
+    val bufferedSource = Source.fromResource(path)
     val yamlContent    = bufferedSource.mkString
     bufferedSource.close
     val yamlParsed     = parser.parse(yamlContent).flatMap(json => json.as[Yaml])
