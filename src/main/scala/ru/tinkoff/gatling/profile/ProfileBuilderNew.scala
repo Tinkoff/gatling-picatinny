@@ -29,12 +29,7 @@ case class Request(request: Option[String], intensity: Option[String], groups: O
       params.getOrElse(throw new NoSuchElementException("No params in request")).headers.getOrElse(List[String]())
     val regexHeader                               = """(.+): (.+)""".r
     val requestParsedHeaders: Map[String, String] = requestHeaders.map { case regexHeader(a, b) => (a, b) }.toMap
-    requestMethod match {
-      case "GET"    => http(requestName).get(uri).headers(requestParsedHeaders)
-      case "POST"   => http(requestName).post(uri).body(StringBody(requestBody.getOrElse(""))).headers(requestParsedHeaders)
-      case "PUT"    => http(requestName).put(uri).body(StringBody(requestBody.getOrElse(""))).headers(requestParsedHeaders)
-      case "DELETE" => http(requestName).delete(uri).headers(requestParsedHeaders)
-    }
+    http(requestName).httpRequest(requestMethod, uri).body(StringBody(requestBody.getOrElse(""))).headers(requestParsedHeaders)
   }
 
   def toExec: ChainBuilder            = exec(toRequest)
