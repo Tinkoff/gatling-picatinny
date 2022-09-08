@@ -27,7 +27,7 @@ case class Request(request: Option[String], intensity: Option[String], groups: O
     val requestBody: Option[String]               = params.getOrElse(throw new NoSuchElementException("No params in request")).body
     val requestHeaders: List[String]              =
       params.getOrElse(throw new NoSuchElementException("No params in request")).headers.getOrElse(List[String]())
-    val regexHeader                               = """(\S+): (\S+)""".r
+    val regexHeader                               = """(.+): (.+)""".r
     val requestParsedHeaders: Map[String, String] = requestHeaders.map { case regexHeader(a, b) => (a, b) }.toMap
     requestMethod match {
       case "GET"    => http(requestName).get(uri).headers(requestParsedHeaders)
