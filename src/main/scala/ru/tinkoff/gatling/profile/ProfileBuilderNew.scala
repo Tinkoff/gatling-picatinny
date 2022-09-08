@@ -20,7 +20,7 @@ case class Request(request: Option[String], intensity: Option[String], groups: O
     val uri: String                               = params
       .getOrElse(throw new NoSuchElementException("No params in request"))
       .path
-      .getOrElse(throw new NoSuchElementException("No path in params"))
+      .getOrElse("")
     val requestName                               = request.getOrElse(uri)
     val requestMethod: String                     =
       params.getOrElse(throw new NoSuchElementException("No params in request")).method.getOrElse("GET")
