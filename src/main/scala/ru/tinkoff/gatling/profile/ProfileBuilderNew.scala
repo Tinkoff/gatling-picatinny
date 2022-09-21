@@ -17,19 +17,16 @@ case class Request(request: Option[String], intensity: Option[String], groups: O
   val requestIntensity: Double = getIntensityFromString(intensity.getOrElse("0 rps"))
 
   def toRequest: HttpRequestBuilder = {
-    val uri: String                               = params
-      .getOrElse(throw new NoSuchElementException("No params in request"))
-      .path
-      .getOrElse("")
-    val requestName                               = request.getOrElse(uri)
-    val requestMethod: String                     =
-      params.getOrElse(throw new NoSuchElementException("No params in request")).method.getOrElse("GET")
-    val requestBody: Option[String]               = params.getOrElse(throw new NoSuchElementException("No params in request")).body
-    val requestHeaders: List[String]              =
-      params.getOrElse(throw new NoSuchElementException("No params in request")).headers.getOrElse(List[String]())
-    val regexHeader                               = """(.+): (.+)""".r
-    val requestParsedHeaders: Map[String, String] = requestHeaders.map { case regexHeader(a, b) => (a, b) }.toMap
-    http(requestName).httpRequest(requestMethod, uri).body(StringBody(requestBody.getOrElse(""))).headers(requestParsedHeaders)
+    val regexHeader = """(.+): (.+)""".r
+    val requestPrep = for {
+      requestParams <- params
+      requestUri <- requestParams.path
+      requestName <- request
+      requestMethod <- requestParams.method
+      requestBody <- requestParams.body
+      requestHeaders <- requestParams.headers
+    } yield http(requestName).httpRequest(requestMethod, requestUri).body(StringBody(requestBody)).headers(requestHeaders.map { case regexHeader(a, b) => (a, b) }.toMap)
+    requestPrep.getOrElse(throw new NoSuchElementException("Request parse error"))
   }
 
   def toExec: ChainBuilder            = exec(toRequest)
@@ -43,7 +40,7 @@ case class OneProfile(name: Option[String], period: Option[String], protocol: Op
     val requests     = this.profile.get.map(request => request.toTuple)
     val intensitySum = requests.foldLeft(0.0)((sum, item) => sum + item._1)
     val prepRequests =
-      requests.foldLeft(List[(Double, ChainBuilder)]())((sum, item) => sum :+ (100 * item._1 / intensitySum, item._2))
+      requests.foldLeft(List.empty[(Double, ChainBuilder)])((sum, item) => sum :+ (100 * item._1 / intensitySum, item._2))
     scenario(name.getOrElse(""))
       .randomSwitch(prepRequests: _*)
   }
