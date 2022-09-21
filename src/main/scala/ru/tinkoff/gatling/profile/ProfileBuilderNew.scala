@@ -19,13 +19,16 @@ case class Request(request: Option[String], intensity: Option[String], groups: O
   def toRequest: HttpRequestBuilder = {
     val regexHeader = """(.+): (.+)""".r
     val requestPrep = for {
-      requestParams <- params
-      requestUri <- requestParams.path
-      requestName <- request
-      requestMethod <- requestParams.method
-      requestBody <- requestParams.body
+      requestParams  <- params
+      requestUri     <- requestParams.path
+      requestName    <- request
+      requestMethod  <- requestParams.method
+      requestBody    <- requestParams.body
       requestHeaders <- requestParams.headers
-    } yield http(requestName).httpRequest(requestMethod, requestUri).body(StringBody(requestBody)).headers(requestHeaders.map { case regexHeader(a, b) => (a, b) }.toMap)
+    } yield http(requestName)
+      .httpRequest(requestMethod, requestUri)
+      .body(StringBody(requestBody))
+      .headers(requestHeaders.map { case regexHeader(a, b) => (a, b) }.toMap)
     requestPrep.getOrElse(throw new NoSuchElementException("Request parse error"))
   }
 
@@ -40,8 +43,10 @@ case class OneProfile(name: Option[String], period: Option[String], protocol: Op
     val requests     = this.profile.get.map(request => request.toTuple)
     val intensitySum = requests.foldLeft(0.0)((sum, item) => sum + item._1)
     val prepRequests =
-      requests.foldLeft(List.empty[(Double, ChainBuilder)])((sum, item) => sum :+ (100 * item._1 / intensitySum, item._2))
-    scenario(name.getOrElse(""))
+      requests.foldLeft(List.empty[(Double, ChainBuilder)]) { case (sum, (intensity, chain)) =>
+        sum :+ (100 * intensity / intensitySum, chain)
+      }
+    scenario(name.getOrElse("Scenario"))
       .randomSwitch(prepRequests: _*)
   }
 
