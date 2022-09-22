@@ -40,7 +40,7 @@ case class Request(request: Option[String], intensity: Option[String], groups: O
 case class OneProfile(name: Option[String], period: Option[String], protocol: Option[String], profile: Option[List[Request]]) {
 
   def toRandomScenario: ScenarioBuilder = {
-    val requests     = this.profile.get.map(request => request.toTuple)
+    val requests     = profile.get.map(request => request.toTuple)
     val intensitySum = requests.foldLeft(0.0)((sum, item) => sum + item._1)
     val prepRequests =
       requests.foldLeft(List.empty[(Double, ChainBuilder)]) { case (sum, (intensity, chain)) =>
@@ -57,7 +57,7 @@ case class Metadata(name: Option[String], description: Option[String])
 case class Yaml(apiVersion: Option[String], kind: Option[String], metadata: Option[Metadata], spec: Option[List[OneProfile]]) {
 
   def selectProfile(profileName: String): OneProfile = {
-    val profileList = this.spec.getOrElse(throw new NoSuchElementException("No profiles in spec"))
+    val profileList = spec.getOrElse(throw new NoSuchElementException("No profiles in spec"))
     profileList.filter(_.name.getOrElse(throw new NoSuchElementException(s"No such profile: $profileName")) == profileName).head
   }
 
