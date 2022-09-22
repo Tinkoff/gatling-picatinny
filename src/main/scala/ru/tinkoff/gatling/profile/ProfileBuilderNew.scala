@@ -40,7 +40,7 @@ case class Request(request: Option[String], intensity: Option[String], groups: O
 case class OneProfile(name: Option[String], period: Option[String], protocol: Option[String], profile: Option[List[Request]]) {
 
   def toRandomScenario: ScenarioBuilder = {
-    val requests     = profile.get.map(request => request.toTuple)
+    val requests     = profile.getOrElse(List.empty[Request]).map(request => request.toTuple)
     val intensitySum = requests.foldLeft(0.0) { case (sum, (intensity, _)) => sum + intensity }
     val prepRequests =
       requests.foldLeft(List.empty[(Double, ChainBuilder)]) { case (sum, (intensity, chain)) =>
