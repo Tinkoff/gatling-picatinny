@@ -11,38 +11,32 @@ class ProfileBuilderTest extends AnyFlatSpec with Matchers with ScalaCheckDriven
     Some("link.ru/v1alpha1"),
     Some("PerformanceTestProfiles"),
     Some(Metadata(Some("performance-test-profile"), Some("performance test profile"))),
-    Some(
-      List(
-        OneProfile(
-          Some("maxPerf"),
-          Some("10.05.2022 - 20.05.2022"),
-          Some("http"),
-          Some(
-            List(
-              Request(
-                Some("request-1"),
-                Some("100 rph"),
-                Some(List("Group1")),
-                Some(Params(Some("POST"), Some("/test/a"), Some(List("greetings: Hello world!")), Some("""{"a": "b"}"""))),
-              ),
-            ),
+    List(
+      OneProfile(
+        "maxPerf",
+        Some("10.05.2022 - 20.05.2022"),
+        Some("http"),
+        List(
+          Request(
+            "request-1",
+            "100 rph",
+            Some(List("Group1")),
+            Params("POST", "/test/a", Some(List("greetings: Hello world!")), Some("""{"a": "b"}""")),
           ),
         ),
       ),
     ),
   )
   val parsedProfile: OneProfile = OneProfile(
-    Some("maxPerf"),
+    "maxPerf",
     Some("10.05.2022 - 20.05.2022"),
     Some("http"),
-    Some(
-      List(
-        Request(
-          Some("request-1"),
-          Some("100 rph"),
-          Some(List("Group1")),
-          Some(Params(Some("POST"), Some("/test/a"), Some(List("greetings: Hello world!")), Some("""{"a": "b"}"""))),
-        ),
+    List(
+      Request(
+        "request-1",
+        "100 rph",
+        Some(List("Group1")),
+        Params("POST", "/test/a", Some(List("greetings: Hello world!")), Some("""{"a": "b"}""")),
       ),
     ),
   )

@@ -1,5 +1,6 @@
 package ru.tinkoff.gatling.profile
 
+import io.circe.DecodingFailure
 import io.circe.yaml._
 import io.circe.generic.auto._
 import io.gatling.core.Predef._
@@ -10,26 +11,20 @@ import ru.tinkoff.gatling.utils.IntensityConverter.getIntensityFromString
 
 import scala.io.Source
 
-case class Params(method: Option[String], path: Option[String], headers: Option[List[String]], body: Option[String])
+case class Params(method: String, path: String, headers: Option[List[String]], body: Option[String])
 
-case class Request(request: Option[String], intensity: Option[String], groups: Option[List[String]], params: Option[Params]) {
+case class Request(request: String, intensity: String, groups: Option[List[String]], params: Params) {
 
-  val requestIntensity: Double = getIntensityFromString(intensity.getOrElse("0 rps"))
+  val requestIntensity: Double = getIntensityFromString(intensity)
 
   def toRequest: HttpRequestBuilder = {
-    val regexHeader = """(.+): (.+)""".r
-    val requestPrep = for {
-      requestParams  <- params
-      requestUri     <- requestParams.path
-      requestName    <- request
-      requestMethod  <- requestParams.method
-      requestBody    <- requestParams.body
-      requestHeaders <- requestParams.headers
-    } yield http(requestName)
-      .httpRequest(requestMethod, requestUri)
+    val regexHeader    = """(.+): (.+)""".r
+    val requestBody    = params.body.getOrElse("")
+    val requestHeaders = params.headers.getOrElse(List.empty[String])
+    http(request)
+      .httpRequest(params.method, params.path)
       .body(StringBody(requestBody))
       .headers(requestHeaders.map { case regexHeader(a, b) => (a, b) }.toMap)
-    requestPrep.getOrElse(throw new NoSuchElementException("Request parse error"))
   }
 
   def toExec: ChainBuilder            = exec(toRequest)
@@ -37,16 +32,16 @@ case class Request(request: Option[String], intensity: Option[String], groups: O
 
 }
 
-case class OneProfile(name: Option[String], period: Option[String], protocol: Option[String], profile: Option[List[Request]]) {
+case class OneProfile(name: String, period: Option[String], protocol: Option[String], profile: List[Request]) {
 
   def toRandomScenario: ScenarioBuilder = {
-    val requests     = profile.getOrElse(List.empty[Request]).map(request => request.toTuple)
-    val intensitySum = requests.foldLeft(0.0) { case (sum, (intensity, _)) => sum + intensity }
+    val requests     = profile.map(request => request.toTuple)
+    val intensitySum = requests.map { case (intensity, _) => intensity }.sum
     val prepRequests =
       requests.foldLeft(List.empty[(Double, ChainBuilder)]) { case (sum, (intensity, chain)) =>
         sum :+ (100 * intensity / intensitySum, chain)
       }
-    scenario(name.getOrElse("Scenario"))
+    scenario(name)
       .randomSwitch(prepRequests: _*)
   }
 
@@ -54,11 +49,11 @@ case class OneProfile(name: Option[String], period: Option[String], protocol: Op
 
 case class Metadata(name: Option[String], description: Option[String])
 
-case class Yaml(apiVersion: Option[String], kind: Option[String], metadata: Option[Metadata], spec: Option[List[OneProfile]]) {
+case class Yaml(apiVersion: Option[String], kind: Option[String], metadata: Option[Metadata], spec: List[OneProfile]) {
 
   def selectProfile(profileName: String): OneProfile = {
-    val profileList = spec.getOrElse(throw new NoSuchElementException("No profiles in spec"))
-    profileList.filter(_.name.getOrElse(throw new NoSuchElementException(s"No such profile: $profileName")) == profileName).head
+    val profileList = spec.filter(_.name == profileName)
+    if (profileList.nonEmpty) profileList.head else throw new NoSuchElementException(s"Selected wrong profile: $profileName")
   }
 
 }
@@ -71,8 +66,10 @@ object ProfileBuilderNew {
     bufferedSource.close
     val yamlParsed     = parser.parse(yamlContent).flatMap(json => json.as[Yaml])
     yamlParsed match {
-      case Right(yaml) => yaml
-      case Left(error) => throw error
+      case Right(yaml)                     => yaml
+      case Left(DecodingFailure(_, value)) =>
+        throw new IllegalArgumentException(s"""Field "${value.head.productElement(0)}" is not filled""")
+      case Left(error)                     => throw error
     }
   }
 
