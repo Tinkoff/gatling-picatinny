@@ -20,8 +20,8 @@ case class Request(request: String, intensity: String, groups: Option[List[Strin
   val requestIntensity: Double = getIntensityFromString(intensity)
 
   def toRequest: HttpRequestBuilder = {
-    val regexHeader: Regex = """(.+?): (.+?)""".r
-    val requestBody: String = params.body.getOrElse("")
+    val regexHeader: Regex           = """(.+?): (.+?)""".r
+    val requestBody: String          = params.body.getOrElse("")
     val requestHeaders: List[String] = params.headers.getOrElse(List.empty[String])
     http(request)
       .httpRequest(params.method, params.path)
@@ -37,8 +37,8 @@ case class Request(request: String, intensity: String, groups: Option[List[Strin
 case class OneProfile(name: String, period: Option[String], protocol: Option[String], profile: List[Request]) {
 
   def toRandomScenario: ScenarioBuilder = {
-    val requests: List[(Double, ChainBuilder)] = profile.map(request => request.toTuple)
-    val intensitySum: Double = requests.map { case (intensity, _) => intensity }.sum
+    val requests: List[(Double, ChainBuilder)]     = profile.map(request => request.toTuple)
+    val intensitySum: Double                       = requests.map { case (intensity, _) => intensity }.sum
     val prepRequests: List[(Double, ChainBuilder)] =
       requests.foldLeft(List.empty[(Double, ChainBuilder)]) { case (sum, (intensity, chain)) =>
         sum :+ (100 * intensity / intensitySum, chain)
@@ -63,8 +63,8 @@ case class Yaml(apiVersion: Option[String], kind: Option[String], metadata: Opti
 object ProfileBuilderNew {
 
   def buildFromYaml(path: String): Yaml = {
-    val bufferedSource: BufferedSource = Source.fromResource(path)
-    val yamlContent: String = bufferedSource.mkString
+    val bufferedSource: BufferedSource        = Source.fromResource(path)
+    val yamlContent: String                   = bufferedSource.mkString
     bufferedSource.close
     val yamlParsed: Either[circe.Error, Yaml] = parser.parse(yamlContent).flatMap(json => json.as[Yaml])
     yamlParsed match {
