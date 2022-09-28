@@ -40,9 +40,7 @@ case class OneProfile(name: String, period: Option[String], protocol: Option[Str
     val requests: List[(Double, ChainBuilder)]     = profile.map(request => request.toTuple)
     val intensitySum: Double                       = requests.map { case (intensity, _) => intensity }.sum
     val prepRequests: List[(Double, ChainBuilder)] =
-      requests.foldLeft(List.empty[(Double, ChainBuilder)]) { case (sum, (intensity, chain)) =>
-        sum :+ (100 * intensity / intensitySum, chain)
-      }
+      requests.map { case (intensity, chain) => (100 * intensity / intensitySum, chain) }
     scenario(name)
       .randomSwitch(prepRequests: _*)
   }
@@ -55,7 +53,8 @@ case class Yaml(apiVersion: Option[String], kind: Option[String], metadata: Opti
 
   def selectProfile(profileName: String): OneProfile = {
     val profileList: List[OneProfile] = spec.filter(_.name == profileName)
-    if (profileList.nonEmpty) profileList.head else throw new NoSuchElementException(s"Selected wrong profile: $profileName")
+    if (profileList.nonEmpty) profileList.head
+    else throw new NoSuchElementException(s"Selected wrong profile: $profileName")
   }
 
 }
