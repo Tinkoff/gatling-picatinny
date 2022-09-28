@@ -1,5 +1,6 @@
 package ru.tinkoff.gatling.profile
 
+import io.circe
 import io.circe.DecodingFailure
 import io.circe.yaml._
 import io.circe.generic.auto._
@@ -9,7 +10,8 @@ import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import ru.tinkoff.gatling.utils.IntensityConverter.getIntensityFromString
 
-import scala.io.Source
+import scala.io.{BufferedSource, Source}
+import scala.util.matching.Regex
 
 case class Params(method: String, path: String, headers: Option[List[String]], body: Option[String])
 
@@ -18,9 +20,9 @@ case class Request(request: String, intensity: String, groups: Option[List[Strin
   val requestIntensity: Double = getIntensityFromString(intensity)
 
   def toRequest: HttpRequestBuilder = {
-    val regexHeader    = """(.+): (.+)""".r
-    val requestBody    = params.body.getOrElse("")
-    val requestHeaders = params.headers.getOrElse(List.empty[String])
+    val regexHeader: Regex = """(.+?): (.+?)""".r
+    val requestBody: String = params.body.getOrElse("")
+    val requestHeaders: List[String] = params.headers.getOrElse(List.empty[String])
     http(request)
       .httpRequest(params.method, params.path)
       .body(StringBody(requestBody))
@@ -35,9 +37,9 @@ case class Request(request: String, intensity: String, groups: Option[List[Strin
 case class OneProfile(name: String, period: Option[String], protocol: Option[String], profile: List[Request]) {
 
   def toRandomScenario: ScenarioBuilder = {
-    val requests     = profile.map(request => request.toTuple)
-    val intensitySum = requests.map { case (intensity, _) => intensity }.sum
-    val prepRequests =
+    val requests: List[(Double, ChainBuilder)] = profile.map(request => request.toTuple)
+    val intensitySum: Double = requests.map { case (intensity, _) => intensity }.sum
+    val prepRequests: List[(Double, ChainBuilder)] =
       requests.foldLeft(List.empty[(Double, ChainBuilder)]) { case (sum, (intensity, chain)) =>
         sum :+ (100 * intensity / intensitySum, chain)
       }
@@ -52,7 +54,7 @@ case class Metadata(name: Option[String], description: Option[String])
 case class Yaml(apiVersion: Option[String], kind: Option[String], metadata: Option[Metadata], spec: List[OneProfile]) {
 
   def selectProfile(profileName: String): OneProfile = {
-    val profileList = spec.filter(_.name == profileName)
+    val profileList: List[OneProfile] = spec.filter(_.name == profileName)
     if (profileList.nonEmpty) profileList.head else throw new NoSuchElementException(s"Selected wrong profile: $profileName")
   }
 
@@ -61,10 +63,10 @@ case class Yaml(apiVersion: Option[String], kind: Option[String], metadata: Opti
 object ProfileBuilderNew {
 
   def buildFromYaml(path: String): Yaml = {
-    val bufferedSource = Source.fromResource(path)
-    val yamlContent    = bufferedSource.mkString
+    val bufferedSource: BufferedSource = Source.fromResource(path)
+    val yamlContent: String = bufferedSource.mkString
     bufferedSource.close
-    val yamlParsed     = parser.parse(yamlContent).flatMap(json => json.as[Yaml])
+    val yamlParsed: Either[circe.Error, Yaml] = parser.parse(yamlContent).flatMap(json => json.as[Yaml])
     yamlParsed match {
       case Right(yaml)                     => yaml
       case Left(DecodingFailure(_, value)) =>
