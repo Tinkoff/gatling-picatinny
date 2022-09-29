@@ -1,0 +1,19 @@
+apiVersion: link.ru/v1alpha1
+kind: PerformanceTestProfiles
+metadata:
+  name: performance-test-profile
+  description: performance test profile
+spec:
+  - name: maxPerf
+    period: 10.05.2022 - 20.05.2022
+    protocol: http
+    profile:
+      - request: request-1
+        intensity: 100 rph
+        groups: ["Group1"]
+        params:
+          method: POST
+          path: /test/a
+          headers:
+            - 'greetings: Hello world!'
+          body: '{"a": "b"}'
