@@ -52,9 +52,7 @@ case class Metadata(name: String, description: String)
 case class Yaml(apiVersion: String, kind: String, metadata: Metadata, spec: List[OneProfile]) {
 
   def selectProfile(profileName: String): OneProfile = {
-    val profileList: List[OneProfile] = spec.filter(_.name == profileName)
-    if (profileList.nonEmpty) profileList.head
-    else throw new NoSuchElementException(s"Selected wrong profile: $profileName")
+    spec.find(_.name == profileName).getOrElse(throw new NoSuchElementException(s"Selected wrong profile: $profileName"))
   }
 
 }
