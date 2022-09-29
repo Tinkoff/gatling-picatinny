@@ -8,14 +8,14 @@ class ProfileBuilderTest extends AnyFlatSpec with Matchers with ScalaCheckDriven
 
   val profile1FromFile: String  = "profileTemplates/profile1.yml"
   val parsedYaml: Yaml          = Yaml(
-    Some("link.ru/v1alpha1"),
-    Some("PerformanceTestProfiles"),
-    Some(Metadata(Some("performance-test-profile"), Some("performance test profile"))),
+    "link.ru/v1alpha1",
+    "PerformanceTestProfiles",
+    Metadata("performance-test-profile", "performance test profile"),
     List(
       OneProfile(
         "maxPerf",
-        Some("10.05.2022 - 20.05.2022"),
-        Some("http"),
+        "10.05.2022 - 20.05.2022",
+        "http",
         List(
           Request(
             "request-1",
@@ -29,8 +29,8 @@ class ProfileBuilderTest extends AnyFlatSpec with Matchers with ScalaCheckDriven
   )
   val parsedProfile: OneProfile = OneProfile(
     "maxPerf",
-    Some("10.05.2022 - 20.05.2022"),
-    Some("http"),
+    "10.05.2022 - 20.05.2022",
+    "http",
     List(
       Request(
         "request-1",

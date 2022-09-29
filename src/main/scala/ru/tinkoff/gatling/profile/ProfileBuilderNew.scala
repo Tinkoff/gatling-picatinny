@@ -20,7 +20,7 @@ case class Request(request: String, intensity: String, groups: Option[List[Strin
   val requestIntensity: Double = getIntensityFromString(intensity)
 
   def toRequest: HttpRequestBuilder = {
-    val regexHeader: Regex           = """(.+?): (.+?)""".r
+    val regexHeader: Regex           = """(.+?): (.+)""".r
     val requestBody: String          = params.body.getOrElse("")
     val requestHeaders: List[String] = params.headers.getOrElse(List.empty[String])
     http(request)
@@ -34,7 +34,7 @@ case class Request(request: String, intensity: String, groups: Option[List[Strin
 
 }
 
-case class OneProfile(name: String, period: Option[String], protocol: Option[String], profile: List[Request]) {
+case class OneProfile(name: String, period: String, protocol: String, profile: List[Request]) {
 
   def toRandomScenario: ScenarioBuilder = {
     val requests: List[(Double, ChainBuilder)]     = profile.map(request => request.toTuple)
@@ -47,9 +47,9 @@ case class OneProfile(name: String, period: Option[String], protocol: Option[Str
 
 }
 
-case class Metadata(name: Option[String], description: Option[String])
+case class Metadata(name: String, description: String)
 
-case class Yaml(apiVersion: Option[String], kind: Option[String], metadata: Option[Metadata], spec: List[OneProfile]) {
+case class Yaml(apiVersion: String, kind: String, metadata: Metadata, spec: List[OneProfile]) {
 
   def selectProfile(profileName: String): OneProfile = {
     val profileList: List[OneProfile] = spec.filter(_.name == profileName)
