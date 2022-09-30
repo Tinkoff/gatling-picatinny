@@ -449,6 +449,10 @@ spec:
           body: '{"e": "f"}'
 ```
 
+Optional fields: groups, headers, body.
+
+If there are no required fields, an exception will be thrown for the missing field.
+
 *Simulation setUp*
 
 ```scala
