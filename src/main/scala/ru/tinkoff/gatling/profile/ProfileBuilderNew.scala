@@ -60,7 +60,7 @@ case class Yaml(apiVersion: String, kind: String, metadata: Metadata, spec: List
 object ProfileBuilderNew {
 
   def buildFromYaml(path: String): Yaml = {
-    val bufferedSource: BufferedSource        = Source.fromResource(path)
+    val bufferedSource: BufferedSource        = Source.fromFile(s"""${System.getProperty("user.dir")}/$path""")
     val yamlContent: String                   = bufferedSource.mkString
     bufferedSource.close
     val yamlParsed: Either[circe.Error, Yaml] = parser.parse(yamlContent).flatMap(json => json.as[Yaml])

@@ -449,12 +449,16 @@ spec:
           body: '{"e": "f"}'
 ```
 
+Optional fields: groups, headers, body.
+
+If there are no required fields, an exception will be thrown for the missing field.
+
 *Simulation setUp*
 
 ```scala
 class Debug extends Simulation {
-  val profileConfigName = "profile.yml"
-  val scn = ProfileBuilderNew.buildFromYaml(profileConfigName).selectProfile("maxPerf").toRandomScenario
+  val pathToProfile = "path/to/profile.yml"
+  val scn = ProfileBuilderNew.buildFromYaml(pathToProfile).selectProfile("maxPerf").toRandomScenario
 
   setUp(
     scn.inject(
