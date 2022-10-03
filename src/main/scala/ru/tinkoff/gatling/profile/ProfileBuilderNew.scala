@@ -54,7 +54,9 @@ case class ProfileSpec(profiles: List[OneProfile])
 case class Yaml(apiVersion: String, kind: String, metadata: Metadata, spec: ProfileSpec) {
 
   def selectProfile(profileName: String): OneProfile = {
-    spec.profiles.find(_.name == profileName).getOrElse(throw new NoSuchElementException(s"Selected wrong profile: $profileName"))
+    spec.profiles
+      .find(_.name == profileName)
+      .getOrElse(throw new NoSuchElementException(s"Selected wrong profile: $profileName"))
   }
 
 }
