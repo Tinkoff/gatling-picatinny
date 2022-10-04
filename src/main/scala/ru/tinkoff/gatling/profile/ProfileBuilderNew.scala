@@ -49,10 +49,14 @@ case class OneProfile(name: String, period: String, protocol: String, profile: L
 
 case class Metadata(name: String, description: String)
 
-case class Yaml(apiVersion: String, kind: String, metadata: Metadata, spec: List[OneProfile]) {
+case class ProfileSpec(profiles: List[OneProfile])
+
+case class Yaml(apiVersion: String, kind: String, metadata: Metadata, spec: ProfileSpec) {
 
   def selectProfile(profileName: String): OneProfile = {
-    spec.find(_.name == profileName).getOrElse(throw new NoSuchElementException(s"Selected wrong profile: $profileName"))
+    spec.profiles
+      .find(_.name == profileName)
+      .getOrElse(throw new NoSuchElementException(s"Selected wrong profile: $profileName"))
   }
 
 }

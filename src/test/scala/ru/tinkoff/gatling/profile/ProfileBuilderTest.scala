@@ -11,17 +11,19 @@ class ProfileBuilderTest extends AnyFlatSpec with Matchers with ScalaCheckDriven
     "link.ru/v1alpha1",
     "PerformanceTestProfiles",
     Metadata("performance-test-profile", "performance test profile"),
-    List(
-      OneProfile(
-        "maxPerf",
-        "10.05.2022 - 20.05.2022",
-        "http",
-        List(
-          Request(
-            "request-1",
-            "100 rph",
-            Some(List("Group1")),
-            Params("POST", "/test/a", Some(List("greetings: Hello world!")), Some("""{"a": "b"}""")),
+    ProfileSpec(
+      List(
+        OneProfile(
+          "maxPerf",
+          "10.05.2022 - 20.05.2022",
+          "http",
+          List(
+            Request(
+              "request-1",
+              "100 rph",
+              Some(List("Group1")),
+              Params("POST", "/test/a", Some(List("greetings: Hello world!")), Some("""{"a": "b"}""")),
+            ),
           ),
         ),
       ),

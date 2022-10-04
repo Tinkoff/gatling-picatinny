@@ -419,34 +419,35 @@ metadata:
   name: performance-test-profile
   description: performance test profile
 spec:
-  - name: maxPerf
-    period: 10.05.2022 - 20.05.2022
-    protocol: http
-    profile:
-      - request: request-1
-        intensity: 100 rph
-        groups: ["Group1"]
-        params:
-          method: POST
-          path: /test/a
-          headers:
-            - 'Content-Type: application/json'
-            - 'Connection: keep-alive'
-          body: '{"a": "b"}'
-      - request: request-2
-        intensity: 200 rph
-        groups: ["Group1", "Group2"]
-        params:
-          method: GET
-          path: /test/b
-          body: '{"c": "d"}'
-      - request: request-3
-        intensity: 200 rph
-        groups: [ "Group1", "Group2" ]
-        params:
-          method: GET
-          path: /test/c
-          body: '{"e": "f"}'
+  profiles:
+    - name: maxPerf
+      period: 10.05.2022 - 20.05.2022
+      protocol: http
+      profile:
+        - request: request-1
+          intensity: 100 rph
+          groups: ["Group1"]
+          params:
+            method: POST
+            path: /test/a
+            headers:
+              - 'Content-Type: application/json'
+              - 'Connection: keep-alive'
+            body: '{"a": "b"}'
+        - request: request-2
+          intensity: 200 rph
+          groups: ["Group1", "Group2"]
+          params:
+            method: GET
+            path: /test/b
+            body: '{"c": "d"}'
+        - request: request-3
+          intensity: 200 rph
+          groups: [ "Group1", "Group2" ]
+          params:
+            method: GET
+            path: /test/c
+            body: '{"e": "f"}'
 ```
 
 Optional fields: groups, headers, body.
