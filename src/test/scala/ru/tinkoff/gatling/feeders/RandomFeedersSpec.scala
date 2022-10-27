@@ -394,7 +394,7 @@ class RandomFeedersSpec extends AnyFlatSpec with Matchers with ScalaCheckDrivenP
         .take(50)
         .foreach { record =>
           withClue(s"Invalid random NatITNFeeder: $record, ") {
-            record(paramName) should fullyMatch regex "\\d{10}"
+            record(paramName) should fullyMatch regex "[0-9][1-9]\\d{8}|[1-9][0-9]\\d{8}"
           }
         }
     }
