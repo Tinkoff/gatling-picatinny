@@ -127,8 +127,8 @@ object RandomDataGenerators {
 
     @tailrec
     def itnNatRecursion(n: Int, sum: Int, results: List[Int]): String = {
-      val rnd: Int = results.length match {
-        case 1 if results.head == 0 => randomDigit(1,10)
+      val rnd: Int = results match {
+        case 0 :: Nil => randomDigit(1,10)
         case _ => randomDigit(0,10)
       }
 
