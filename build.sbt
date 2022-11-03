@@ -2,20 +2,19 @@ import Dependencies._
 
 def UtilsModule(id: String) = Project(id, file(id))
 
-lazy val root = (project in file("."))
+Global / scalaVersion :="2.13.8"
+
+lazy val root = Project("gatling-picatinny", file("."))
   .enablePlugins(GitVersioning)
+  .aggregate(
+    core,
+    coreJava,
+    example,
+  )
+
+lazy val core = UtilsModule("picatinny-core")
   .settings(
-    name          := "gatling-picatinny",
-    scalaVersion  := "2.13.8",
-    libraryDependencies ++= gatlingCore,
-    libraryDependencies ++= fastUUID,
-    libraryDependencies ++= json4s,
-    libraryDependencies ++= pureConfig,
-    libraryDependencies ++= scalaTesting,
-    libraryDependencies ++= generex,
-    libraryDependencies ++= jwt,
-    libraryDependencies ++= influxClientScala,
-    libraryDependencies ++= circeDeps,
+    libraryDependencies ++= picatinnyDependencies,
     scalacOptions := Seq(
       "-encoding",
       "UTF-8",
@@ -29,10 +28,14 @@ lazy val root = (project in file("."))
     ),
   )
 
+lazy val coreJava = UtilsModule("picatinny-java")
+  .dependsOn(core % "compile->compile;test->test")
+  .settings(libraryDependencies ++= picatinnyJavaDependencies)
+
 lazy val example = (project in file("example"))
   .enablePlugins(GatlingPlugin)
   .settings(
     name := "gatling-picatinny-example",
     libraryDependencies ++= gatling,
   )
-  .dependsOn(root)
+  .dependsOn(core)

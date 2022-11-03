@@ -6,7 +6,7 @@ import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
 class ProfileBuilderTest extends AnyFlatSpec with Matchers with ScalaCheckDrivenPropertyChecks {
 
-  val profile1FromFile: String  = "src/test/resources/profileTemplates/profile1.yml"
+  val profile1FromFile: String  = "picatinny-core/src/test/resources/profileTemplates/profile1.yml"
   val parsedYaml: Yaml          = Yaml(
     "link.ru/v1alpha1",
     "PerformanceTestProfiles",
