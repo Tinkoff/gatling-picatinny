@@ -3,6 +3,7 @@ import sbt._
 object Dependencies {
   lazy val gatlingCore: Seq[ModuleID] = Seq(
     "io.gatling" % "gatling-core",
+    "io.gatling" % "gatling-core-java",
     "io.gatling" % "gatling-http",
     "io.gatling" % "gatling-redis",
   ).map(_ % "3.8.4" % Provided)
@@ -84,5 +85,5 @@ object Dependencies {
   lazy val picatinnyDependencies: Seq[sbt.ModuleID] =
     gatlingCore ++ fastUUID ++ json4s ++ pureConfig ++ scalaTesting ++ generex ++ jwt ++ influxClientScala ++ circeDeps
 
-  lazy val picatinnyJavaDependencies: Seq[sbt.ModuleID] = Seq(jsr305, junit, junitEngine, jupiterInterface) ++ gatling
+  lazy val picatinnyJavaDependencies: Seq[sbt.ModuleID] = gatling ++ gatlingCore
 }

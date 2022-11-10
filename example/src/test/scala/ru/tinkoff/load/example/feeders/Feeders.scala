@@ -81,10 +81,8 @@ object Feeders {
   val ruPhoneFormats                 = List(ruMobileFormat, ruCityPhoneFormat)
 
   val simplePhoneNumber: Feeder[String]                 = RandomPhoneFeeder("simplePhoneFeeder")
-  val randomPhoneNumberFromJson: Feeder[String]         =
-    RandomPhoneFeeder("randomPhoneNumberFile", phoneFormatsFromFile)
-  val randomPhoneNumber: Feeder[String]                 =
-    RandomPhoneFeeder("randomPhoneNumber", ruPhoneFormats: _*)
+  val randomPhoneNumberFromJson: Feeder[String]         = RandomPhoneFeeder("randomPhoneNumberFile", phoneFormatsFromFile)
+  val randomPhoneNumber: Feeder[String]                 = RandomPhoneFeeder("randomPhoneNumber", ruPhoneFormats: _*)
   val randomE164PhoneNumberFromJson: Feeder[String]     =
     RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatsFromFile, TypePhone.E164PhoneNumber)
   val randomE164PhoneNumber: Feeder[String]             =
@@ -140,7 +138,7 @@ object Feeders {
     ),
   )
   val separatedValuesFeeder: FeederBuilderBase[String] =
-    SeparatedValuesFeeder(None, vaultData.readRecords, ',')
+    SeparatedValuesFeeder("None", "vaultData.readRecords", ',')
 
   // how to combine together 2 or more feeders
   // as result we get feeder with 3 params: digit, string, phone

@@ -2,7 +2,7 @@ import Dependencies._
 
 def UtilsModule(id: String) = Project(id, file(id))
 
-Global / scalaVersion :="2.13.8"
+Global / scalaVersion := "2.13.8"
 
 lazy val root = Project("gatling-picatinny", file("."))
   .enablePlugins(GitVersioning)
@@ -32,10 +32,8 @@ lazy val coreJava = UtilsModule("picatinny-java")
   .dependsOn(core % "compile->compile;test->test")
   .settings(libraryDependencies ++= picatinnyJavaDependencies)
 
-lazy val example = (project in file("example"))
-  .enablePlugins(GatlingPlugin)
+lazy val example = UtilsModule("example")
   .settings(
-    name := "gatling-picatinny-example",
     libraryDependencies ++= gatling,
   )
   .dependsOn(core)
