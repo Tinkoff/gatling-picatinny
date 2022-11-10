@@ -1,6 +1,7 @@
 package ru.tinkoff.gatling.javaapi;
 
 import static ru.tinkoff.gatling.javaapi.Feeders.*;
+import ru.tinkoff.gatling.javaapi.utils.phone.TypePhone;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 
@@ -8,7 +9,6 @@ import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
 import ru.tinkoff.gatling.javaapi.utils.phone.PhoneFormatBuilder;
 import ru.tinkoff.gatling.utils.phone.PhoneFormat;
-import ru.tinkoff.gatling.utils.phone.TypePhone;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -48,7 +48,7 @@ public class JavaFeedersTest extends Simulation {
     Iterator<Map<String, Object>> randomPhoneFeeder = RandomPhoneFeeder("randomPhoneFeeder");
     Iterator<Map<String, Object>> randomPhoneFeeder1 = RandomPhoneFeeder("randomPhoneFeeder", ruMobileFormat, ruCityPhoneFormat);
     Iterator<Map<String, Object>> randomPhoneFeeder2 = RandomPhoneFeeder("randomPhoneFeeder", TypePhone.E164PhoneNumber(), ruMobileFormat, ruCityPhoneFormat);
-    Iterator<Map<String, Object>> randomPhoneFeeder3 = RandomPhoneFeeder("randomPhoneFeeder", "phoneTemplates/ru.json", TypePhone.E164PhoneNumber());
+    Iterator<Map<String, Object>> randomPhoneFeeder3 = RandomPhoneFeeder("randomPhoneFeeder", "phoneTemplates/ru.json", TypePhone.PhoneNumber());
     Iterator<Map<String, Object>> randomPhoneFeeder4 = RandomPhoneFeeder("randomPhoneFeeder", "phoneTemplates/ru.json");
 
     Iterator<Map<String, Object>> randomPSRNSPFeeder = RandomPSRNSPFeeder("randomPSRNSPFeeder");

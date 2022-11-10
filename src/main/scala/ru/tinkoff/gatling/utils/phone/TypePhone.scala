@@ -1,7 +1,8 @@
 package ru.tinkoff.gatling.utils.phone
 
-object TypePhone extends Enumeration {
-  type TypePhone = Value
-
-  val PhoneNumber, TollFreePhoneNumber, E164PhoneNumber = Value
+object TypePhone{
+  sealed trait TypePhone
+  case object PhoneNumber extends TypePhone
+  case object TollFreePhoneNumber extends TypePhone
+  case object E164PhoneNumber extends TypePhone
 }

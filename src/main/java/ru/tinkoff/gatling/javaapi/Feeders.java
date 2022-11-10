@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import static scala.jdk.javaapi.CollectionConverters.asScala;
 
 import ru.tinkoff.gatling.utils.phone.PhoneFormat;
+import ru.tinkoff.gatling.utils.phone.TypePhone;
 import scala.Function0;
 import scala.Option;
 
@@ -236,11 +237,11 @@ public final class Feeders {
         return toJavaFeeder(ru.tinkoff.gatling.feeders.RandomPhoneFeeder.apply(paramName, asScala(Arrays.asList(formats)).toSeq()));
     }
 
-    public static Iterator<Map<String, Object>> RandomPhoneFeeder(String paramName, scala.Enumeration.Value typePhone, PhoneFormat... formats) {
+    public static Iterator<Map<String, Object>> RandomPhoneFeeder(String paramName, TypePhone.TypePhone typePhone, PhoneFormat... formats) {
         return toJavaFeeder(ru.tinkoff.gatling.feeders.RandomPhoneFeeder.apply(paramName, typePhone, asScala(Arrays.asList(formats)).toSeq()));
     }
 
-    public static Iterator<Map<String, Object>> RandomPhoneFeeder(String paramName, String formatsPath, scala.Enumeration.Value typePhone) {
+    public static Iterator<Map<String, Object>> RandomPhoneFeeder(String paramName, String formatsPath, TypePhone.TypePhone typePhone) {
         return toJavaFeeder(ru.tinkoff.gatling.feeders.RandomPhoneFeeder.apply(paramName, formatsPath, typePhone));
     }
 
