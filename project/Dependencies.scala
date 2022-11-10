@@ -77,11 +77,6 @@ object Dependencies {
     ),
   )
 
-  lazy val jsr305: ModuleID           = "com.google.code.findbugs" % "jsr305"            % "3.0.2"
-  lazy val junit: ModuleID            = "org.junit.jupiter"        % "junit-jupiter-api" % "5.9.1"  % Test
-  lazy val junitEngine: ModuleID      = junit.withName("junit-jupiter-engine")
-  lazy val jupiterInterface: ModuleID = "net.aichler"              % "jupiter-interface" % "0.11.1" % Test
-
   lazy val picatinnyDependencies: Seq[sbt.ModuleID] =
     gatlingCore ++ fastUUID ++ json4s ++ pureConfig ++ scalaTesting ++ generex ++ jwt ++ influxClientScala ++ circeDeps
 
