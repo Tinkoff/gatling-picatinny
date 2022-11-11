@@ -28,7 +28,7 @@ public final class Feeders {
         return CurrentDateFeeder(paramName, datePattern, ZoneId.systemDefault());
     }
 
-    public static Iterator<Map<String, Object>> CustomFeeder(String paramName, Function0<Object> f) {
+    public static <T> Iterator<Map<String, Object>> CustomFeeder(String paramName, Function0<T> f) {
         return toJavaFeeder(
                 ru.tinkoff.gatling.feeders.CustomFeeder.apply(paramName, f)
         );
@@ -58,96 +58,13 @@ public final class Feeders {
 
     public static Iterator<Map<String, Object>> RandomDateFeeder(
             String paramName,
-            Integer negativeDaysDelta,
-            String datePattern,
-            LocalDateTime dateFrom,
-            TemporalUnit unit,
-            ZoneId timezone
+            Integer positiveDaysDelta,
+            Integer negativeDaysDelta
     ) {
         return RandomDateFeeder(
                 paramName,
-                1,
+                positiveDaysDelta,
                 negativeDaysDelta,
-                datePattern,
-                dateFrom,
-                unit,
-                timezone
-        );
-    }
-
-    public static Iterator<Map<String, Object>> RandomDateFeeder(
-            String paramName,
-            String datePattern,
-            LocalDateTime dateFrom,
-            TemporalUnit unit,
-            ZoneId timezone
-    ) {
-        return RandomDateFeeder(
-                paramName,
-                1,
-                1,
-                datePattern,
-                dateFrom,
-                unit,
-                timezone
-        );
-    }
-
-    public static Iterator<Map<String, Object>> RandomDateFeeder(
-            String paramName,
-            LocalDateTime dateFrom,
-            TemporalUnit unit,
-            ZoneId timezone
-    ) {
-        return RandomDateFeeder(
-                paramName,
-                1,
-                1,
-                "yyyy-MM-dd",
-                dateFrom,
-                unit,
-                timezone
-        );
-    }
-
-    public static Iterator<Map<String, Object>> RandomDateFeeder(
-            String paramName,
-            TemporalUnit unit,
-            ZoneId timezone
-    ) {
-        return RandomDateFeeder(
-                paramName,
-                1,
-                1,
-                "yyyy-MM-dd",
-                LocalDateTime.now(),
-                unit,
-                timezone
-        );
-    }
-
-    public static Iterator<Map<String, Object>> RandomDateFeeder(
-            String paramName,
-            ZoneId timezone
-    ) {
-        return RandomDateFeeder(
-                paramName,
-                1,
-                1,
-                "yyyy-MM-dd",
-                LocalDateTime.now(),
-                ChronoUnit.DAYS,
-                timezone
-        );
-    }
-
-    public static Iterator<Map<String, Object>> RandomDateFeeder(
-            String paramName
-    ) {
-        return RandomDateFeeder(
-                paramName,
-                1,
-                1,
                 "yyyy-MM-dd",
                 LocalDateTime.now(),
                 ChronoUnit.DAYS,
@@ -165,36 +82,6 @@ public final class Feeders {
             ZoneId timezone
     ) {
         return toJavaFeeder(ru.tinkoff.gatling.feeders.RandomDateRangeFeeder.apply(paramNameFrom, paramNameTo, offsetDate, datePattern, dateFrom, unit, timezone));
-    }
-
-    public static Iterator<Map<String, Object>> RandomDateRangeFeeder(
-            String paramNameFrom,
-            String paramNameTo,
-            Long offsetDate,
-            LocalDateTime dateFrom,
-            TemporalUnit unit,
-            ZoneId timezone
-    ) {
-        return RandomDateRangeFeeder(paramNameFrom, paramNameTo, offsetDate, "yyyy-MM-dd", dateFrom, unit, timezone);
-    }
-
-    public static Iterator<Map<String, Object>> RandomDateRangeFeeder(
-            String paramNameFrom,
-            String paramNameTo,
-            Long offsetDate,
-            TemporalUnit unit,
-            ZoneId timezone
-    ) {
-        return RandomDateRangeFeeder(paramNameFrom, paramNameTo, offsetDate, "yyyy-MM-dd", LocalDateTime.now(), unit, timezone);
-    }
-
-    public static Iterator<Map<String, Object>> RandomDateRangeFeeder(
-            String paramNameFrom,
-            String paramNameTo,
-            Long offsetDate,
-            ZoneId timezone
-    ) {
-        return RandomDateRangeFeeder(paramNameFrom, paramNameTo, offsetDate, "yyyy-MM-dd", LocalDateTime.now(), ChronoUnit.DAYS, timezone);
     }
 
     public static Iterator<Map<String, Object>> RandomDateRangeFeeder(
@@ -257,17 +144,9 @@ public final class Feeders {
         return toJavaFeeder(ru.tinkoff.gatling.feeders.RandomRangeStringFeeder.apply(paramName, from, to, alphabet));
     }
 
-    public static Iterator<Map<String, Object>> RandomRangeStringFeeder(String paramName, Integer to, String alphabet) {
-        return RandomRangeStringFeeder(paramName, 10, to, alphabet);
-    }
-
-    public static Iterator<Map<String, Object>> RandomRangeStringFeeder(String paramName, String alphabet) {
-        return RandomRangeStringFeeder(paramName, 10, 15, alphabet);
-    }
-
     public static Iterator<Map<String, Object>> RandomRangeStringFeeder(String paramName) {
         String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#%\"&*()_-+={}<>?|:[].~";
-        return RandomRangeStringFeeder(paramName, alphabet);
+        return RandomRangeStringFeeder(paramName, 10, 15, alphabet);
     }
 
     public static Iterator<Map<String, Object>> RandomRusPassportFeeder(String paramName) {
@@ -353,10 +232,6 @@ public final class Feeders {
 
     public static Iterator<Map<String, Object>> SequentialFeeder(String paramName, Integer start, Integer step) {
         return toJavaFeeder(ru.tinkoff.gatling.feeders.SequentialFeeder.apply(paramName, start, step));
-    }
-
-    public static Iterator<Map<String, Object>> SequentialFeeder(String paramName, Integer start) {
-        return SequentialFeeder(paramName, start, 1);
     }
 
     public static Iterator<Map<String, Object>> SequentialFeeder(String paramName) {

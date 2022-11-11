@@ -100,11 +100,44 @@ This module contains vast number of random feeders. They could be used as regula
 random phone number or random digit. Now it supports feeders for dates, numbers and digits, strings, uuids, phones.
 Basic examples will be provided below. Other feeders can be used in a similar way.
 
+Scala example:
+
 ```scala
 import ru.tinkoff.gatling.feeders._
 
 //creates feeder with name 'randomString' that gets random string of length 10
 val stringFeeder = RandomStringFeeder("randomString", 10)
+
+//creates feeder with name 'digit' that gets random Int digit
+val digitFeeder = RandomDigitFeeder("digit")
+
+//creates feeder with name 'uuid' that gets random uuid
+val uuidFeeder = RandomUUIDFeeder("uuid")
+```
+
+Java example:
+
+```java
+import static ru.tinkoff.gatling.javaapi.Feeders.*;
+
+//creates feeder with name 'randomString' that gets random string of length 10
+Iterator<Map<String, Object>> stringFeeder = RandomStringFeeder("randomString", 10);
+
+//creates feeder with name 'digit' that gets random Int digit
+Iterator<Map<String, Object>> digitFeeder = RandomDigitFeeder("digit");
+
+//creates feeder with name 'uuid' that gets random uuid
+Iterator<Map<String, Object>> uuidFeeder = RandomUUIDFeeder("uuid");
+
+```
+
+Kotlin example:
+
+```kotlin
+import ru.tinkoff.gatling.javaapi.Feeders.*
+
+//creates feeder with name 'randomString' that gets random string of length 10
+val stringFeeder = RandomStringFeeder("string", 10)
 
 //creates feeder with name 'digit' that gets random Int digit
 val digitFeeder = RandomDigitFeeder("digit")
@@ -132,6 +165,14 @@ Creates feeder capable of retrieving secret data from HC Vault
   val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
 
+```Java
+  Iterator<Map<String, Object>> vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys);
+```
+
+```Kotlin
+  val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
+```
+
 #### SeparatedValuesFeeder
 
 Creates a feeder with separated values from a source String, Seq[String] or Seq[Map[String, Any]].
@@ -150,12 +191,30 @@ val separatedValuesFeeder: FeederBuilderBase[String] =
   SeparatedValuesFeeder("someValues", sourceString, ';') // Vector(Map(someValues -> v21), Map(someValues -> v22), Map(someValues -> v23))
 ```
 
+```Java
+  Iterator<Map<String, Object>> vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys);
+```
+
+```Kotlin
+  val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
+```
+
 Get separated values from a source: Seq[String]
 
 ```scala
 val sourceSeq = Seq("1,two", "3,4")
 val separatedValuesFeeder: FeederBuilderBase[String] =
   SeparatedValuesFeeder.csv("someValues", sourceSeq) // Vector(Map(someValues -> 1), Map(someValues -> two), Map(someValues -> 3), Map(someValues -> 4))
+```
+
+```Java
+List<Map<String, Object>> sourceList = Arrays.asList("1,two", "3,4");
+Iterator<Map<String, Object>> separatedValuesFeeder = SeparatedValuesFeeder.csv("someValues", sourceList);
+```
+
+```Kotlin
+var sourceList = listOf("1,two", "3,4")
+var separatedValuesFeeder1 = SeparatedValuesFeeder.csv("someValues", sourceList)
 ```
 
 Get separated values from a source: Seq[Map[String, Any]]
@@ -175,6 +234,16 @@ val separatedValuesFeeder: FeederBuilderBase[String] =
   SeparatedValuesFeeder(None, vaultFeeder.readRecords, ',') // Vector(Map(HOSTS -> host11), Map(HOSTS -> host12), Map(USERS -> user11), Map(HOSTS -> host21), Map(HOSTS -> host22), Map(USERS -> user21), Map(USERS -> user22), Map(USERS -> user23))
 ```
 
+```Java
+List<Map<String, Object>> vaultData = Arrays.asList(Map.of("HOSTS","host11,host12"), Map.of("USERS", "user21,user22,user23"));
+Iterator<Map<String, Object>> separatedValuesFeeder = SeparatedValuesFeeder.apply(Optional.empty(), vaultData, ',');
+```
+
+```Kotlin
+var sourceList = listOf(Map.of("HOSTS", "host11,host12"), Map.of("USERS", "user21,user22,user23"))
+var separatedValuesFeeder1 = SeparatedValuesFeeder.csv(null, sourceList)
+```
+
 #### Phone Feeders
 
 Creates a feeder with phone numbers with formats from json file or `case class PhoneFormat`
@@ -183,6 +252,14 @@ Simple phone feeder
 
 ```scala
 val simplePhoneNumber: Feeder[String] = RandomPhoneFeeder("simplePhoneFeeder")
+```
+
+```Java
+Iterator<Map<String, Object>> simplePhoneNumber = RandomPhoneFeeder("simplePhoneFeeder");
+```
+
+```Kotlin
+val simplePhoneNumber = RandomPhoneFeeder("simplePhoneNumber")
 ```
 
 Phone feeder with custom formats
@@ -197,6 +274,22 @@ Phone feeder with custom formats
 
   val randomPhoneNumber: Feeder[String]                 =
   RandomPhoneFeeder("randomPhoneNumber", ruMobileFormat)
+```
+
+```Java
+PhoneFormat ruMobileFormat = PhoneFormatBuilder.apply("+7", 10, Arrays.asList("945", "946"), "+X XXX XXX-XX-XX", Arrays.asList("55", "81", "111"));
+Iterator<Map<String, Object>> randomPhoneNumber = RandomPhoneFeeder("randomPhoneNumber", ruMobileFormat);
+```
+
+```Kotlin
+val ruMobileFormat = PhoneFormatBuilder.apply(
+        "+7",
+        10,
+        listOf("945", "946"),
+        "+X XXX XXX-XX-XX",
+        listOf("55", "81", "111")
+    )
+val randomPhoneNumber = RandomPhoneFeeder("randomPhoneNumber", ruMobileFormat)
 ```
 
 Phone feeder with custom formats with file
@@ -228,6 +321,16 @@ Creates file with formats, for example RESOURCES/phoneTemplates/ru.json
 val phoneFormatsFromFile: String   = "phoneTemplates/ru.json"
 val randomE164PhoneNumberFromJson: Feeder[String]     =
     RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatsFromFile, TypePhone.E164PhoneNumber)
+```
+
+```Java
+String phoneFormatsFromFile = "phoneTemplates/ru.json";
+Iterator<Map<String, Object>> randomE164PhoneNumberFromJson = RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatsFromFile, TypePhone.E164PhoneNumber());
+```
+
+```Kotlin
+val phoneFormatsFromFile = "phoneTemplates/ru.json"
+val randomE164PhoneNumberFromJson = RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatsFromFile, TypePhone.E164PhoneNumber())
 ```
 
 ### influxdb
