@@ -5,6 +5,7 @@ object Dependencies {
     "io.gatling" % "gatling-core",
     "io.gatling" % "gatling-http",
     "io.gatling" % "gatling-redis",
+    "io.gatling" % "gatling-core-java",
   ).map(_ % "3.8.4" % Provided)
 
   lazy val fastUUID = Seq(
@@ -24,6 +25,11 @@ object Dependencies {
   lazy val pureConfig: Seq[ModuleID] = Seq(
     "com.github.pureconfig" %% "pureconfig"      % "0.17.1",
     "com.github.pureconfig" %% "pureconfig-yaml" % "0.17.1",
+  )
+
+  lazy val jackson: Seq[ModuleID] = Seq(
+    "com.fasterxml.jackson.core" % "jackson-core" % "2.14.0",
+    "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.14.0"
   )
 
   lazy val scalaTest: Seq[ModuleID] = Seq(

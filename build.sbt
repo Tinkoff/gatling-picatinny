@@ -12,6 +12,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= fastUUID,
     libraryDependencies ++= json4s,
     libraryDependencies ++= pureConfig,
+    libraryDependencies ++= jackson,
     libraryDependencies ++= scalaTesting,
     libraryDependencies ++= generex,
     libraryDependencies ++= jwt,
