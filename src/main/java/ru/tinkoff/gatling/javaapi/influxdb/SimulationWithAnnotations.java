@@ -32,11 +32,11 @@ public class SimulationWithAnnotations extends Simulation {
 
     {
         before(() -> {
-            AnnotationManager.addStatusAnnotation(new Status.StartStatus());
+            AnnotationManager.addStatusAnnotation(Status.Start);
             return 0;
         });
         after(() -> {
-            AnnotationManager.addStatusAnnotation(new Status.StopStatus());
+            AnnotationManager.addStatusAnnotation(Status.Stop);
             return 0;
         });
     }
