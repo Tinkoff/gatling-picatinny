@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import io.gatling.javaapi.core.Assertion;
-import ru.tinkoff.gatling.javaapi.utils.assertions.NFR;
-import ru.tinkoff.gatling.javaapi.utils.assertions.RecordNFR;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +14,10 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 import static java.lang.Double.parseDouble;
 
 public final class Assertions {
+
+    private record RecordNFR(String key, HashMap<String, String> value) {}
+
+    private record NFR(List<RecordNFR> nfr) {}
 
     private Assertions() {
 
@@ -38,7 +40,7 @@ public final class Assertions {
     }
 
     private static String findGroup(String key) {
-        return Arrays.stream(key.split(" / ")).toList().get(0);
+        return key.split(" / ")[0];
     }
 
     private static boolean isFindGroupEmpty(String key) {
@@ -47,15 +49,15 @@ public final class Assertions {
 
     private static String findRequest(String key) {
         if (isFindGroupEmpty(key)) {
-            return Arrays.stream(key.split(" / ")).toList().get(0);
+            return key.split(" / ")[0];
         }
         else {
-            return Arrays.stream(key.split(" / ")).toList().get(1);
+            return key.split(" / ")[1];
         }
     }
 
     private static List<Assertion> buildAssertion(RecordNFR record) {
-        return switch (toUtf(record.getKey())) {
+        return switch (toUtf(record.key())) {
             case "Процент ошибок" -> buildErrorAssertion(record);
             case "99 перцентиль времени выполнения" -> buildPercentileAssertion(record, 99.0);
             case "95 перцентиль времени выполнения" -> buildPercentileAssertion(record, 95.0);
@@ -65,6 +67,7 @@ public final class Assertions {
             default -> new LinkedList<>();
         };
     }
+
     private static List<Assertion> getListAssertions(List<Assertion> assertionList,
                                                      String key,
                                                      String value,
@@ -85,10 +88,11 @@ public final class Assertions {
 
         return assertionList;
     }
+
     private static List<Assertion> buildPercentileAssertion(RecordNFR record, Double percentile) {
         List<Assertion> assertionList = new LinkedList<>();
 
-        for (Map.Entry<String, String> entry: record.getValue().entrySet() ) {
+        for (Map.Entry<String, String> entry: record.value().entrySet() ) {
             String key = entry.getKey();
             String value = entry.getValue();
 
@@ -104,10 +108,11 @@ public final class Assertions {
 
         return assertionList;
     }
+
     private static List<Assertion> buildErrorAssertion(RecordNFR record) {
         List<Assertion> assertionList = new LinkedList<>();
 
-        for (Map.Entry<String, String> entry: record.getValue().entrySet() ) {
+        for (Map.Entry<String, String> entry: record.value().entrySet() ) {
             String key = entry.getKey();
             String value = entry.getValue();
 
@@ -127,7 +132,7 @@ public final class Assertions {
     private static List<Assertion> buildMaxResponseTimeAssertion(RecordNFR record) {
         List<Assertion> assertionList = new LinkedList<>();
 
-        for (Map.Entry<String, String> entry: record.getValue().entrySet() ) {
+        for (Map.Entry<String, String> entry: record.value().entrySet() ) {
             String key = entry.getKey();
             String value = entry.getValue();
 
@@ -149,7 +154,7 @@ public final class Assertions {
 
         try {
             NFR nfr = getNfr(path);
-            List<RecordNFR> recordNFRList = nfr.getNfr();
+            List<RecordNFR> recordNFRList = nfr.nfr();
             recordNFRList.forEach(recordNFR -> assertionList.addAll(buildAssertion(recordNFR)));
         } catch ( IOException e ) {
             throw new RuntimeException(e);
