@@ -161,10 +161,12 @@ Creates feeder capable of retrieving secret data from HC Vault
     - secretId - approle password
     - keys - list of keys you are willing to retrieve from vault
 
+Scala example:
 ```scala
   val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
 
+Java example:
 ```Java
   Iterator<Map<String, Object>> vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys);
 ```
@@ -173,6 +175,7 @@ Creates feeder capable of retrieving secret data from HC Vault
   val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
 
+Kotlin example:
 #### SeparatedValuesFeeder
 
 Creates a feeder with separated values from a source String, Seq[String] or Seq[Map[String, Any]].
@@ -185,33 +188,39 @@ Creates a feeder with separated values from a source String, Seq[String] or Seq[
 
 Get separated values from a source: String
 
+Scala example:
 ```scala
 val sourceString = "v21;v22;v23"
 val separatedValuesFeeder: FeederBuilderBase[String] =
   SeparatedValuesFeeder("someValues", sourceString, ';') // Vector(Map(someValues -> v21), Map(someValues -> v22), Map(someValues -> v23))
 ```
 
+Java example:
 ```Java
   Iterator<Map<String, Object>> vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys);
 ```
 
+Kotlin example:
 ```Kotlin
   val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
 
 Get separated values from a source: Seq[String]
 
+Scala example:
 ```scala
 val sourceSeq = Seq("1,two", "3,4")
 val separatedValuesFeeder: FeederBuilderBase[String] =
   SeparatedValuesFeeder.csv("someValues", sourceSeq) // Vector(Map(someValues -> 1), Map(someValues -> two), Map(someValues -> 3), Map(someValues -> 4))
 ```
 
+Java example:
 ```Java
 List<Map<String, Object>> sourceList = Arrays.asList("1,two", "3,4");
 Iterator<Map<String, Object>> separatedValuesFeeder = SeparatedValuesFeeder.csv("someValues", sourceList);
 ```
 
+Kotlin example:
 ```Kotlin
 var sourceList = listOf("1,two", "3,4")
 var separatedValuesFeeder1 = SeparatedValuesFeeder.csv("someValues", sourceList)
@@ -219,6 +228,7 @@ var separatedValuesFeeder1 = SeparatedValuesFeeder.csv("someValues", sourceList)
 
 Get separated values from a source: Seq[Map[String, Any]]
 
+Scala example:
 ```scala
 val vaultFeeder: FeederBuilderBase[String] = Vector(
   Map(
@@ -234,11 +244,13 @@ val separatedValuesFeeder: FeederBuilderBase[String] =
   SeparatedValuesFeeder(None, vaultFeeder.readRecords, ',') // Vector(Map(HOSTS -> host11), Map(HOSTS -> host12), Map(USERS -> user11), Map(HOSTS -> host21), Map(HOSTS -> host22), Map(USERS -> user21), Map(USERS -> user22), Map(USERS -> user23))
 ```
 
+Java example:
 ```Java
 List<Map<String, Object>> vaultData = Arrays.asList(Map.of("HOSTS","host11,host12"), Map.of("USERS", "user21,user22,user23"));
 Iterator<Map<String, Object>> separatedValuesFeeder = SeparatedValuesFeeder.apply(Optional.empty(), vaultData, ',');
 ```
 
+Kotlin example:
 ```Kotlin
 var sourceList = listOf(Map.of("HOSTS", "host11,host12"), Map.of("USERS", "user21,user22,user23"))
 var separatedValuesFeeder1 = SeparatedValuesFeeder.csv(null, sourceList)
@@ -250,20 +262,24 @@ Creates a feeder with phone numbers with formats from json file or `case class P
 
 Simple phone feeder
 
+Scala example:
 ```scala
 val simplePhoneNumber: Feeder[String] = RandomPhoneFeeder("simplePhoneFeeder")
 ```
 
+Java example:
 ```Java
 Iterator<Map<String, Object>> simplePhoneNumber = RandomPhoneFeeder("simplePhoneFeeder");
 ```
 
+Kotlin example:
 ```Kotlin
 val simplePhoneNumber = RandomPhoneFeeder("simplePhoneNumber")
 ```
 
 Phone feeder with custom formats
 
+Scala example:
 ```scala
  val ruMobileFormat: PhoneFormat = PhoneFormat(
   countryCode = "+7",
@@ -276,11 +292,13 @@ Phone feeder with custom formats
   RandomPhoneFeeder("randomPhoneNumber", ruMobileFormat)
 ```
 
+Java example:
 ```Java
 PhoneFormat ruMobileFormat = PhoneFormatBuilder.apply("+7", 10, Arrays.asList("945", "946"), "+X XXX XXX-XX-XX", Arrays.asList("55", "81", "111"));
 Iterator<Map<String, Object>> randomPhoneNumber = RandomPhoneFeeder("randomPhoneNumber", ruMobileFormat);
 ```
 
+Kotlin example:
 ```Kotlin
 val ruMobileFormat = PhoneFormatBuilder.apply(
         "+7",
@@ -317,17 +335,20 @@ Creates file with formats, for example RESOURCES/phoneTemplates/ru.json
 }
 ```
 
+Scala example:
 ```scala
 val phoneFormatsFromFile: String   = "phoneTemplates/ru.json"
 val randomE164PhoneNumberFromJson: Feeder[String]     =
     RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatsFromFile, TypePhone.E164PhoneNumber)
 ```
 
+Java example:
 ```Java
 String phoneFormatsFromFile = "phoneTemplates/ru.json";
 Iterator<Map<String, Object>> randomE164PhoneNumberFromJson = RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatsFromFile, TypePhone.E164PhoneNumber());
 ```
 
+Kotlin example:
 ```Kotlin
 val phoneFormatsFromFile = "phoneTemplates/ru.json"
 val randomE164PhoneNumberFromJson = RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatsFromFile, TypePhone.E164PhoneNumber())
@@ -559,6 +580,7 @@ If there are no required fields, an exception will be thrown for the missing fie
 
 *Simulation setUp*
 
+Scala example:
 ```scala
 class Debug extends Simulation {
   val pathToProfile = "path/to/profile.yml"
@@ -570,6 +592,44 @@ class Debug extends Simulation {
     ).protocols(httpProtocol)
   )
           .maxDuration(10)
+}
+```
+
+Java example:
+
+```java
+import ru.tinkoff.gatling.javaapi.profile.ProfileBuilderNew;
+
+public class Debug extends Simulation {
+
+  public static ScenarioBuilder scn = ProfileBuilderNew
+          .buildFromYaml("path/to/profile.yml")
+          .selectProfile("maxPerf")
+          .toRandomScenario();
+
+  {
+    setUp(
+            scn.injectOpen(atOnceUsers(1))
+    ).protocols(httpProtocol);
+  }
+}
+```
+
+Kotlin example:
+```kotlin
+import ru.tinkoff.gatling.javaapi.profile.ProfileBuilderNew
+
+class Debug : Simulation() {
+  val scn: ScenarioBuilder = ProfileBuilderNew
+    .buildFromYaml("path/to/profile.yml")
+    .selectProfile("maxPerf")
+    .toRandomScenario()
+
+  init {
+    setUp(
+      scn.injectOpen(atOnceUsers(1)),
+    ).protocols(httpProtocol)
+  }
 }
 ```
 

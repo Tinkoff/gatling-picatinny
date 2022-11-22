@@ -3,7 +3,9 @@ import sbt._
 object Dependencies {
   lazy val gatlingCore: Seq[ModuleID] = Seq(
     "io.gatling" % "gatling-core",
+    "io.gatling" % "gatling-core-java",
     "io.gatling" % "gatling-http",
+    "io.gatling" % "gatling-http-java",
     "io.gatling" % "gatling-redis",
   ).map(_ % "3.8.4" % Provided)
 
