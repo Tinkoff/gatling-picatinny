@@ -1,6 +1,6 @@
 package ru.tinkoff.gatling.influxdb
 
-sealed trait Status
+trait Status
 
 case object Start extends Status
 
