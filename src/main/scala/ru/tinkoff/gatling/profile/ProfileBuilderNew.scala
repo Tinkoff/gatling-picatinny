@@ -17,12 +17,12 @@ case class Params(method: String, path: String, headers: Option[List[String]], b
 
 case class Request(request: String, intensity: String, groups: Option[List[String]], params: Params) {
 
-  val requestIntensity: Double = getIntensityFromString(intensity)
+  val requestIntensity: Double     = getIntensityFromString(intensity)
+  val regexHeader: Regex           = """(.+?): (.+)""".r
+  val requestBody: String          = params.body.getOrElse("")
+  val requestHeaders: List[String] = params.headers.getOrElse(List.empty[String])
 
   def toRequest: HttpRequestBuilder = {
-    val regexHeader: Regex           = """(.+?): (.+)""".r
-    val requestBody: String          = params.body.getOrElse("")
-    val requestHeaders: List[String] = params.headers.getOrElse(List.empty[String])
     http(request)
       .httpRequest(params.method, params.path)
       .body(StringBody(requestBody))
@@ -31,7 +31,6 @@ case class Request(request: String, intensity: String, groups: Option[List[Strin
 
   def toExec: ChainBuilder            = exec(toRequest)
   def toTuple: (Double, ChainBuilder) = (requestIntensity, toExec)
-
 }
 
 case class OneProfile(name: String, period: String, protocol: String, profile: List[Request]) {
@@ -41,10 +40,10 @@ case class OneProfile(name: String, period: String, protocol: String, profile: L
     val intensitySum: Double                       = requests.map { case (intensity, _) => intensity }.sum
     val prepRequests: List[(Double, ChainBuilder)] =
       requests.map { case (intensity, chain) => (100 * intensity / intensitySum, chain) }
+
     scenario(name)
       .randomSwitch(prepRequests: _*)
   }
-
 }
 
 case class Metadata(name: String, description: String)
@@ -58,7 +57,6 @@ case class Yaml(apiVersion: String, kind: String, metadata: Metadata, spec: Prof
       .find(_.name == profileName)
       .getOrElse(throw new NoSuchElementException(s"Selected wrong profile: $profileName"))
   }
-
 }
 
 object ProfileBuilderNew {
@@ -75,5 +73,4 @@ object ProfileBuilderNew {
       case Left(error)                     => throw error
     }
   }
-
 }
