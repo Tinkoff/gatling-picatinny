@@ -39,22 +39,10 @@ public final class Assertions {
         return new String(baseString.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
     }
 
-    private static String findGroup(String key) {
-        return key.split(" / ")[0];
+    private static String[] getGroupAndRequest(String key) {
+        return key.split(" / ");
     }
 
-    private static boolean isFindGroupEmpty(String key) {
-        return Arrays.stream(key.split(" / ")).toList().size() != 2;
-    }
-
-    private static String findRequest(String key) {
-        if (isFindGroupEmpty(key)) {
-            return key.split(" / ")[0];
-        }
-        else {
-            return key.split(" / ")[1];
-        }
-    }
 
     private static List<Assertion> buildAssertion(RecordNFR record) {
         return switch (toUtf(record.key())) {
@@ -70,20 +58,13 @@ public final class Assertions {
 
     private static List<Assertion> getListAssertions(List<Assertion> assertionList,
                                                      String key,
-                                                     String value,
                                                      Assertion allAssertion,
-                                                     Assertion groupAssertion,
-                                                     Assertion requestAssertion) {
+                                                     Assertion detailsAssertion) {
         if (Objects.equals(key, "all")) {
             assertionList.add(allAssertion);
         }
         else {
-            if (isFindGroupEmpty(value)) {
-                assertionList.add(groupAssertion);
-            }
-            else {
-                assertionList.add(requestAssertion);
-            }
+            assertionList.add(detailsAssertion);
         }
 
         return assertionList;
@@ -99,10 +80,8 @@ public final class Assertions {
             assertionList.addAll(getListAssertions(
                     assertionList,
                     key,
-                    value,
                     global().responseTime().percentile(percentile).lt(Integer.valueOf(value)),
-                    details(findGroup(key)).responseTime().percentile(percentile).lt(Integer.valueOf(value)),
-                    details(findGroup(key), findRequest(value)).responseTime().percentile(percentile).lt(Integer.valueOf(value)))
+                    details(getGroupAndRequest(key)).responseTime().percentile(percentile).lt(Integer.valueOf(value)))
             );
         }
 
@@ -119,11 +98,9 @@ public final class Assertions {
             assertionList.addAll(getListAssertions(
                     assertionList,
                     key,
-                    value,
-                    global().allRequests().percent().lt(parseDouble(value)),
-                    details(findGroup(key)).failedRequests().percent().lt(parseDouble(value)),
-                    details(findGroup(key), findRequest(value)).failedRequests().percent().lt(parseDouble(value))
-                    ));
+                    global().failedRequests().percent().lt(parseDouble(value)),
+                    details(getGroupAndRequest(key)).failedRequests().percent().lt(parseDouble(value)))
+            );
 
         }
         return assertionList;
@@ -139,10 +116,8 @@ public final class Assertions {
             assertionList.addAll(getListAssertions(
                     assertionList,
                     key,
-                    value,
                     global().responseTime().max().lt(Integer.valueOf(value)),
-                    details(findGroup(key)).responseTime().max().lt(Integer.valueOf(value)),
-                    details(findGroup(key), findRequest(value)).responseTime().max().lt(Integer.valueOf(value)))
+                    details(getGroupAndRequest(key)).responseTime().max().lt(Integer.valueOf(value)))
             );
         }
         return assertionList;
