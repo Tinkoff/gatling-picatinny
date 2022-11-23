@@ -840,6 +840,23 @@ nfr:
 *Java example*
 
 ```java
+  import static ru.tinkoff.gatling.javaapi.Assertions.assertionFromYaml;
+
+  class test extends Simulation {
+
+  setUp(
+    scn.inject(
+      atOnceUsers(10)
+    ).protocols(httpProtocol)
+  ).maxDuration(10)
+    .assertions(assertionFromYaml("src/test/resources/nfr.yml"))
+```
+
+*Kotlin example*
+
+```kotlin
+  import ru.tinkoff.gatling.javaapi.Assertions.assertionFromYaml;
+
   class test extends Simulation {
 
   setUp(
