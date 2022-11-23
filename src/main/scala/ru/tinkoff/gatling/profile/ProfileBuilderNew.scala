@@ -10,7 +10,9 @@ import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import ru.tinkoff.gatling.utils.IntensityConverter.getIntensityFromString
 
+import java.io.FileNotFoundException
 import scala.io.{BufferedSource, Source}
+import scala.util.{Failure, Success, Try}
 import scala.util.matching.Regex
 
 case class Params(method: String, path: String, headers: Option[List[String]], body: Option[String])
@@ -62,9 +64,14 @@ case class Yaml(apiVersion: String, kind: String, metadata: Metadata, spec: Prof
 object ProfileBuilderNew {
 
   def buildFromYaml(path: String): Yaml = {
-    val bufferedSource: BufferedSource        = Source.fromFile(s"""${System.getProperty("user.dir")}/$path""")
-    val yamlContent: String                   = bufferedSource.mkString
-    bufferedSource.close
+    val tryReadFile: Try[BufferedSource] = Try{
+      Source.fromFile(s"""${System.getProperty("user.dir")}/$path""")
+    }
+
+    val bufferedSource: BufferedSource = tryReadFile.getOrElse(throw new FileNotFoundException(s"File $path was not found"))
+    val yamlContent = bufferedSource.mkString
+    bufferedSource.close()
+
     val yamlParsed: Either[circe.Error, Yaml] = parser.parse(yamlContent).flatMap(json => json.as[Yaml])
     yamlParsed match {
       case Right(yaml)                     => yaml
