@@ -171,11 +171,11 @@ Java example:
   Iterator<Map<String, Object>> vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys);
 ```
 
+Kotlin example:
 ```Kotlin
   val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
 
-Kotlin example:
 #### SeparatedValuesFeeder
 
 Creates a feeder with separated values from a source String, Seq[String] or Seq[Map[String, Any]].
