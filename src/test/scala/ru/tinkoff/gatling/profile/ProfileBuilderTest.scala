@@ -4,6 +4,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
+import java.io.FileNotFoundException
+
 class ProfileBuilderTest extends AnyFlatSpec with Matchers with ScalaCheckDrivenPropertyChecks {
 
   val profile1FromFile: String  = "src/test/resources/profileTemplates/profile1.yml"
@@ -49,6 +51,13 @@ class ProfileBuilderTest extends AnyFlatSpec with Matchers with ScalaCheckDriven
 
   it should "get profile from parsed yaml correctly" in {
     ProfileBuilderNew.buildFromYaml(profile1FromFile).selectProfile("maxPerf") shouldBe parsedProfile
+  }
+
+  it should "test expected exceptions if file not exists" in {
+    val thrown = intercept[Exception] {
+      ProfileBuilderNew.buildFromYaml("notExistsFile")
+    }
+    assert(thrown.getMessage == s"File notExistsFile was not found")
   }
 
 }
