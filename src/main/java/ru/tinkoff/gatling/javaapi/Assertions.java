@@ -43,7 +43,6 @@ public final class Assertions {
         return key.split(" / ");
     }
 
-
     private static List<Assertion> buildAssertion(RecordNFR record) {
         return switch (toUtf(record.key())) {
             case "Процент ошибок" -> buildErrorAssertion(record);
