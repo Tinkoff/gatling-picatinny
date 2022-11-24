@@ -6,13 +6,13 @@ import io.razem.influxdbclient.Point;
 import java.util.function.Function;
 
 
-public class Annotations {
+public final class Annotations {
 
-    public PopulationBuilder userDataPoint(String uniqScpName, Point point) {
+    public static PopulationBuilder userDataPoint(String uniqScpName, Point point) {
         return new PopulationBuilder(ru.tinkoff.gatling.influxdb.Annotations.userDataPoint(uniqScpName, point));
     }
 
-    public PopulationBuilder userDataPoint(String uniqScpName,
+    public static PopulationBuilder userDataPoint(String uniqScpName,
                                            String tagKey,
                                            String tagValue,
                                            String fieldKey,
@@ -27,14 +27,14 @@ public class Annotations {
         );
     }
 
-    public Function<Session, Session> userDataPoints(Point point) {
+    public static Function<Session, Session> userDataPoint(Point point) {
         return (Session session) -> {
             ru.tinkoff.gatling.influxdb.Annotations.influxDataPoint(point);
             return session;
         };
     }
 
-    public static Function<Session, Session> userDataPoints(String tagKey,
+    public static Function<Session, Session> userDataPoint(String tagKey,
                                                             String tagValue,
                                                             String fieldKey,
                                                             String fieldValue){
