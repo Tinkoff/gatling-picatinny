@@ -18,6 +18,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= jwt,
     libraryDependencies ++= influxClientScala,
     libraryDependencies ++= circeDeps,
+    libraryDependencies ++= junit,
     scalacOptions := Seq(
       "-encoding",
       "UTF-8",

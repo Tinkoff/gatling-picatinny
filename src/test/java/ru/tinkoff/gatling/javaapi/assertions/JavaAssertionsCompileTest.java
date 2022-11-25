@@ -1,13 +1,12 @@
-package ru.tinkoff.gatling.javaapi;
+package ru.tinkoff.gatling.javaapi.assertions;
 
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static ru.tinkoff.gatling.javaapi.Assertions.assertionFromYaml;
 import io.gatling.javaapi.core.Simulation;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
-import java.io.IOException;
 
-public class JavaAssertionsTest extends Simulation {
+public class JavaAssertionsCompileTest extends Simulation {
 
     HttpProtocolBuilder httpProtocol =
             http.baseUrl("https://computer-database.gatling.io")
@@ -25,5 +24,4 @@ public class JavaAssertionsTest extends Simulation {
                             .injectOpen(rampUsers(10).during(10))
             ).protocols(httpProtocol).assertions(assertionFromYaml("src/test/resources/nfr.yml"));
     }
-
 }

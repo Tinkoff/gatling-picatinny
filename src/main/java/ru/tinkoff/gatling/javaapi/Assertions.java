@@ -1,12 +1,13 @@
 package ru.tinkoff.gatling.javaapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import io.gatling.javaapi.core.Assertion;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -23,16 +24,20 @@ public final class Assertions {
 
     }
 
-    private static NFR getNfr(String path) throws IOException {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+    private static final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+
+    private static NFR getNfr(String path) throws AssertionBuilderException {
+
         mapper.findAndRegisterModules();
-        NFR nfr = null;
         try {
-            nfr = mapper.readValue(new File(path), NFR.class);
+            return mapper.readValue(new File(path) , NFR.class);
+        } catch (MismatchedInputException e) {
+            throw new AssertionBuilderException("Incorrect file content " + path, e);
+        } catch (FileNotFoundException e) {
+            throw new AssertionBuilderException("NFR File not found " + path, e);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new AssertionBuilderException("Unknown error " + path, e);
         }
-        return nfr;
     }
 
     private static String toUtf(String baseString) {
@@ -126,13 +131,9 @@ public final class Assertions {
 
         List<Assertion> assertionList = new LinkedList<>();
 
-        try {
-            NFR nfr = getNfr(path);
-            List<RecordNFR> recordNFRList = nfr.nfr();
-            recordNFRList.forEach(recordNFR -> assertionList.addAll(buildAssertion(recordNFR)));
-        } catch ( IOException e ) {
-            throw new RuntimeException(e);
-        }
+        NFR nfr = getNfr(path);
+        List<RecordNFR> recordNFRList = nfr.nfr();
+        recordNFRList.forEach(recordNFR -> assertionList.addAll(buildAssertion(recordNFR)));
 
         return assertionList;
     }
