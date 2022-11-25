@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimulationWithAnnotations extends Simulation {
-    private enum Status implements ru.tinkoff.gatling.influxdb.Status {Start, Stop}
-
     private final List<Function0<?>> _beforeSteps = new ArrayList<>();
     private final List<Function0<?>> _afterSteps = new ArrayList<>();
 
@@ -34,11 +32,11 @@ public class SimulationWithAnnotations extends Simulation {
 
     {
         before(() -> {
-            AnnotationManager.addStatusAnnotation(Status.Start);
+            AnnotationManager.addStatusAnnotation(Start$.MODULE$);
             return 0;
         });
         after(() -> {
-            AnnotationManager.addStatusAnnotation(Status.Stop);
+            AnnotationManager.addStatusAnnotation(Stop$.MODULE$);
             return 0;
         });
     }
