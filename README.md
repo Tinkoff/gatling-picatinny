@@ -888,6 +888,32 @@ exec(Actions.createEntity())
 
 ```
 
+Java example:
+
+```java
+exec(Actions.createEntity())
+  .exec(startTransaction("transaction1"))
+  .exec(Actions.insertTest())
+  .pause(2)
+  .exec(Actions.selectTest)
+  .exec(endTransaction("transaction1"))
+  .exec(Actions.batchTest)
+  .exec(Actions.selectAfterBatch)
+```
+
+Kotlin example:
+
+```kotlin
+exec(Actions.createEntity())
+  .exec(startTransaction("transaction1"))
+  .exec(Actions.insertTest())
+  .pause(2)
+  .exec(Actions.selectTest)
+  .exec(endTransaction("transaction1"))
+  .exec(Actions.batchTest)
+  .exec(Actions.selectAfterBatch)
+```
+
 #### Usage:
 
 For use this you need gatling with version greater or equal than **3.6.1** and import this in Scenario and Simulations:
