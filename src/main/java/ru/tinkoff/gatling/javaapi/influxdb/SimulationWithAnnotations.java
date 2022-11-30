@@ -23,23 +23,13 @@ public class SimulationWithAnnotations extends Simulation {
     @Override
     public void before() {
         _beforeSteps.forEach(Function0::apply);
+        AnnotationManager.addStatusAnnotation(Start$.MODULE$);
     }
 
     @Override
     public void after() {
+        AnnotationManager.addStatusAnnotation(Stop$.MODULE$);
         _afterSteps.forEach(Function0::apply);
     }
-
-    {
-        before(() -> {
-            AnnotationManager.addStatusAnnotation(Start$.MODULE$);
-            return 0;
-        });
-        after(() -> {
-            AnnotationManager.addStatusAnnotation(Stop$.MODULE$);
-            return 0;
-        });
-    }
-
 
 }
