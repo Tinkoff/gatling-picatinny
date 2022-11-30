@@ -11,18 +11,15 @@ import java.util.ArrayList;
 public final class Transactions {
 
     static ActionBuilder startTransactionActionBuilder(String tname) {
-        ActionBuilder action = new builders.StartTransactionActionBuilder(Expressions.toStringExpression(tname));
-        return action;
+        return new builders.StartTransactionActionBuilder(Expressions.toStringExpression(tname));
     }
 
     static ActionBuilder endTransactionActionBuilder(String tname, Long time) {
-        ActionBuilder action = new builders.EndTransactionActionBuilder(Expressions.toStringExpression(tname), Expressions.toStaticValueExpression(time));
-        return action;
+        return new builders.EndTransactionActionBuilder(Expressions.toStringExpression(tname), Expressions.toStaticValueExpression(time));
     }
 
     static ActionBuilder endTransactionActionBuilder(String tname) {
-        ActionBuilder action = new builders.EndTransactionActionBuilderWithoutTime(Expressions.toStringExpression(tname));
-        return action;
+        return new builders.EndTransactionActionBuilderWithoutTime(Expressions.toStringExpression(tname));
     }
 
     public static scala.collection.immutable.List<ActionBuilder> getCollection(ActionBuilder myAction) {

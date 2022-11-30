@@ -787,15 +787,42 @@ from `example_template2.json` to route `$baseUrl/post_route`. In template files 
 
 #### Import:
 
+Scala:
 ```scala
 import ru.tinkoff.gatling.utils.jwt._
+```
+
+Java:
+```java
+import ru.tinkoff.gatling.utils.jwt.*;
+import static ru.tinkoff.gatling.javaapi.utils.Jwt.*;
+```
+
+Kotlin
+```kotlin
+import ru.tinkoff.gatling.javaapi.utils.Jwt.*
 ```
 
 #### Using:
 
 First you need to prepare jwt generator. For example
 
+Scala
 ```scala
+val jwtGenerator = jwt("HS256", jwtSecretToken)
+  .defaultHeader
+  .payloadFromResource("jwtTemplates/payload.json")
+```
+
+Java:
+```java
+static JwtGeneratorBuilder jwtGenerator = jwt("HS256", "jwtSecretToken")  
+        .defaultHeader
+        .payloadFromResource("jwtTemplates/payload.json");
+```
+
+Kotlin
+```kotlin
 val jwtGenerator = jwt("HS256", jwtSecretToken)
   .defaultHeader
   .payloadFromResource("jwtTemplates/payload.json")
@@ -821,7 +848,7 @@ using [Gatling EL](https://gatling.io/docs/current/session/expression_el/)
 }
 ```
 
-Also, the JWT generator has a DSL allowing you to:
+Also, the JWT generator has a DSL allowing you to (for java and kotlin similarly):
 
 ```scala
 jwt("HS256", secret)
@@ -837,6 +864,18 @@ For sign requests add this to your scenario chain:
 ```scala
     .exec(_.setJwt(jwtGenerator, "jwtToken")) //generates token and save it to gatling session as "jwtToken"
   .exec(addCookie(Cookie("JWT_TOKEN", "${jwtToken}").withDomain(jwtCookieDomain).withPath("/"))) //set JWT_TOKEN cookie for subsequent requests
+```
+
+Java:
+```java
+.exec(setJwt(jwtGenerator, "jwtToken"))  //generates token and save it to gatling session as "jwtToken"
+    .exec(addCookie(Cookie("JWT_TOKEN", "#{jwtToken}").withDomain("jwtCookieDomain").withPath("/"))) //set JWT_TOKEN cookie for subsequent requests
+```
+
+Kotlin
+```kotlin
+.exec(setJwt(jwtGenerator, "jwtToken"))  //generates token and save it to gatling session as "jwtToken"
+  .exec(addCookie(Cookie("JWT_TOKEN", "#{jwtToken}").withDomain("jwtCookieDomain").withPath("/"))) //set JWT_TOKEN cookie for subsequent requests
 ```
 
 ### assertion
