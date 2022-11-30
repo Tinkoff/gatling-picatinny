@@ -4,23 +4,49 @@ import ru.tinkoff.gatling.javaapi.influxdb.SimulationWithAnnotations;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static ru.tinkoff.gatling.javaapi.influxdb.Annotations.*;
-import io.razem.influxdbclient.Point;
 
 
 public class JavaInfluxTest extends SimulationWithAnnotations {
-    static Point makePoint(long value){
-        return new Point("",1L, null, null)
-                .addTag("","")
-                .addField("value", value);
+    public Void function(){
+        System.out.println("Some action");
+        return null;
     }
+
     {
+        before(() -> {
+            System.out.println("Some action");
+            return 0;
+        });
+        before(this::function);
+
         setUp(
                 scenario("Java Influx")
-                        .exec(userDataPoint(makePoint(100L)))
+                        .exec(userDataPoint(Point("gatling")))
+                        .exec(userDataPoint(
+                                "status",
+                                "check",
+                                "testField",
+                                "fieldValue")
+                        )
                         .injectOpen(atOnceUsers(1))
                         .andThen(
-                                userDataPoint("myUniqueScenario", makePoint(200L))
+                                userDataPoint("myUniqueScenario", Point("gatling", 1L))
+                        )
+                        .andThen(
+                                userDataPoint(
+                                        "myUniqueScenario2",
+                                        "status",
+                                        "check2",
+                                        "testField",
+                                        "fieldValue2"
+                                )
                         )
         ).protocols();
+
+        after(() -> {
+            System.out.println("Some action");
+            return 0;
+        });
+        after(this::function);
     }
 }
