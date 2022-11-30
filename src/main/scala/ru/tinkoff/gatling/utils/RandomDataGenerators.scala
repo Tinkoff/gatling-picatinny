@@ -1,7 +1,6 @@
 package ru.tinkoff.gatling.utils
 
 import com.eatthepath.uuid.FastUUID
-import ru.tinkoff.gatling.utils.RandomDigitMagnet.DigitMagnet
 
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalUnit
@@ -41,21 +40,27 @@ object RandomDataGenerators {
   @deprecated
   def randomPhone(countryCode: String = "+7"): String = s"""$countryCode${digitString(10)}"""
 
-  def randomDigit(): Int = ThreadLocalRandom.current().nextInt()
-
-  def randomDigit(size: Int): Int = ThreadLocalRandom.current().nextInt(size)
-
-  def randomDigit(min: Int, max: Int): Int = {
+  def randomDigit(): Int                            = ThreadLocalRandom.current().nextInt()
+  def randomDigit(size: Int): Int                   = ThreadLocalRandom.current().nextInt(size)
+  def randomDigit(min: Int, max: Int): Int          = {
     require(min < max)
     ThreadLocalRandom.current().nextInt(min, max)
   }
-
-  def randomDigit(min: Long, max: Long): Long = {
+  def randomDigit(size: Long): Long                 = ThreadLocalRandom.current().nextLong(size)
+  def randomDigit(min: Long, max: Long): Long       = {
     require(min < max)
     ThreadLocalRandom.current().nextLong(min, max)
   }
-
-  def randomDigit(magnet: DigitMagnet): magnet.Result = magnet.RandomImpl
+  def randomDigit(size: Double): Double             = ThreadLocalRandom.current().nextDouble(size)
+  def randomDigit(min: Double, max: Double): Double = {
+    require(min < max)
+    ThreadLocalRandom.current().nextDouble(min, max)
+  }
+  def randomDigit(size: Float): Float               = ThreadLocalRandom.current().nextFloat(size)
+  def randomDigit(min: Float, max: Float): Float    = {
+    require(min < max)
+    ThreadLocalRandom.current().nextFloat(min, max)
+  }
 
   def randomUUID: String = FastUUID.toString(UUID.randomUUID)
 
@@ -242,7 +247,7 @@ object RandomDataGenerators {
       timezone: ZoneId,
   ): String = {
     require(offsetDate > 1, s"RandomRangeDateFeeder offset requires value >1. Current values: offsetDate= $offsetDate")
-    dateFrom.plus(randomDigit(1, offsetDate), unit).atZone(timezone).format(DateTimeFormatter.ofPattern(datePattern))
+    dateFrom.plus(randomDigit(1L, offsetDate), unit).atZone(timezone).format(DateTimeFormatter.ofPattern(datePattern))
   }
 
   def currentDate(datePattern: DateTimeFormatter, timezone: ZoneId): String = {
