@@ -381,14 +381,6 @@ class LoadTest extends Simulation with Annotations {
 }
 ```
 
-To see annotations in Grafana you need this two queries, where `Perfix` is from `gatling.data.graphite.rootPathPrefix`
-in `gatling.conf`:
-
-```sql
-SELECT "annotation_value"  FROM "${Prefix}" where "annotation" = 'Start'
-SELECT "annotation_value"  FROM "${Prefix}" where "annotation" = 'Stop'
-```
-
 ##### Java:
 
 Import:
@@ -401,6 +393,22 @@ For using you should extend your simulation class from `SimulationWithAnnotation
 
 ```java
 class LoadTest extends SimulationWithAnnotations {
+  //some code
+}
+```
+
+##### Kotlin:
+
+Import:
+
+```kotlin
+import ru.tinkoff.gatling.javaapi.influxdb.SimulationWithAnnotations
+```
+
+For using you should extend your simulation class from `SimulationWithAnnotations`:
+
+```kotlin
+class LoadTest : SimulationWithAnnotations(){
   //some code
 }
 ```
@@ -486,7 +494,7 @@ setUp(
 )
 ```
 
-##### java:
+##### Java:
 
 Import:
 
@@ -506,6 +514,67 @@ Point(configuration.data.graphite.rootPathPrefix, System.currentTimeMillis() * 1
 import io.razem.influxdbclient.Point;        
 
 static Point customPoint(tag: String, value: String){ return Point(configuration.data.graphite.rootPathPrefix,System.currentTimeMillis()*1000000)
+            .addTag("myTag",tag)
+            .addField("myField",value) //value: Boolean | String | BigDecimal | Long | Double
+        }
+```
+
+_*_[_Custom Point
+reference_](https://www.javadoc.io/doc/io.razem/scala-influxdb-client_2.13/0.6.2/io/razem/influxdbclient/Point.html)
+
+```java
+//write custom prepared Point from scenario
+.exec(
+...)
+.exec(userDataPoint(customPoint("custom_tag", "inside_scenario")))
+.exec(
+...)
+
+//write default prepared Point from scenario
+.exec(
+...)
+.exec(userDataPoint("myTag", "tagValue", "myField", "fieldValue"))
+  //also you can use gatling Expression language for values (could waste DB):
+.exec(userDataPoint("myTag", "${variableFromGatlingSession}", "myField", "${anotherVariableFromSession}"))
+.exec(
+...)
+
+//write Point from Simulation setUp
+setUp(
+  firstScenario.inject(atOnceUsers(1))
+    //write point after firstScenario execution
+    //"write_first_point" the name of the scenario, will be displayed in the simulation stats
+    .andThen(userDataPoint("write_first_point", customPoint("custom_tag", "between_scenarios")))
+    .andThen(
+      secondScenario.inject(atOnceUsers(1))
+        //similar to simple .userDataPoint, write point after secondScenario execution
+        .andThen(
+          userDataPoint("write_second_point", "custom_tag", "after_second", "custom_field", "end")
+        )
+    )
+)
+```
+
+##### Kotlin:
+
+Import:
+
+```kotlin
+import ru.tinkoff.gatling.javaapi.influxdb.Annotations.*
+```
+
+Using:
+
+```kotlin
+//if default prepared Point doesn't suit you
+Point(configuration.data.graphite.rootPathPrefix, System.currentTimeMillis() * 1000000)
+  .addTag(tagName, tagValue)
+  .addField(fieldName, fieldValue)
+
+//prepare custom Point*
+import io.razem.influxdbclient.Point       
+
+fun customPoint(tag: String, value: String){ Point(configuration.data.graphite.rootPathPrefix,System.currentTimeMillis()*1000000)
             .addTag("myTag",tag)
             .addField("myField",value) //value: Boolean | String | BigDecimal | Long | Double
         }
