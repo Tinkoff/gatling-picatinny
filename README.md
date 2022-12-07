@@ -54,11 +54,27 @@ variables fom config.
 
 Import:
 
+Scala example:
+
 ```scala
 import ru.tinkoff.gatling.config.SimulationConfig._
 ```
 
+Java example:
+
+```java
+import static ru.tinkoff.gatling.javaapi.SimulationConfig.*;
+```
+
+Kotlin example:
+
+```kotlin
+import ru.tinkoff.gatling.javaapi.SimulationConfig.*
+```
+
 Using default variables:
+
+Scala example:
 
 ```scala
 import ru.tinkoff.gatling.config.SimulationConfig._
@@ -66,6 +82,34 @@ import ru.tinkoff.gatling.config.SimulationConfig._
 val testPlan: Seq[OpenInjectionStep] = List(
   rampUsersPerSec(0).to(intensity).during(rampDuration),
   constantUsersPerSec(intensity).during(stageDuration)
+)
+```
+
+Java example:
+
+```java
+import static ru.tinkoff.gatling.javaapi.SimulationConfig.*;
+
+SomeScenario.scn.injectOpen(
+        incrementUsersPerSec(intensity() / stagesNumber())
+        .times(stagesNumber())
+        .eachLevelLasting(stageDuration())
+        .separatedByRampsLasting(rampDuration())
+        .startingFrom(0)
+        )
+```
+
+Kotlin example:
+
+```kotlin
+import ru.tinkoff.gatling.javaapi.SimulationConfig.*
+
+SomeScenario.scn.injectOpen(
+  incrementUsersPerSec(intensity() / stagesNumber())
+    .times(stagesNumber())
+    .eachLevelLasting(stageDuration())
+    .separatedByRampsLasting(rampDuration())
+    .startingFrom(0.0),
 )
 ```
 
@@ -83,6 +127,8 @@ duration: {
 booleanVariable: true
 ```
 
+Scala example:
+
 ```scala
 import ru.tinkoff.gatling.config.SimulationConfig._
 
@@ -91,7 +137,30 @@ val intVariable = getIntParam("intVariable")
 val doubleVariable = getDoubleParam("doubleVariable")
 val durationVariable = getDurationParam("duration.durationVariable")
 val booleanVariable = getBooleanParam("booleanVariable")
+```
 
+Java example:
+
+```java
+import static ru.tinkoff.gatling.javaapi.SimulationConfig.*;
+
+String stringVariable = getStringParam("stringVariable");
+int intVariable = getIntParam("intVariable");
+double doubleVariable = getDoubleParam("doubleVariable");
+Duration durationVariable = getDurationParam("duration.durationVariable");
+boolean booleanVariable = getBooleanParam("booleanVariable");
+```
+
+kotlin example:
+
+```kotlin
+import ru.tinkoff.gatling.javaapi.SimulationConfig.*
+
+val stringVariable = getStringParam("stringVariable")
+val intVariable = getIntParam("intVariable")
+val doubleVariable = getDoubleParam("doubleVariable")
+val durationVariable = getDurationParam("duration.durationVariable")
+val booleanVariable = getBooleanParam("booleanVariable")
 ```
 
 ### feeders
