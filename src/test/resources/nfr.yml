@@ -1,0 +1,27 @@
+---
+nfr:
+  - key: 'APDEX'
+    value:
+      all: '300'
+  - key: 'Система должна выдерживать, RPS'
+    value:
+      all: '1000'
+  - key: '99 перцентиль времени выполнения'
+    value:
+      myGroup / GET /test/id: '1500'
+      GET /test/email: '400'
+      all: '1500'
+  - key: '95 перцентиль времени выполнения'
+    value:
+      myGroup / GET /test/id: '1200'
+      myGroup: '1600'
+      GET /test/email: '320'
+      all: '1200'
+  - key: 'Процент ошибок'
+    value:
+      all: '5'
+      GET /test/uuid: '1'
+  - key: 'Максимальное время выполнения'
+    value:
+      all: '2000'
+      GET /test/uuid: '1000'

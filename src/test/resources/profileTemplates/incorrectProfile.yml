@@ -1,0 +1,16 @@
+apiVersion: link.ru/v1alpha1
+kind: PerformanceTestProfiles
+spec:
+  profiles:
+    - name: maxPerf
+      protocol: http
+      profile:
+        - request: request-1
+          intensity: 100 rph
+          groups: ["Group1"]
+          params:
+            method: POST
+            path: /test/a
+            headers:
+              - 'greetings: Hello world!'
+            body: '{"a": "b"}'
