@@ -3,6 +3,9 @@ package ru.tinkoff.gatling.profile
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
+import ru.tinkoff.gatling.profile.ProfileBuilderNew.ProfileBuilderException
+
+import java.io.FileNotFoundException
 
 class ProfileBuilderTest extends AnyFlatSpec with Matchers with ScalaCheckDrivenPropertyChecks {
 
@@ -49,6 +52,48 @@ class ProfileBuilderTest extends AnyFlatSpec with Matchers with ScalaCheckDriven
 
   it should "get profile from parsed yaml correctly" in {
     ProfileBuilderNew.buildFromYaml(profile1FromFile).selectProfile("maxPerf") shouldBe parsedProfile
+  }
+
+  it should "Java test expected exceptions if file not exists" in {
+    val thrown = intercept[ProfileBuilderException] {
+      ProfileBuilderNew.buildFromYamlJava("notExistsFile")
+    }
+    assert(thrown.getMessage.contains("File not found notExistsFile"))
+  }
+
+  it should "Java test expected exceptions if file path not passed" in {
+    val thrown = intercept[ProfileBuilderException] {
+      ProfileBuilderNew.buildFromYamlJava("")
+    }
+    assert(thrown.getMessage.contains("File not found"))
+  }
+
+  it should "Java test expected exceptions if incorrect file content" in {
+    val thrown = intercept[ProfileBuilderException] {
+      ProfileBuilderNew.buildFromYamlJava("src/test/resources/profileTemplates/incorrectProfile.yml")
+    }
+    assert(thrown.getMessage.contains("Incorrect file content in src/test/resources/profileTemplates/incorrectProfile.yml"))
+  }
+
+  it should "test expected exceptions if file not exists" in {
+    val thrown = intercept[ProfileBuilderException] {
+      ProfileBuilderNew.buildFromYaml("notExistsFile")
+    }
+    assert(thrown.getMessage.contains("File not found notExistsFile"))
+  }
+
+  it should "test expected exceptions if file path not passed" in {
+    val thrown = intercept[ProfileBuilderException] {
+      ProfileBuilderNew.buildFromYaml("")
+    }
+    assert(thrown.getMessage.contains("File not found"))
+  }
+
+  it should "test expected exceptions if incorrect file content" in {
+    val thrown = intercept[ProfileBuilderException] {
+      ProfileBuilderNew.buildFromYaml("src/test/resources/profileTemplates/incorrectProfile.yml")
+    }
+    assert(thrown.getMessage.contains("Incorrect file content in src/test/resources/profileTemplates/incorrectProfile.yml"))
   }
 
 }

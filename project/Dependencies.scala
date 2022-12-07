@@ -3,9 +3,12 @@ import sbt._
 object Dependencies {
   lazy val gatlingCore: Seq[ModuleID] = Seq(
     "io.gatling" % "gatling-core",
+    "io.gatling" % "gatling-core-java",
     "io.gatling" % "gatling-http",
+    "io.gatling" % "gatling-http-java",
     "io.gatling" % "gatling-redis",
     "io.gatling" % "gatling-core-java",
+    "io.gatling" % "gatling-redis-java",
   ).map(_ % "3.8.4" % Provided)
 
   lazy val fastUUID = Seq(
@@ -23,12 +26,12 @@ object Dependencies {
   )
 
   lazy val pureConfig: Seq[ModuleID] = Seq(
-    "com.github.pureconfig" %% "pureconfig"      % "0.17.1",
-    "com.github.pureconfig" %% "pureconfig-yaml" % "0.17.1",
+    "com.github.pureconfig" %% "pureconfig"      % "0.17.2",
+    "com.github.pureconfig" %% "pureconfig-yaml" % "0.17.2",
   )
 
   lazy val jackson: Seq[ModuleID] = Seq(
-    "com.fasterxml.jackson.core"       % "jackson-core"            % "2.14.0",
+    "com.fasterxml.jackson.core"       % "jackson-core"            % "2.14.1",
     "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.14.1",
   )
 
@@ -53,7 +56,7 @@ object Dependencies {
   )
 
   lazy val jwt: Seq[ModuleID] = Seq(
-    "com.github.jwt-scala" %% "jwt-core" % "9.1.1",
+    "com.github.jwt-scala" %% "jwt-core" % "9.1.2",
   )
 
   lazy val circeDeps: Seq[ModuleID] = Seq(
