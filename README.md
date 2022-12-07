@@ -54,11 +54,27 @@ variables fom config.
 
 Import:
 
+Scala example:
+
 ```scala
 import ru.tinkoff.gatling.config.SimulationConfig._
 ```
 
+Java example:
+
+```java
+import static ru.tinkoff.gatling.javaapi.SimulationConfig.*;
+```
+
+Kotlin example:
+
+```kotlin
+import ru.tinkoff.gatling.javaapi.SimulationConfig.*
+```
+
 Using default variables:
+
+Scala example:
 
 ```scala
 import ru.tinkoff.gatling.config.SimulationConfig._
@@ -66,6 +82,34 @@ import ru.tinkoff.gatling.config.SimulationConfig._
 val testPlan: Seq[OpenInjectionStep] = List(
   rampUsersPerSec(0).to(intensity).during(rampDuration),
   constantUsersPerSec(intensity).during(stageDuration)
+)
+```
+
+Java example:
+
+```java
+import static ru.tinkoff.gatling.javaapi.SimulationConfig.*;
+
+SomeScenario.scn.injectOpen(
+        incrementUsersPerSec(intensity() / stagesNumber())
+        .times(stagesNumber())
+        .eachLevelLasting(stageDuration())
+        .separatedByRampsLasting(rampDuration())
+        .startingFrom(0)
+        )
+```
+
+Kotlin example:
+
+```kotlin
+import ru.tinkoff.gatling.javaapi.SimulationConfig.*
+
+SomeScenario.scn.injectOpen(
+  incrementUsersPerSec(intensity() / stagesNumber())
+    .times(stagesNumber())
+    .eachLevelLasting(stageDuration())
+    .separatedByRampsLasting(rampDuration())
+    .startingFrom(0.0),
 )
 ```
 
@@ -83,6 +127,8 @@ duration: {
 booleanVariable: true
 ```
 
+Scala example:
+
 ```scala
 import ru.tinkoff.gatling.config.SimulationConfig._
 
@@ -91,7 +137,30 @@ val intVariable = getIntParam("intVariable")
 val doubleVariable = getDoubleParam("doubleVariable")
 val durationVariable = getDurationParam("duration.durationVariable")
 val booleanVariable = getBooleanParam("booleanVariable")
+```
 
+Java example:
+
+```java
+import static ru.tinkoff.gatling.javaapi.SimulationConfig.*;
+
+String stringVariable = getStringParam("stringVariable");
+int intVariable = getIntParam("intVariable");
+double doubleVariable = getDoubleParam("doubleVariable");
+Duration durationVariable = getDurationParam("duration.durationVariable");
+boolean booleanVariable = getBooleanParam("booleanVariable");
+```
+
+kotlin example:
+
+```kotlin
+import ru.tinkoff.gatling.javaapi.SimulationConfig.*
+
+val stringVariable = getStringParam("stringVariable")
+val intVariable = getIntParam("intVariable")
+val doubleVariable = getDoubleParam("doubleVariable")
+val durationVariable = getDurationParam("duration.durationVariable")
+val booleanVariable = getBooleanParam("booleanVariable")
 ```
 
 ### feeders
@@ -161,14 +230,17 @@ Creates feeder capable of retrieving secret data from HC Vault
     - secretId - approle password
     - keys - list of keys you are willing to retrieve from vault
 
+Scala example:
 ```scala
   val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
 
+Java example:
 ```Java
   Iterator<Map<String, Object>> vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys);
 ```
 
+Kotlin example:
 ```Kotlin
   val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
@@ -185,33 +257,39 @@ Creates a feeder with separated values from a source String, Seq[String] or Seq[
 
 Get separated values from a source: String
 
+Scala example:
 ```scala
 val sourceString = "v21;v22;v23"
 val separatedValuesFeeder: FeederBuilderBase[String] =
   SeparatedValuesFeeder("someValues", sourceString, ';') // Vector(Map(someValues -> v21), Map(someValues -> v22), Map(someValues -> v23))
 ```
 
+Java example:
 ```Java
   Iterator<Map<String, Object>> vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys);
 ```
 
+Kotlin example:
 ```Kotlin
   val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
 ```
 
 Get separated values from a source: Seq[String]
 
+Scala example:
 ```scala
 val sourceSeq = Seq("1,two", "3,4")
 val separatedValuesFeeder: FeederBuilderBase[String] =
   SeparatedValuesFeeder.csv("someValues", sourceSeq) // Vector(Map(someValues -> 1), Map(someValues -> two), Map(someValues -> 3), Map(someValues -> 4))
 ```
 
+Java example:
 ```Java
 List<Map<String, Object>> sourceList = Arrays.asList("1,two", "3,4");
 Iterator<Map<String, Object>> separatedValuesFeeder = SeparatedValuesFeeder.csv("someValues", sourceList);
 ```
 
+Kotlin example:
 ```Kotlin
 var sourceList = listOf("1,two", "3,4")
 var separatedValuesFeeder1 = SeparatedValuesFeeder.csv("someValues", sourceList)
@@ -219,6 +297,7 @@ var separatedValuesFeeder1 = SeparatedValuesFeeder.csv("someValues", sourceList)
 
 Get separated values from a source: Seq[Map[String, Any]]
 
+Scala example:
 ```scala
 val vaultFeeder: FeederBuilderBase[String] = Vector(
   Map(
@@ -234,11 +313,13 @@ val separatedValuesFeeder: FeederBuilderBase[String] =
   SeparatedValuesFeeder(None, vaultFeeder.readRecords, ',') // Vector(Map(HOSTS -> host11), Map(HOSTS -> host12), Map(USERS -> user11), Map(HOSTS -> host21), Map(HOSTS -> host22), Map(USERS -> user21), Map(USERS -> user22), Map(USERS -> user23))
 ```
 
+Java example:
 ```Java
 List<Map<String, Object>> vaultData = Arrays.asList(Map.of("HOSTS","host11,host12"), Map.of("USERS", "user21,user22,user23"));
 Iterator<Map<String, Object>> separatedValuesFeeder = SeparatedValuesFeeder.apply(Optional.empty(), vaultData, ',');
 ```
 
+Kotlin example:
 ```Kotlin
 var sourceList = listOf(Map.of("HOSTS", "host11,host12"), Map.of("USERS", "user21,user22,user23"))
 var separatedValuesFeeder1 = SeparatedValuesFeeder.csv(null, sourceList)
@@ -250,20 +331,24 @@ Creates a feeder with phone numbers with formats from json file or `case class P
 
 Simple phone feeder
 
+Scala example:
 ```scala
 val simplePhoneNumber: Feeder[String] = RandomPhoneFeeder("simplePhoneFeeder")
 ```
 
+Java example:
 ```Java
 Iterator<Map<String, Object>> simplePhoneNumber = RandomPhoneFeeder("simplePhoneFeeder");
 ```
 
+Kotlin example:
 ```Kotlin
 val simplePhoneNumber = RandomPhoneFeeder("simplePhoneNumber")
 ```
 
 Phone feeder with custom formats
 
+Scala example:
 ```scala
  val ruMobileFormat: PhoneFormat = PhoneFormat(
   countryCode = "+7",
@@ -276,11 +361,13 @@ Phone feeder with custom formats
   RandomPhoneFeeder("randomPhoneNumber", ruMobileFormat)
 ```
 
+Java example:
 ```Java
 PhoneFormat ruMobileFormat = PhoneFormatBuilder.apply("+7", 10, Arrays.asList("945", "946"), "+X XXX XXX-XX-XX", Arrays.asList("55", "81", "111"));
 Iterator<Map<String, Object>> randomPhoneNumber = RandomPhoneFeeder("randomPhoneNumber", ruMobileFormat);
 ```
 
+Kotlin example:
 ```Kotlin
 val ruMobileFormat = PhoneFormatBuilder.apply(
         "+7",
@@ -317,17 +404,20 @@ Creates file with formats, for example RESOURCES/phoneTemplates/ru.json
 }
 ```
 
+Scala example:
 ```scala
 val phoneFormatsFromFile: String   = "phoneTemplates/ru.json"
 val randomE164PhoneNumberFromJson: Feeder[String]     =
     RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatsFromFile, TypePhone.E164PhoneNumber)
 ```
 
+Java example:
 ```Java
 String phoneFormatsFromFile = "phoneTemplates/ru.json";
 Iterator<Map<String, Object>> randomE164PhoneNumberFromJson = RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatsFromFile, TypePhone.E164PhoneNumber());
 ```
 
+Kotlin example:
 ```Kotlin
 val phoneFormatsFromFile = "phoneTemplates/ru.json"
 val randomE164PhoneNumberFromJson = RandomPhoneFeeder("randomE164PhoneNumberFile", phoneFormatsFromFile, TypePhone.E164PhoneNumber())
@@ -344,6 +434,8 @@ This module allows you to write custom points to InfluxDB.
 
 ##### First type denotes start and end of simulation and could be shown in Grafana for example.
 
+Scala example:
+
 Import:
 
 ```scala
@@ -354,6 +446,38 @@ For using you should simply add `with Annotations` for your simulation class:
 
 ```scala
 class LoadTest extends Simulation with Annotations {
+  //some code
+}
+```
+
+Java example:
+
+Import:
+
+```java
+import ru.tinkoff.gatling.javaapi.influxdb.SimulationWithAnnotations;
+```
+
+For using you should extend your simulation class from `SimulationWithAnnotations`:
+
+```java
+class LoadTest extends SimulationWithAnnotations {
+  //some code
+}
+```
+
+Kotlin example:
+
+Import:
+
+```kotlin
+import ru.tinkoff.gatling.javaapi.influxdb.SimulationWithAnnotations
+```
+
+For using you should extend your simulation class from `SimulationWithAnnotations`:
+
+```kotlin
+class LoadTest : SimulationWithAnnotations(){
   //some code
 }
 ```
@@ -377,6 +501,8 @@ SELECT "annotation_value"  FROM "${Prefix}" where "annotation" = 'Stop'
 * Depending on your settings, Gatling will write simulation data to InfluxDB in batches every n seconds. In this case,
   the timestamp of the custom point will be taken during its recording, which may cause inaccuracies when displaying
   data.
+
+Scala example:
 
 Import:
 
@@ -427,6 +553,128 @@ setUp(
     //write point after firstScenario execution
     //"write_first_point" the name of the scenario, will be displayed in the simulation stats
     .userDataPoint("write_first_point", customPoint("custom_tag", "between_scenarios"))
+    .andThen(
+      secondScenario.inject(atOnceUsers(1))
+        //similar to simple .userDataPoint, write point after secondScenario execution
+        .andThen(
+          userDataPoint("write_second_point", "custom_tag", "after_second", "custom_field", "end")
+        )
+    )
+)
+```
+
+Java example:
+
+Import:
+
+```java
+import static ru.tinkoff.gatling.javaapi.influxdb.Annotations.*;
+```
+
+Using:
+
+```java
+//if default prepared Point doesn't suit you
+Point(configuration.data.graphite.rootPathPrefix, System.currentTimeMillis() * 1000000)
+  .addTag(tagName, tagValue)
+  .addField(fieldName, fieldValue)
+
+//prepare custom Point*
+import io.razem.influxdbclient.Point;        
+
+static Point customPoint(tag: String, value: String){ return Point(configuration.data.graphite.rootPathPrefix,System.currentTimeMillis()*1000000)
+            .addTag("myTag",tag)
+            .addField("myField",value) //value: Boolean | String | BigDecimal | Long | Double
+        }
+```
+
+_*_[_Custom Point
+reference_](https://www.javadoc.io/doc/io.razem/scala-influxdb-client_2.13/0.6.2/io/razem/influxdbclient/Point.html)
+
+```java
+//write custom prepared Point from scenario
+.exec(
+...)
+.exec(userDataPoint(customPoint("custom_tag", "inside_scenario")))
+.exec(
+...)
+
+//write default prepared Point from scenario
+.exec(
+...)
+.exec(userDataPoint("myTag", "tagValue", "myField", "fieldValue"))
+  //also you can use gatling Expression language for values (could waste DB):
+.exec(userDataPoint("myTag", "${variableFromGatlingSession}", "myField", "${anotherVariableFromSession}"))
+.exec(
+...)
+
+//write Point from Simulation setUp
+setUp(
+  firstScenario.inject(atOnceUsers(1))
+    //write point after firstScenario execution
+    //"write_first_point" the name of the scenario, will be displayed in the simulation stats
+    .andThen(userDataPoint("write_first_point", customPoint("custom_tag", "between_scenarios")))
+    .andThen(
+      secondScenario.inject(atOnceUsers(1))
+        //similar to simple .userDataPoint, write point after secondScenario execution
+        .andThen(
+          userDataPoint("write_second_point", "custom_tag", "after_second", "custom_field", "end")
+        )
+    )
+)
+```
+
+Kotlin example:
+
+Import:
+
+```kotlin
+import ru.tinkoff.gatling.javaapi.influxdb.Annotations.*
+```
+
+Using:
+
+```kotlin
+//if default prepared Point doesn't suit you
+Point(configuration.data.graphite.rootPathPrefix, System.currentTimeMillis() * 1000000)
+  .addTag(tagName, tagValue)
+  .addField(fieldName, fieldValue)
+
+//prepare custom Point*
+import io.razem.influxdbclient.Point       
+
+fun customPoint(tag: String, value: String){ Point(configuration.data.graphite.rootPathPrefix,System.currentTimeMillis()*1000000)
+            .addTag("myTag",tag)
+            .addField("myField",value) //value: Boolean | String | BigDecimal | Long | Double
+        }
+```
+
+_*_[_Custom Point
+reference_](https://www.javadoc.io/doc/io.razem/scala-influxdb-client_2.13/0.6.2/io/razem/influxdbclient/Point.html)
+
+```scala
+//write custom prepared Point from scenario
+.exec(
+...)
+.exec(userDataPoint(customPoint("custom_tag", "inside_scenario")))
+.exec(
+...)
+
+//write default prepared Point from scenario
+.exec(
+...)
+.exec(userDataPoint("myTag", "tagValue", "myField", "fieldValue"))
+  //also you can use gatling Expression language for values (could waste DB):
+.exec(userDataPoint("myTag", "${variableFromGatlingSession}", "myField", "${anotherVariableFromSession}"))
+.exec(
+...)
+
+//write Point from Simulation setUp
+setUp(
+  firstScenario.inject(atOnceUsers(1))
+    //write point after firstScenario execution
+    //"write_first_point" the name of the scenario, will be displayed in the simulation stats
+    .andThen(userDataPoint("write_first_point", customPoint("custom_tag", "between_scenarios")))
     .andThen(
       secondScenario.inject(atOnceUsers(1))
         //similar to simple .userDataPoint, write point after secondScenario execution
@@ -559,6 +807,7 @@ If there are no required fields, an exception will be thrown for the missing fie
 
 *Simulation setUp*
 
+Scala example:
 ```scala
 class Debug extends Simulation {
   val pathToProfile = "path/to/profile.yml"
@@ -570,6 +819,44 @@ class Debug extends Simulation {
     ).protocols(httpProtocol)
   )
           .maxDuration(10)
+}
+```
+
+Java example:
+
+```java
+import ru.tinkoff.gatling.javaapi.profile.ProfileBuilderNew;
+
+public class Debug extends Simulation {
+
+  public static ScenarioBuilder scn = ProfileBuilderNew
+          .buildFromYaml("path/to/profile.yml")
+          .selectProfile("maxPerf")
+          .toRandomScenario();
+
+  {
+    setUp(
+            scn.injectOpen(atOnceUsers(1))
+    ).protocols(httpProtocol);
+  }
+}
+```
+
+Kotlin example:
+```kotlin
+import ru.tinkoff.gatling.javaapi.profile.ProfileBuilderNew
+
+class Debug : Simulation() {
+  val scn: ScenarioBuilder = ProfileBuilderNew
+    .buildFromYaml("path/to/profile.yml")
+    .selectProfile("maxPerf")
+    .toRandomScenario()
+
+  init {
+    setUp(
+      scn.injectOpen(atOnceUsers(1)),
+    ).protocols(httpProtocol)
+  }
 }
 ```
 
@@ -589,25 +876,79 @@ This module allows you to use Redis commands.
 
 #### Import:
 
+Scala example:
+
 ```scala
 import com.redis.RedisClientPool
 import ru.tinkoff.gatling.redis.RedisActionBuilder._
+```
+
+Java example:
+
+```java
+import io.gatling.javaapi.redis.RedisClientPool;
+import ru.tinkoff.gatling.javaapi.redis.RedisClientPoolJava;
+```
+
+Kotlin  example:
+
+```kotlin
+import io.gatling.javaapi.redis.RedisClientPool
+import ru.tinkoff.gatling.javaapi.redis.RedisClientPoolJava
 ```
 
 #### Using:
 
 First you need to prepare RedisClientPool:
 
+Scala example:
+
 ```scala
 val redisPool = new RedisClientPool(redisUrl, 6379)
 ```
 
+Java example:
+
+```java
+static RedisClientPool redisClientPool = new RedisClientPool("localhost", 6379);
+static RedisClientPoolJava redisClientPoolJava = new RedisClientPoolJava(redisClientPool);
+//or
+static RedisClientPoolJava redisClientPoolJava = new RedisClientPoolJava("localhost", 6379);
+```
+
+Kotlin  example:
+
+```kotlin
+val redisClientPool = RedisClientPool("localhost", 6379)
+val redisClientPoolJava = RedisClientPoolJava(redisClientPool)
+//or
+val redisClientPoolJava = RedisClientPoolJava("localhost", 6379)
+```
+
 Add the Redis commands to your scenario chain:
+
+Scala example:
 
 ```scala
 .exec(redisPool.SADD("key", "values", "values")) //add the specified members to the set stored at key
   .exec(redisPool.DEL("key", "keys")) //removes the specified keys
   .exec(redisPool.SREM("key", "values", "values")) //remove the specified members from the set stored at key
+```
+
+Java example:
+
+```java
+.exec(redisClientPoolJava.SADD("key", "values", "values")) //add the specified members to the set stored at key
+  .exec(redisClientPoolJava.DEL("key", "keys")) //removes the specified keys
+  .exec(redisClientPoolJava.SREM("key", "values", "values")) //remove the specified members from the set stored at key
+```
+
+Kotlin  example:
+
+```kotlin
+.exec(redisClientPoolJava.SADD("key", "values", "values")) //add the specified members to the set stored at key
+  .exec(redisClientPoolJava.DEL("key", "keys")) //removes the specified keys
+  .exec(redisClientPoolJava.SREM("key", "values", "values")) //remove the specified members from the set stored at key
 ```
 
 ### templates
@@ -727,15 +1068,42 @@ from `example_template2.json` to route `$baseUrl/post_route`. In template files 
 
 #### Import:
 
+Scala:
 ```scala
 import ru.tinkoff.gatling.utils.jwt._
+```
+
+Java:
+```java
+import ru.tinkoff.gatling.utils.jwt.*;
+import static ru.tinkoff.gatling.javaapi.utils.Jwt.*;
+```
+
+Kotlin
+```kotlin
+import ru.tinkoff.gatling.javaapi.utils.Jwt.*
 ```
 
 #### Using:
 
 First you need to prepare jwt generator. For example
 
+Scala
 ```scala
+val jwtGenerator = jwt("HS256", jwtSecretToken)
+  .defaultHeader
+  .payloadFromResource("jwtTemplates/payload.json")
+```
+
+Java:
+```java
+static JwtGeneratorBuilder jwtGenerator = jwt("HS256", "jwtSecretToken")  
+        .defaultHeader
+        .payloadFromResource("jwtTemplates/payload.json");
+```
+
+Kotlin
+```kotlin
 val jwtGenerator = jwt("HS256", jwtSecretToken)
   .defaultHeader
   .payloadFromResource("jwtTemplates/payload.json")
@@ -761,7 +1129,7 @@ using [Gatling EL](https://gatling.io/docs/current/session/expression_el/)
 }
 ```
 
-Also, the JWT generator has a DSL allowing you to:
+Also, the JWT generator has a DSL allowing you to (for java and kotlin similarly):
 
 ```scala
 jwt("HS256", secret)
@@ -777,6 +1145,18 @@ For sign requests add this to your scenario chain:
 ```scala
     .exec(_.setJwt(jwtGenerator, "jwtToken")) //generates token and save it to gatling session as "jwtToken"
   .exec(addCookie(Cookie("JWT_TOKEN", "${jwtToken}").withDomain(jwtCookieDomain).withPath("/"))) //set JWT_TOKEN cookie for subsequent requests
+```
+
+Java:
+```java
+.exec(setJwt(jwtGenerator, "jwtToken"))  //generates token and save it to gatling session as "jwtToken"
+    .exec(addCookie(Cookie("JWT_TOKEN", "#{jwtToken}").withDomain("jwtCookieDomain").withPath("/"))) //set JWT_TOKEN cookie for subsequent requests
+```
+
+Kotlin
+```kotlin
+.exec(setJwt(jwtGenerator, "jwtToken"))  //generates token and save it to gatling session as "jwtToken"
+  .exec(addCookie(Cookie("JWT_TOKEN", "#{jwtToken}").withDomain("jwtCookieDomain").withPath("/"))) //set JWT_TOKEN cookie for subsequent requests
 ```
 
 ### assertion
@@ -823,7 +1203,7 @@ nfr:
       all: '2000'
 ```
 
-*Simulation setUp*
+*Scala example*
 
 ```scala
   class test extends Simulation {
@@ -835,6 +1215,36 @@ nfr:
   ).maxDuration(10)
     .assertions(assertionFromYaml("src/test/resources/nfr.yml"))
 }
+```
+
+*Java example*
+
+```java
+  import static ru.tinkoff.gatling.javaapi.Assertions.assertionFromYaml;
+
+  class test extends Simulation {
+
+  setUp(
+    scn.inject(
+      atOnceUsers(10)
+    ).protocols(httpProtocol)
+  ).maxDuration(10)
+    .assertions(assertionFromYaml("src/test/resources/nfr.yml"))
+```
+
+*Kotlin example*
+
+```kotlin
+  import ru.tinkoff.gatling.javaapi.Assertions.assertionFromYaml;
+
+  class test extends Simulation {
+
+  setUp(
+    scn.inject(
+      atOnceUsers(10)
+    ).protocols(httpProtocol)
+  ).maxDuration(10)
+    .assertions(assertionFromYaml("src/test/resources/nfr.yml"))
 ```
 
 ### transactions
@@ -856,6 +1266,32 @@ exec(Actions.createEntity())
   .exec(Actions.batchTest)
   .exec(Actions.selectAfterBatch)
 
+```
+
+Java example:
+
+```java
+exec(Actions.createEntity())
+  .exec(startTransaction("transaction1"))
+  .exec(Actions.insertTest())
+  .pause(2)
+  .exec(Actions.selectTest)
+  .exec(endTransaction("transaction1"))
+  .exec(Actions.batchTest)
+  .exec(Actions.selectAfterBatch)
+```
+
+Kotlin example:
+
+```kotlin
+exec(Actions.createEntity())
+  .exec(startTransaction("transaction1"))
+  .exec(Actions.insertTest())
+  .pause(2)
+  .exec(Actions.selectTest)
+  .exec(endTransaction("transaction1"))
+  .exec(Actions.batchTest)
+  .exec(Actions.selectAfterBatch)
 ```
 
 #### Usage:
