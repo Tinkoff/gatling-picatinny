@@ -8,6 +8,7 @@ object Dependencies {
     "io.gatling" % "gatling-http-java",
     "io.gatling" % "gatling-redis",
     "io.gatling" % "gatling-core-java",
+    "io.gatling" % "gatling-redis-java",
   ).map(_ % "3.8.4" % Provided)
 
   lazy val fastUUID = Seq(

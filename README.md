@@ -365,7 +365,7 @@ This module allows you to write custom points to InfluxDB.
 
 ##### First type denotes start and end of simulation and could be shown in Grafana for example.
 
-##### Scala:
+Scala example:
 
 Import:
 
@@ -381,7 +381,7 @@ class LoadTest extends Simulation with Annotations {
 }
 ```
 
-##### Java:
+Java example:
 
 Import:
 
@@ -397,7 +397,7 @@ class LoadTest extends SimulationWithAnnotations {
 }
 ```
 
-##### Kotlin:
+Kotlin example:
 
 Import:
 
@@ -433,7 +433,7 @@ SELECT "annotation_value"  FROM "${Prefix}" where "annotation" = 'Stop'
   the timestamp of the custom point will be taken during its recording, which may cause inaccuracies when displaying
   data.
 
-##### Scala:
+Scala example:
 
 Import:
 
@@ -494,7 +494,7 @@ setUp(
 )
 ```
 
-##### Java:
+Java example:
 
 Import:
 
@@ -555,7 +555,7 @@ setUp(
 )
 ```
 
-##### Kotlin:
+Kotlin example:
 
 Import:
 
@@ -807,25 +807,79 @@ This module allows you to use Redis commands.
 
 #### Import:
 
+Scala example:
+
 ```scala
 import com.redis.RedisClientPool
 import ru.tinkoff.gatling.redis.RedisActionBuilder._
+```
+
+Java example:
+
+```java
+import io.gatling.javaapi.redis.RedisClientPool;
+import ru.tinkoff.gatling.javaapi.redis.RedisClientPoolJava;
+```
+
+Kotlin  example:
+
+```kotlin
+import io.gatling.javaapi.redis.RedisClientPool
+import ru.tinkoff.gatling.javaapi.redis.RedisClientPoolJava
 ```
 
 #### Using:
 
 First you need to prepare RedisClientPool:
 
+Scala example:
+
 ```scala
 val redisPool = new RedisClientPool(redisUrl, 6379)
 ```
 
+Java example:
+
+```java
+static RedisClientPool redisClientPool = new RedisClientPool("localhost", 6379);
+static RedisClientPoolJava redisClientPoolJava = new RedisClientPoolJava(redisClientPool);
+//or
+static RedisClientPoolJava redisClientPoolJava = new RedisClientPoolJava("localhost", 6379);
+```
+
+Kotlin  example:
+
+```kotlin
+val redisClientPool = RedisClientPool("localhost", 6379)
+val redisClientPoolJava = RedisClientPoolJava(redisClientPool)
+//or
+val redisClientPoolJava = RedisClientPoolJava("localhost", 6379)
+```
+
 Add the Redis commands to your scenario chain:
+
+Scala example:
 
 ```scala
 .exec(redisPool.SADD("key", "values", "values")) //add the specified members to the set stored at key
   .exec(redisPool.DEL("key", "keys")) //removes the specified keys
   .exec(redisPool.SREM("key", "values", "values")) //remove the specified members from the set stored at key
+```
+
+Java example:
+
+```java
+.exec(redisClientPoolJava.SADD("key", "values", "values")) //add the specified members to the set stored at key
+  .exec(redisClientPoolJava.DEL("key", "keys")) //removes the specified keys
+  .exec(redisClientPoolJava.SREM("key", "values", "values")) //remove the specified members from the set stored at key
+```
+
+Kotlin  example:
+
+```kotlin
+.exec(redisClientPoolJava.SADD("key", "values", "values")) //add the specified members to the set stored at key
+  .exec(redisClientPoolJava.DEL("key", "keys")) //removes the specified keys
+  .exec(redisClientPoolJava.SREM("key", "values", "values")) //remove the specified members from the set stored at key
 ```
 
 ### templates

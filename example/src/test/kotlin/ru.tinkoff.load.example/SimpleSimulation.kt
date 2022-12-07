@@ -7,6 +7,9 @@ import ru.tinkoff.gatling.javaapi.influxdb.Annotations.Point
 import ru.tinkoff.gatling.javaapi.influxdb.Annotations.userDataPoint
 import ru.tinkoff.gatling.javaapi.influxdb.SimulationWithAnnotations
 
+import io.gatling.javaapi.redis.RedisClientPool
+import ru.tinkoff.gatling.javaapi.redis.RedisClientPoolJava
+
 
 /** class SimulationWithAnnotations allows you to write Start annotation to influxdb before starting the simulation and Stop annotation after
  * completion of the simulation
@@ -20,6 +23,9 @@ class Debug : SimulationWithAnnotations() {
             println("Some action")
         }
 
+        val redisClientPool = RedisClientPool("localhost", 6379)
+        val redisClientPoolJava = RedisClientPoolJava(redisClientPool)
+
         setUp(
             /** how to add custom points to influxdb during scenario execution
              */
@@ -32,7 +38,12 @@ class Debug : SimulationWithAnnotations() {
                         "testField",
                         "fieldValue"
                     )
-                ).injectOpen(atOnceUsers(1))
+                )
+                .exec(redisClientPoolJava.SADD("key", "values", "values", "values1")) //add the specified members to the set stored at key
+                .exec(redisClientPoolJava.SADD("key", "values", listOf("values", "values1"))) //add the specified members to the set stored at key
+                .exec(redisClientPoolJava.DEL("key", "keys")) //removes the specified keys
+                .exec(redisClientPoolJava.SREM("key", "values", "values")) //remove the specified members from the set stored at key
+                .injectOpen(atOnceUsers(1))
                 /** how to add custom points to influxdb after scenario execution
                  */
                 .andThen(
