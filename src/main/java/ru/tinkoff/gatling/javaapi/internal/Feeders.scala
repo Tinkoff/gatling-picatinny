@@ -10,7 +10,7 @@ object Feeders {
     scalaFeeder.map(_.asJava).asJava.asInstanceOf[ju.Iterator[ju.Map[String, Object]]]
 
   def toJavaFeeder(scalaFeeder: IndexedSeq[Record[String]]): ju.Iterator[ju.Map[String, Object]] =
-    scalaFeeder.map(_.asJava).asJava.asInstanceOf[ju.Iterator[ju.Map[String, Object]]]
+    scalaFeeder.map(_.asJava).asJava.iterator().asInstanceOf[ju.Iterator[ju.Map[String, Object]]]
 
   def toScalaOption[T](optionJava: ju.Optional[T]): Option[T] = optionJava.toScala
 
