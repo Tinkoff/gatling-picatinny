@@ -266,12 +266,14 @@ val separatedValuesFeeder: FeederBuilderBase[String] =
 
 Java example:
 ```Java
-  Iterator<Map<String, Object>> vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys);
+String sourceString = "v21;v22;v23";
+Iterator<Map<String, Object>> separatedValuesFeeder = SeparatedValuesFeeder.apply("someValues", sourceString, ';');
 ```
 
 Kotlin example:
 ```Kotlin
-  val vaultFeeder = VaultFeeder(vaultUrl, secretPath, roleId, secretId, keys)
+val sourceString = "v21;v22;v23"
+val separatedValuesFeeder = SeparatedValuesFeeder.apply("someValues", sourceString, ';')
 ```
 
 Get separated values from a source: Seq[String]
