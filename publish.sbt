@@ -1,14 +1,14 @@
 ThisBuild / organization := "ru.tinkoff"
 ThisBuild / scalaVersion := "2.13.10"
 
-ThisBuild / scmInfo     := Some(
+ThisBuild / scmInfo := Some(
   ScmInfo(
     url("https://github.com/TinkoffCreditSystems/gatling-picatinny.git"),
     "git@https://github.com/TinkoffCreditSystems/gatling-picatinny.git",
   ),
 )
 
-ThisBuild / developers  := List(
+ThisBuild / developers := List(
   Developer(
     id = "chepk",
     name = "Sergey Chepkasov",
