@@ -31,7 +31,7 @@ object Dependencies {
   )
 
   lazy val jackson: Seq[ModuleID] = Seq(
-    "com.fasterxml.jackson.core"       % "jackson-core"            % "2.14.1",
+    "com.fasterxml.jackson.core"       % "jackson-core"            % "2.14.2",
     "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.14.2",
   )
 
@@ -85,6 +85,6 @@ object Dependencies {
     ),
   )
 
-  lazy val junit: Seq[ModuleID] = Seq("org.junit.jupiter" % "junit-jupiter-engine" % "5.9.1" % Test)
+  lazy val junit: Seq[ModuleID] = Seq("org.junit.jupiter" % "junit-jupiter-engine" % "5.9.2" % Test)
 
 }
