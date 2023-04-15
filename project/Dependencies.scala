@@ -26,8 +26,8 @@ object Dependencies {
   )
 
   lazy val pureConfig: Seq[ModuleID] = Seq(
-    "com.github.pureconfig" %% "pureconfig"      % "0.17.2",
-    "com.github.pureconfig" %% "pureconfig-yaml" % "0.17.2",
+    "com.github.pureconfig" %% "pureconfig"      % "0.17.3",
+    "com.github.pureconfig" %% "pureconfig-yaml" % "0.17.3",
   )
 
   lazy val jackson: Seq[ModuleID] = Seq(
