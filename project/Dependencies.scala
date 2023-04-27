@@ -85,6 +85,6 @@ object Dependencies {
     ),
   )
 
-  lazy val junit: Seq[ModuleID] = Seq("org.junit.jupiter" % "junit-jupiter-engine" % "5.9.2" % Test)
+  lazy val junit: Seq[ModuleID] = Seq("org.junit.jupiter" % "junit-jupiter-engine" % "5.9.3" % Test)
 
 }
