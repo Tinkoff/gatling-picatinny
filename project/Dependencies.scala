@@ -26,13 +26,13 @@ object Dependencies {
   )
 
   lazy val pureConfig: Seq[ModuleID] = Seq(
-    "com.github.pureconfig" %% "pureconfig"      % "0.17.2",
-    "com.github.pureconfig" %% "pureconfig-yaml" % "0.17.2",
+    "com.github.pureconfig" %% "pureconfig"      % "0.17.3",
+    "com.github.pureconfig" %% "pureconfig-yaml" % "0.17.3",
   )
 
   lazy val jackson: Seq[ModuleID] = Seq(
-    "com.fasterxml.jackson.core"       % "jackson-core"            % "2.14.2",
-    "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.14.2",
+    "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.15.0",
+    "com.fasterxml.jackson.core"       % "jackson-core"            % "2.15.0",
   )
 
   lazy val scalaTest: Seq[ModuleID] = Seq(
@@ -56,7 +56,7 @@ object Dependencies {
   )
 
   lazy val jwt: Seq[ModuleID] = Seq(
-    "com.github.jwt-scala" %% "jwt-core" % "9.1.2",
+    "com.github.jwt-scala" %% "jwt-core" % "9.2.0",
   )
 
   lazy val circeDeps: Seq[ModuleID] = Seq(
