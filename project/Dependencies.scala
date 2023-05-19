@@ -9,7 +9,7 @@ object Dependencies {
     "io.gatling" % "gatling-redis",
     "io.gatling" % "gatling-core-java",
     "io.gatling" % "gatling-redis-java",
-  ).map(_ % "3.8.4" % Provided)
+  ).map(_ % "3.9.5" % Provided)
 
   lazy val fastUUID = Seq(
     "com.eatthepath" % "fast-uuid" % "0.2.0" % Provided,
@@ -18,21 +18,21 @@ object Dependencies {
   lazy val gatling: Seq[ModuleID] = Seq(
     "io.gatling.highcharts" % "gatling-charts-highcharts",
     "io.gatling"            % "gatling-test-framework",
-  ).map(_ % "3.8.4" % Test)
+  ).map(_ % "3.9.5" % Test)
 
   lazy val json4s: Seq[ModuleID] = Seq(
-    "org.json4s" %% "json4s-native"  % "4.0.6",
-    "org.json4s" %% "json4s-jackson" % "4.0.6",
+    "org.json4s" %% "json4s-native"  % "4.1.0-M3",
+    "org.json4s" %% "json4s-jackson" % "4.1.0-M3",
   )
 
   lazy val pureConfig: Seq[ModuleID] = Seq(
-    "com.github.pureconfig" %% "pureconfig"      % "0.17.3",
-    "com.github.pureconfig" %% "pureconfig-yaml" % "0.17.3",
+    "com.github.pureconfig" %% "pureconfig"      % "0.17.4",
+    "com.github.pureconfig" %% "pureconfig-yaml" % "0.17.4",
   )
 
   lazy val jackson: Seq[ModuleID] = Seq(
-    "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.15.0",
-    "com.fasterxml.jackson.core"       % "jackson-core"            % "2.15.0",
+    "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.15.1",
+    "com.fasterxml.jackson.core"       % "jackson-core"            % "2.15.1",
   )
 
   lazy val scalaTest: Seq[ModuleID] = Seq(
@@ -60,11 +60,11 @@ object Dependencies {
   )
 
   lazy val circeDeps: Seq[ModuleID] = Seq(
-    "io.circe" %% "circe-core",
-    "io.circe" %% "circe-generic",
-    "io.circe" %% "circe-parser",
-    "io.circe" %% "circe-yaml",
-  ).map(_ % "0.14.1")
+    "io.circe" %% "circe-core"    % "0.15.0-M1",
+    "io.circe" %% "circe-generic" % "0.15.0-M1",
+    "io.circe" %% "circe-parser"  % "0.15.0-M1",
+    "io.circe" %% "circe-yaml"    % "0.15.0-RC1",
+  )
 
   lazy val scalaTesting: Seq[ModuleID] = scalaCheck ++ scalaTest ++ scalaMock ++ scalaTestPlus
 
