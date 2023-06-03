@@ -31,7 +31,7 @@ object Dependencies {
   )
 
   lazy val jackson: Seq[ModuleID] = Seq(
-    "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.15.1",
+    "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.15.2",
     "com.fasterxml.jackson.core"       % "jackson-core"            % "2.15.1",
   )
 
