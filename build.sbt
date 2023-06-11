@@ -6,7 +6,7 @@ lazy val root = (project in file("."))
   .enablePlugins(GitVersioning)
   .settings(
     name          := "gatling-picatinny",
-    scalaVersion  := "2.13.10",
+    scalaVersion  := "2.13.11",
     libraryDependencies ++= gatlingCore,
     libraryDependencies ++= gatling,
     libraryDependencies ++= fastUUID,
