@@ -1,5 +1,5 @@
 ThisBuild / organization := "ru.tinkoff"
-ThisBuild / scalaVersion := "2.13.10"
+ThisBuild / scalaVersion := "2.13.11"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
